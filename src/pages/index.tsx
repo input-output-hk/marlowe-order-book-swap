@@ -6,7 +6,7 @@ export default function Home() {
       <Head>
         <title>Token Swap</title>
         <meta name="description" content="Token Swap Prototype" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/marlowe.svg" />
       </Head>
       <main className="" />
     </>
