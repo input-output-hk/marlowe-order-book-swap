@@ -1,0 +1,34 @@
+import Image from "next/image";
+import CloseIcon from "public/close.svg";
+import { Dispatch, PropsWithChildren, SetStateAction } from "react";
+
+interface IModal {
+  title: string;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export const Modal = ({
+  title,
+  children,
+  open,
+  setOpen,
+}: PropsWithChildren<IModal>) => {
+  const closeModal = () => {
+    setOpen(false);
+  };
+  if (!open) return;
+  return (
+    <div className="fixed inset-0 flex h-full items-center bg-gray-600 bg-opacity-50">
+      <div className="relative mx-auto w-max rounded-md border bg-white p-5 shadow-lg">
+        <div className="text-m-subtitle mb-5 flex justify-between text-center text-3xl font-bold leading-6">
+          {title}
+          <div onClick={closeModal}>
+            <Image className="cursor-pointer" src={CloseIcon} alt="x"></Image>
+          </div>
+        </div>
+        <div className="mt-2 px-7 py-3">{children}</div>
+      </div>
+    </div>
+  );
+};
