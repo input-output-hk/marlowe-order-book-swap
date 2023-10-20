@@ -18,6 +18,7 @@ export default {
         "m-light-grey": "#F5F5F5",
         "m-grey": "#E5E5E5",
         "m-dark-grey": "#ACACAC",
+        "m-darker-grey": "#8C8C8C",
       },
     },
   },
