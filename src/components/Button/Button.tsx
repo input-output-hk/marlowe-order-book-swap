@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import { COLORS } from "~/utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -28,6 +28,10 @@ export const Button = ({
     if (disabled) return "bg-m-disabled cursor-not-allowed";
     if (!filled && hovered) {
       switch (color) {
+        case COLORS.DARK_GRAY:
+          return "bg-white hover:bg-m-dark-gray hover:text-white transition ease-in-out duration-500";
+        case COLORS.GREEN:
+          return "bg-white hover:bg-m-green hover:text-white transition ease-in-out duration-500";
         case COLORS.BLACK:
           return "bg-white hover:bg-near-black hover:text-white transition ease-in-out duration-500";
         case COLORS.RED:
@@ -38,6 +42,10 @@ export const Button = ({
     }
     if (!filled) return "bg-white";
     switch (color) {
+      case COLORS.DARK_GRAY:
+        return "text-white bg-m-dark-gray";
+      case COLORS.GREEN:
+        return "text-white bg-m-green";
       case COLORS.BLACK:
         return "text-white bg-near-black";
       case COLORS.RED:
