@@ -15,41 +15,38 @@ export const Input = ({
   max,
   min,
   placeholder,
-  pointerEvents = false,
+  pointerEvents: needsPointerEvents = false,
   startContent,
   type = "text",
   useShadow = false,
   value,
   onChange,
 }: InputProps) => {
+  const shadow = useShadow ? "shadow-md" : "";
+  const paddingX = startContent ? "px-12" : "px-4";
+  const pointerEvents = needsPointerEvents ? "" : "pointer-events-none";
+
   return (
     <>
-      {label && <label className="text-m-darker-grey">{label}</label>}
+      {label && (
+        <label htmlFor={label} className="text-m-darker-grey">
+          {label}
+        </label>
+      )}
       <div className="relative flex items-center">
-        <div
-          className={`${
-            pointerEvents ? "" : "pointer-events-none"
-          } absolute p-4`}
-        >
-          {startContent}
-        </div>
+        <div className={`${pointerEvents} absolute p-4`}>{startContent}</div>
         <input
           type={type}
+          id={label}
           placeholder={placeholder}
           max={max}
           min={min}
           value={value?.toString()}
           onChange={onChange}
           disabled={disabled}
-          className={`m-dark-grey focus:border-m-purple focus:ring-m-purple w-full flex-grow rounded-md border p-3 ${
-            startContent ? "px-12" : "px-4"
-          } ${useShadow ? "shadow-md" : ""} focus:outline-none focus:ring-1`}
+          className={`m-dark-grey focus:border-m-purple focus:ring-m-purple w-full flex-grow rounded-md border p-3 ${paddingX} ${shadow} focus:outline-none focus:ring-1`}
         />
-        <div
-          className={`${
-            pointerEvents ? "" : "pointer-events-none"
-          } absolute right-0 p-4`}
-        >
+        <div className={`${pointerEvents} absolute right-0 p-4`}>
           {endContent}
         </div>
       </div>
