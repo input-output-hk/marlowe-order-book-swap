@@ -1,0 +1,86 @@
+import { PropsWithChildren } from "react";
+import { COLORS } from "~/utils";
+
+interface IButton {
+  id?: string;
+  color?: COLORS;
+  disabled?: boolean;
+  onClick?: () => void;
+  size?: string;
+  className?: string;
+  filled?: boolean;
+  hovered?: boolean;
+}
+
+export const SIZE = {
+  REGULAR: "regular",
+  SMALL: "small",
+};
+
+export type SIZE = (typeof SIZE)[keyof typeof SIZE];
+
+export const Button = ({
+  children,
+  color = COLORS.PURPLE,
+  size = SIZE.REGULAR,
+  filled = false,
+  onClick,
+  disabled,
+  hovered,
+}: PropsWithChildren<IButton>) => {
+  const getBgColor = () => {
+    if (disabled) return "bg-m-disabled cursor-not-allowed";
+    if (!filled && hovered) {
+      switch (color) {
+        case COLORS.BLACK:
+          return "bg-white hover:bg-near-black hover:text-white transition ease-in-out duration-500";
+        case COLORS.RED:
+          return "bg-white hover:bg-m-red hover:text-white transition ease-in-out duration-500";
+        default:
+          return "bg-white hover:bg-m-purple hover:text-white transition ease-in-out duration-500";
+      }
+    }
+    if (!filled) return "bg-white";
+    switch (color) {
+      case COLORS.BLACK:
+        return "text-white bg-near-black";
+      case COLORS.RED:
+        return "text-white bg-m-red";
+      case COLORS.WHITE:
+        return "text-black bg-white";
+      default:
+        return "text-white bg-m-purple";
+    }
+  };
+
+  const getBorder = () => {
+    if (disabled) return "border border-m-disabled text-white";
+    switch (color) {
+      case COLORS.RED:
+        return "border border-m-red text-m-red";
+      case COLORS.BLACK:
+        return "border border-near-black text-near-black";
+      default:
+        return "border border-m-purple text-m-purple";
+    }
+  };
+
+  const getPadding = () => {
+    switch (size) {
+      case SIZE.SMALL:
+        return "px-4 py-2";
+      default:
+        return "px-6 py-3";
+    }
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`h-min w-full whitespace-nowrap rounded-md font-bold ${getBgColor()} ${getBorder()} ${getPadding()}`}
+    >
+      {children}
+    </button>
+  );
+};
