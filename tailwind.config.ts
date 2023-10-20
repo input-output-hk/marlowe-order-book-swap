@@ -12,6 +12,8 @@ export default {
         "m-purple": "#511CF7",
         "m-disabled": "#979DAF",
         "m-red": "#FF525B",
+        "m-dark-gray": "#8C8C8C",
+        "m-green": "#15A98F",
       },
     },
   },

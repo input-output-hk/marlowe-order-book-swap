@@ -1,13 +1,9 @@
-import { PropsWithChildren } from "react";
+import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import { COLORS } from "~/utils";
 
-interface IButton {
-  id?: string;
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color?: COLORS;
-  disabled?: boolean;
-  onClick?: () => void;
   size?: string;
-  className?: string;
   filled?: boolean;
   hovered?: boolean;
 }
@@ -27,7 +23,7 @@ export const Button = ({
   onClick,
   disabled,
   hovered,
-}: PropsWithChildren<IButton>) => {
+}: PropsWithChildren<ButtonProps>) => {
   const getBgColor = () => {
     if (disabled) return "bg-m-disabled cursor-not-allowed";
     if (!filled && hovered) {
