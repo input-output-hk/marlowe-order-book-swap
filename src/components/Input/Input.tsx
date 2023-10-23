@@ -16,7 +16,7 @@ export const Input = ({
   min,
   placeholder,
   pointerEvents: needsPointerEvents = false,
-  required = false,
+  required,
   startContent,
   type = "text",
   useShadow = false,
