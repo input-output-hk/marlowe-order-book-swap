@@ -30,7 +30,7 @@ export const Input = ({
   return (
     <>
       {label && (
-        <label htmlFor={label} className="text-m-darker-grey">
+        <label htmlFor={label} className="text-m-dark-gray">
           {label}
         </label>
       )}

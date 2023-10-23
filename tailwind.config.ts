@@ -8,7 +8,6 @@ export default {
         inter: "var(--font-inter)",
       },
       colors: {
-        "m-darker-grey": "#8C8C8C",
         "m-disabled": "#979DAF",
         "m-dark-gray": "#8C8C8C",
         "m-green": "#17A98F",
