@@ -21,6 +21,7 @@ export default {
     {
       pattern:
         /(text|bg|border)-(m-disabled|m-dark-gray|m-green|m-purple|m-red)/,
+      variants: ["hover"],
     },
   ],
 } satisfies Config;

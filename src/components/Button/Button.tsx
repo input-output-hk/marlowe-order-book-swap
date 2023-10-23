@@ -25,7 +25,11 @@ export const Button = ({
   hovered,
 }: PropsWithChildren<ButtonProps>) => {
   const getBgColor = () => {
+    if (color === COLORS.WHITE) return "bg-white text-black ";
     if (disabled) return "bg-m-disabled cursor-not-allowed text-white ";
+    if (filled && hovered) {
+      return `bg-${stringedColors[color]} text-white hover:bg-white hover:text-${stringedColors[color]} transition ease-in-out duration-500 `;
+    }
     if (!filled && hovered) {
       return `bg-white text-${stringedColors[color]} hover:bg-${stringedColors[color]} hover:text-white transition ease-in-out duration-500 `;
     }
