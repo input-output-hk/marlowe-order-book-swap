@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from "react";
+import { type InputHTMLAttributes } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   endContent?: JSX.Element;
@@ -23,7 +23,8 @@ export const Input = ({
   onChange,
 }: InputProps) => {
   const shadow = useShadow ? "shadow-md" : "";
-  const paddingX = startContent ? "px-12" : "px-4";
+  const paddingLeftX = startContent ? "pl-12" : "pl-4";
+  const paddingRightX = endContent ? "pr-12" : "pr-4";
   const pointerEvents = needsPointerEvents ? "" : "pointer-events-none";
 
   return (
@@ -44,7 +45,7 @@ export const Input = ({
           value={value?.toString()}
           onChange={onChange}
           disabled={disabled}
-          className={`m-dark-grey focus:border-m-purple focus:ring-m-purple w-full flex-grow rounded-md border p-3 ${paddingX} ${shadow} focus:outline-none focus:ring-1`}
+          className={`m-dark-grey focus:border-m-purple focus:ring-m-purple w-full flex-grow rounded-md border p-3 ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1`}
         />
         <div className={`${pointerEvents} absolute right-0 p-4`}>
           {endContent}
