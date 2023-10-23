@@ -16,6 +16,7 @@ export const Input = ({
   min,
   placeholder,
   pointerEvents: needsPointerEvents = false,
+  required = false,
   startContent,
   type = "text",
   useShadow = false,
@@ -44,7 +45,9 @@ export const Input = ({
           min={min}
           value={value?.toString()}
           onChange={onChange}
+          onError={() => console.log("error")}
           disabled={disabled}
+          required={required}
           className={`m-dark-grey focus:border-m-purple focus:ring-m-purple w-full flex-grow rounded-md border p-3 ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1`}
         />
         <div className={`${pointerEvents} absolute right-0 p-4`}>
