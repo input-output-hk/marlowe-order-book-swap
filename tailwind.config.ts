@@ -7,6 +7,9 @@ export default {
       fontFamily: {
         inter: "var(--font-inter)",
       },
+      colors: {
+        "m-light-purple": "#F8F6FF",
+      },
     },
   },
   plugins: [],
