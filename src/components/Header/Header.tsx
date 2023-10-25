@@ -47,7 +47,7 @@ export const Header = () => {
             onClick={changeOpen}
           >
             <div
-              className="absolute right-24 top-10 z-10 flex cursor-pointer items-center gap-3 rounded-md border bg-white p-2"
+              className="absolute right-5 top-5 z-10 flex cursor-pointer items-center gap-3 rounded-md border bg-white p-2 sm:right-24 sm:top-10"
               onClick={disconnectWallet}
             >
               Disconnect Wallet
