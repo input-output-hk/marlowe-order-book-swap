@@ -1,7 +1,15 @@
-import { TableBodyDesktop } from "./TableBodyDesktop";
-import { TableBodyMobile } from "./TableBodyMobile";
+import dynamic from "next/dynamic";
 import { TableHead } from "./TableHead";
 import type { TableProps } from "./table.interface";
+
+const TableBodyMobile = dynamic(
+  () => import("./TableBodyMobile").then((mod) => mod.TableBodyMobile),
+  { ssr: false },
+);
+const TableBodyDesktop = dynamic(
+  () => import("./TableBodyDesktop").then((mod) => mod.TableBodyDesktop),
+  { ssr: false },
+);
 
 export const Table = ({ data }: TableProps) => {
   return (

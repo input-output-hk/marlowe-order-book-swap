@@ -1,7 +1,7 @@
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import SwapIcon from "public/swap.svg";
-import { COLORS } from "~/utils";
+import { COLORS, getExpiration } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -15,23 +15,6 @@ export const TableBodyMobile = ({ data }: TableProps) => {
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-m-light-purple p-4 md:hidden">
       {data.map((row) => {
-        const difference =
-          new Date(row.expiry).getTime() - new Date().getTime();
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-        );
-        const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60),
-        );
-
-        const expires =
-          days > 0
-            ? `${days} days ${hours}h`
-            : hours > 0
-            ? `${hours} hours ${minutes}m`
-            : `${minutes} minutes`;
-
         return (
           <div
             key={row.id}
@@ -58,7 +41,7 @@ export const TableBodyMobile = ({ data }: TableProps) => {
               </div>
             </div>
             <div className="flex items-center justify-between px-4 pt-2">
-              <div>Expires in {expires}</div>
+              <div>Expires in {getExpiration(row.expiry)}</div>
               <div className="w-1/3">
                 {/* TODO: change when we implement wallets */}
                 {row.createdBy === "me" ? (

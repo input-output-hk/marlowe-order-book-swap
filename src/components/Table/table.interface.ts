@@ -2,7 +2,7 @@ export interface TableProps {
   data: Array<ITableData>;
 }
 
-interface ITableData {
+export interface ITableData {
   id: number;
   createdBy: string;
   offered: IToken;
