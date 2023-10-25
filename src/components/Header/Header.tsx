@@ -1,24 +1,38 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DisconnectIcon from "~/../public/disconnect.svg";
 import MarloweIcon from "~/../public/marlowe-logo.svg";
 import LogoIcon from "~/../public/marlowe.svg";
-import NamiIcon from "~/../public/nami.svg";
+import { WALLETS, walletLogos } from "~/utils/wallets";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
-  const [showAddr, setShowAddr] = useState(true);
-  const { pathname } = useRouter();
+  const [wallet, setWallet] = useState<WALLETS | undefined>(undefined);
+  const { pathname, push } = useRouter();
   const addr = "addr_test1qp8rc...";
+
+  useEffect(() => {
+    const getWallet = async () => {
+      const wallet = window.localStorage.getItem("wallet");
+      if (wallet && Object.values(WALLETS).includes(wallet as WALLETS)) {
+        setWallet(wallet as WALLETS);
+      } else {
+        await push("/");
+      }
+    };
+
+    getWallet().catch((e) => console.error(e));
+  }, []);
 
   const changeOpen = () => {
     setOpen(!open);
   };
 
-  const disconnectWallet = () => {
-    // TODO: Change to go to initial page
-    setShowAddr(false);
+  const disconnectWallet = async () => {
+    setWallet(undefined);
+    window.localStorage.removeItem("wallet");
+    await push("/");
   };
 
   const isHome = pathname === "/";
@@ -38,9 +52,9 @@ export const Header = () => {
           width={30}
           className="block sm:hidden"
         />
-        {showAddr ? (
+        {wallet ? (
           <div className="flex cursor-pointer gap-5" onClick={changeOpen}>
-            <Image src={NamiIcon as string} alt="N" width={30} />
+            {walletLogos[wallet]}
             <div className="hidden sm:block">{addr}</div>
           </div>
         ) : !isHome ? (
@@ -52,7 +66,7 @@ export const Header = () => {
             onClick={changeOpen}
           >
             <div
-              className="absolute right-5 top-5 z-10 flex cursor-pointer items-center gap-3 rounded-md border bg-white p-2 sm:right-24 sm:top-10"
+              className="absolute right-5 top-5 z-10 flex cursor-pointer items-center gap-10 rounded-md border bg-white p-2 sm:right-10 sm:top-8 md:right-20 lg:right-24"
               onClick={disconnectWallet}
             >
               Disconnect Wallet

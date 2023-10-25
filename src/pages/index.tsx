@@ -1,8 +1,24 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { Header } from "~/components/Header/Header";
 import { WalletSelect } from "~/components/WalletSelect/WalletSelect";
+import { PAGES } from "~/utils";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkWallet = async () => {
+      const wallet = window.localStorage.getItem("wallet");
+      if (wallet) {
+        await router.push(PAGES.LISTING);
+      }
+    };
+
+    checkWallet().catch((e) => console.log(e));
+  }, []);
+
   return (
     <>
       <Head>
