@@ -21,7 +21,7 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
           <div className="table-cell w-1/4">
             <div className="flex items-center gap-2 py-6 pl-4 lg:pl-12 xl:pl-20 2xl:pl-32">
               <Image src={MarloweIcon as string} alt="M" width={16} />
-              <p>
+              <p className="font-bold">
                 {row.offered.amount} {row.offered.token}
               </p>
             </div>
@@ -29,7 +29,7 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
           <div className="table-cell w-1/4">
             <div className="flex items-center gap-2 py-6 pl-4 lg:pl-12 xl:pl-20 2xl:pl-32">
               <Image src={MarloweIcon as string} alt="M" width={16} />
-              <p>
+              <p className="font-bold">
                 {row.desired.amount} {row.desired.token}
               </p>
             </div>

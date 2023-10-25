@@ -29,13 +29,13 @@ export const TableBodyMobile = ({ data }: TableProps) => {
               <div className="flex gap-2">
                 {/* TODO: replace with icons from marlowe runtime */}
                 <Image src={MarloweIcon as string} alt="M" width={16} />
-                <p>
+                <p className="font-bold">
                   {row.offered.amount} {truncateTokenName(row.offered.token, 7)}
                 </p>
               </div>
               <div className="flex gap-2">
                 <Image src={MarloweIcon as string} alt="M" width={16} />
-                <p>
+                <p className="font-bold">
                   {row.desired.amount} {truncateTokenName(row.desired.token, 7)}
                 </p>
               </div>
