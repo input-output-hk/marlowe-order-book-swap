@@ -35,6 +35,7 @@ type CreateContextOptions = Record<string, never>;
  */
 const createInnerTRPCContext = (_opts: CreateContextOptions) => {
   return {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     db,
   };
 };
