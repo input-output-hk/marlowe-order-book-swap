@@ -13,14 +13,18 @@ export default {
         "m-green": "#17A98F",
         "m-purple": "#4B1FED",
         "m-red": "#FF525B",
+        "m-blue": "#0038FF",
       },
+    },
+    boxShadow: {
+      container: "0px 4.8px 2px 0px #1F26D826, 0px 0px 16.7px 0px #5673DB1A",
     },
   },
   plugins: [],
   safelist: [
     {
       pattern:
-        /(text|bg|border)-(m-disabled|m-dark-gray|m-green|m-purple|m-red)/,
+        /(text|bg|border)-(m-disabled|m-dark-gray|m-green|m-purple|m-red|m-blue|m-light-purple)/,
       variants: ["hover"],
     },
   ],

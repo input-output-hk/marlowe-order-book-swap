@@ -1,6 +1,6 @@
 export const PAGES = {
   HOME: "/",
-  CONTRACTS: "/contracts",
+  LISTING: "/listing",
   CREATE: "/create",
 } as const;
 export type PagesValue = (typeof PAGES)[keyof typeof PAGES];

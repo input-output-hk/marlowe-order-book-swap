@@ -1,4 +1,6 @@
 import Head from "next/head";
+import { Header } from "~/components/Header/Header";
+import { WalletSelect } from "~/components/WalletSelect/WalletSelect";
 
 export default function Home() {
   return (
@@ -8,7 +10,12 @@ export default function Home() {
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
-      <main className="" />
+
+      <Header />
+
+      <main className="flex-grow-1 h-screen w-full px-4 pb-48 pt-4 sm:px-28 md:flex md:items-center md:justify-center md:px-0 ">
+        <WalletSelect />
+      </main>
     </>
   );
 }
