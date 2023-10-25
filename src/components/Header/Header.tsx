@@ -22,20 +22,20 @@ export const Header = () => {
     <header className="px-10 py-5 sm:px-24 sm:py-12">
       <div className="relative flex flex-wrap items-center justify-between gap-5">
         <Image
-          src={MarloweIcon}
-          alt="Moarlowe"
+          src={MarloweIcon as string}
+          alt="Marlowe"
           width={150}
           className="hidden sm:block"
         />
         <Image
-          src={LogoIcon}
+          src={LogoIcon as string}
           alt="Marlowe"
           width={30}
           className="block sm:hidden"
         />
         {showAddr ? (
           <div className="flex cursor-pointer gap-5" onClick={changeOpen}>
-            <Image src={NamiIcon} alt="N" width={30} />
+            <Image src={NamiIcon as string} alt="N" width={30} />
             <div className="hidden sm:block">{addr}</div>
           </div>
         ) : (
@@ -51,7 +51,7 @@ export const Header = () => {
               onClick={disconnectWallet}
             >
               Disconnect Wallet
-              <Image src={DisconnectIcon} alt="Marlowe" width={30} />
+              <Image src={DisconnectIcon as string} alt="Marlowe" width={30} />
             </div>
           </div>
         )}
