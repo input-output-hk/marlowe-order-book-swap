@@ -1,8 +1,8 @@
-import { TableBody } from "./TableBody";
+import { TableBodyDesktop } from "./TableBodyDesktop";
+import { TableBodyMobile } from "./TableBodyMobile";
 import { TableHead } from "./TableHead";
 
 interface TableProps {
-  columns: Array<{ column: string; icon: JSX.Element }>;
   data: Array<{
     id: number;
     createdBy: string;
@@ -12,11 +12,12 @@ interface TableProps {
   }>;
 }
 
-export const Table = ({ columns, data }: TableProps) => {
+export const Table = ({ data }: TableProps) => {
   return (
     <div className="table min-h-min w-full">
-      <TableHead columns={columns} />
-      <TableBody data={data} />
+      <TableHead />
+      <TableBodyMobile data={data} />
+      <TableBodyDesktop data={data} />
     </div>
   );
 };
