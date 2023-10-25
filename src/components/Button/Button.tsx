@@ -55,7 +55,7 @@ export const Button = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`h-min w-full whitespace-nowrap rounded-md font-bold ${getBgColor()} ${getBorder()} ${getPadding()}`}
+      className={`shadow-button-shadow h-min w-full whitespace-nowrap rounded-md font-bold ${getBgColor()} ${getBorder()} ${getPadding()}`}
     >
       {children}
     </button>
