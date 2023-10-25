@@ -40,7 +40,7 @@ export const WalletSelect = () => {
               >
                 <div className="flex items-center justify-center gap-4">
                   <Image src={CardanoIcon as string} alt={"C"} height={20} />
-                  <p className="text-black">Cardano</p>
+                  <p className="font-normal text-black">Cardano</p>
                 </div>
               </Button>
             </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DisconnectIcon from "~/../public/disconnect.svg";
 import MarloweIcon from "~/../public/marlowe-logo.svg";
 import LogoIcon from "~/../public/marlowe.svg";
+import { PAGES } from "~/utils";
 import { WALLETS, walletLogos } from "~/utils/wallets";
 
 export const Header = () => {
@@ -18,7 +19,7 @@ export const Header = () => {
       if (wallet && Object.values(WALLETS).includes(wallet as WALLETS)) {
         setWallet(wallet as WALLETS);
       } else {
-        await push("/");
+        await push(PAGES.HOME);
       }
     };
 
@@ -32,10 +33,10 @@ export const Header = () => {
   const disconnectWallet = async () => {
     setWallet(undefined);
     window.localStorage.removeItem("wallet");
-    await push("/");
+    await push(PAGES.HOME);
   };
 
-  const isHome = pathname === "/";
+  const isHome = pathname === PAGES.HOME;
 
   return (
     <header className="px-10 py-5 sm:px-12 sm:py-8 md:px-20 lg:px-32">
