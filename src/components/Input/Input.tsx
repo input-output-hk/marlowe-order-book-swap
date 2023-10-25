@@ -22,6 +22,7 @@ export const Input = ({
   useShadow = false,
   value,
   onChange,
+  className: customClassName,
 }: InputProps) => {
   const shadow = useShadow ? "shadow-md" : "";
   const paddingLeftX = startContent ? "pl-12" : "pl-4";
@@ -48,7 +49,7 @@ export const Input = ({
           onError={() => console.log("error")}
           disabled={disabled}
           required={required}
-          className={`m-dark-grey focus:border-m-purple focus:ring-m-purple w-full flex-grow rounded-md border p-3 ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1`}
+          className={`m-dark-grey w-full flex-grow rounded-md border p-3 focus:border-m-purple focus:ring-m-purple ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1 ${customClassName}`}
         />
         <div className={`${pointerEvents} absolute right-0 p-4`}>
           {endContent}

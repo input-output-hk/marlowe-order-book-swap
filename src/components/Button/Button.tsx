@@ -11,6 +11,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const SIZE = {
   REGULAR: "regular",
   SMALL: "small",
+  XSMALL: "xsmall",
 };
 
 export type SIZE = (typeof SIZE)[keyof typeof SIZE];
@@ -46,6 +47,8 @@ export const Button = ({
     switch (size) {
       case SIZE.SMALL:
         return "px-4 py-2";
+      case SIZE.XSMALL:
+        return "px-3 py-1";
       default:
         return "px-6 py-3";
     }

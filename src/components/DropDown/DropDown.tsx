@@ -1,28 +1,35 @@
 import Image from "next/image";
 import DownArrowIcon from "public/open_input.svg";
 import { useState } from "react";
-import { COLORS } from "~/utils";
-import { Button } from "../Button/Button";
+import { COLORS, IToken } from "~/utils";
+import { Button, SIZE } from "../Button/Button";
 
 export interface DropdownProps {
-  title: { currency: string; icon: JSX.Element };
-  options: Array<{ currency: string; icon: JSX.Element }>;
+  options: Array<IToken>;
 }
 
-export const DropDown = ({ title, options }: DropdownProps) => {
+export const DropDown = ({ options }: DropdownProps) => {
   const [openDropDown, setOpenDropDown] = useState(false);
-  const [selected, setSelected] = useState(title);
+  const [selected, setSelected] = useState(options[0]);
+  if (!selected) {
+    return (
+      <Button disabled size={SIZE.XSMALL}>
+        No options
+      </Button>
+    );
+  }
   return (
-    <main className="">
+    <div className="w-32">
       <Button
+        size={SIZE.XSMALL}
         color={COLORS.LIGHT_GRAY}
         filled
         onClick={() => setOpenDropDown(!openDropDown)}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center justify-around gap-5 text-xl font-medium text-m-dark-gray">
+        <div className="w-inherit flex items-center justify-between">
+          <div className="flex items-center justify-around gap-2 text-xl font-medium text-m-dark-gray">
             {selected.icon}
-            {selected.currency}
+            {selected.token}
           </div>
           <Image
             src={DownArrowIcon as string}
@@ -33,20 +40,20 @@ export const DropDown = ({ title, options }: DropdownProps) => {
         </div>
       </Button>
       {openDropDown && (
-        <div className="bg-m-light-gray w-inherit z-10 rounded-lg">
-          <ul className="overflow-y-auto p-3 text-m-dark-gray">
+        <div className="bg-m-light-gray w-inherit absolute z-10 rounded-b-lg px-[.85%]">
+          <ul className="overflow-y-auto text-m-dark-gray">
             {options.map((option, index) => {
               return (
                 <>
                   <li
                     key={index}
-                    className="flex cursor-pointer gap-5 p-3"
+                    className=" flex cursor-pointer gap-6 p-4"
                     onClick={() => {
                       setSelected(option);
                     }}
                   >
                     {option.icon}
-                    {option.currency}
+                    {option.token}
                   </li>
                   {index < options.length - 1 && <hr />}
                 </>
@@ -55,6 +62,6 @@ export const DropDown = ({ title, options }: DropdownProps) => {
           </ul>
         </div>
       )}
-    </main>
+    </div>
   );
 };
