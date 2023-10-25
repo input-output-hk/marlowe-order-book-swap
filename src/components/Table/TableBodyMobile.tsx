@@ -1,24 +1,18 @@
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import SwapIcon from "public/swap.svg";
-import { COLORS, getExpiration } from "~/utils";
+import { COLORS, getExpiration, truncateTokenName } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
 export const TableBodyMobile = ({ data }: TableProps) => {
-  const truncateTokenName = (tokenName: string, letters: number) => {
-    return tokenName.length > letters
-      ? tokenName.substring(0, letters) + "..."
-      : tokenName;
-  };
-
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-m-light-purple p-4 md:hidden">
       {data.map((row) => {
         return (
           <div
             key={row.id}
-            className="flex flex-col gap-2 rounded-lg  bg-white py-2"
+            className="flex flex-col gap-2 rounded-lg bg-white py-2"
           >
             <div className="flex justify-evenly px-20 text-sm opacity-30">
               <p>Offered</p>
@@ -30,13 +24,19 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                 {/* TODO: replace with icons from marlowe runtime */}
                 <Image src={MarloweIcon as string} alt="M" width={16} />
                 <p className="font-bold">
-                  {row.offered.amount} {truncateTokenName(row.offered.token, 7)}
+                  {row.offered.amount}{" "}
+                  <abbr title={row.offered.token}>
+                    {truncateTokenName(row.offered.token, 7)}
+                  </abbr>
                 </p>
               </div>
               <div className="flex gap-2">
                 <Image src={MarloweIcon as string} alt="M" width={16} />
                 <p className="font-bold">
-                  {row.desired.amount} {truncateTokenName(row.desired.token, 7)}
+                  {row.desired.amount}{" "}
+                  <abbr title={row.desired.token}>
+                    {truncateTokenName(row.desired.token, 7)}
+                  </abbr>
                 </p>
               </div>
             </div>

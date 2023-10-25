@@ -1,6 +1,6 @@
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
-import { COLORS } from "~/utils";
+import { COLORS, truncateTokenName } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -19,18 +19,25 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
       {data.map((row) => (
         <div key={row.id} className="table-row">
           <div className="table-cell w-1/4">
-            <div className="flex items-center gap-2 py-6 pl-4 lg:pl-12 xl:pl-20 2xl:pl-32">
+            <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
               <Image src={MarloweIcon as string} alt="M" width={16} />
               <p className="font-bold">
-                {row.offered.amount} {row.offered.token}
+                {row.offered.amount}{" "}
+                <abbr title={row.offered.token}>
+                  {truncateTokenName(row.offered.token, 16)}
+                </abbr>
               </p>
             </div>
           </div>
           <div className="table-cell w-1/4">
-            <div className="flex items-center gap-2 py-6 pl-4 lg:pl-12 xl:pl-20 2xl:pl-32">
+            <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
               <Image src={MarloweIcon as string} alt="M" width={16} />
               <p className="font-bold">
-                {row.desired.amount} {row.desired.token}
+                {row.desired.amount}{" "}
+                <abbr title={row.desired.token}>
+                  {" "}
+                  {truncateTokenName(row.desired.token, 16)}
+                </abbr>
               </p>
             </div>
           </div>
