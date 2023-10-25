@@ -8,7 +8,7 @@ export default function Home() {
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
-      <main className="" />
+      <main className="px-4 py-4"></main>
     </>
   );
 }
