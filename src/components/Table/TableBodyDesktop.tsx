@@ -1,5 +1,6 @@
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
+import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableBodyProps } from "./table.interface";
 
@@ -18,44 +19,40 @@ export const TableBodyDesktop = ({ data }: TableBodyProps) => {
       {data.map((row) => (
         <div key={row.id} className="table-row">
           <div className="table-cell w-1/4">
-            <div className="flex flex-col items-center gap-2 px-2 py-4 sm:flex-row sm:px-6 md:px-10 lg:px-14">
-              <Image
-                src={MarloweIcon as string}
-                alt="M"
-                width={16}
-                className="sm:absolute"
-              />
-              <p className="sm:pl-6">
+            <div className="flex items-center gap-2 py-6 pl-4 lg:pl-12 xl:pl-20 2xl:pl-32">
+              <Image src={MarloweIcon as string} alt="M" width={16} />
+              <p>
                 {row.offered.amount} {row.offered.token}
               </p>
             </div>
           </div>
           <div className="table-cell w-1/4">
-            <div className="flex flex-col items-center gap-2 px-2 py-4 sm:flex-row sm:px-6 md:px-10 lg:px-14">
-              <Image
-                src={MarloweIcon as string}
-                alt="M"
-                width={16}
-                className="sm:absolute"
-              />
-              <p className="sm:pl-6">
+            <div className="flex items-center gap-2 py-6 pl-4 lg:pl-12 xl:pl-20 2xl:pl-32">
+              <Image src={MarloweIcon as string} alt="M" width={16} />
+              <p>
                 {row.desired.amount} {row.desired.token}
               </p>
             </div>
           </div>
           <div className="table-cell w-1/5 text-center md:w-1/4">
-            <div className="items-center justify-center px-2 py-4 md:flex">
+            <div className="items-center justify-center px-2 py-6">
               {new Date(row.expiry).toLocaleDateString(undefined, options)}
             </div>
           </div>
-          <div className="table-cell w-1/6 sm:w-1/5 md:w-1/4">
+          <div className="table-cell w-1/4">
             <div className="flex items-center justify-center">
-              <div className="md:hidden">
-                <Button size={SIZE.SMALL}>Retract</Button>
-              </div>
-              <div className="hidden md:block">
-                <Button size={SIZE.SMALL}>Accept Offer</Button>
-              </div>
+              {/* TODO: change when we implement wallets */}
+              {row.createdBy === "me" ? (
+                <div>
+                  <Button size={SIZE.SMALL} color={COLORS.RED}>
+                    Retract offer
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button size={SIZE.SMALL}>Accept Offer</Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
