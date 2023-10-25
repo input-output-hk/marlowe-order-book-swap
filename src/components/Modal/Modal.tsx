@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CloseIcon from "public/close.svg";
-import { Dispatch, PropsWithChildren, SetStateAction } from "react";
+import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
 
 interface IModal {
   title: string;
@@ -24,7 +24,11 @@ export const Modal = ({
         <div className="text-m-subtitle mb-5 flex justify-between text-center text-3xl font-bold leading-6">
           {title}
           <div onClick={closeModal}>
-            <Image className="cursor-pointer" src={CloseIcon} alt="x"></Image>
+            <Image
+              className="cursor-pointer"
+              src={CloseIcon as string}
+              alt="x"
+            ></Image>
           </div>
         </div>
         <div className="mt-2 px-7 py-3">{children}</div>
