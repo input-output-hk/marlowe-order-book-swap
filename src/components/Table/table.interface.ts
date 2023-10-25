@@ -1,9 +1,16 @@
-export interface TableBodyProps {
-  data: Array<{
-    id: number;
-    createdBy: string;
-    offered: { token: string; amount: number };
-    desired: { token: string; amount: number };
-    expiry: string;
-  }>;
+export interface TableProps {
+  data: Array<ITableData>;
+}
+
+interface ITableData {
+  id: number;
+  createdBy: string;
+  offered: IToken;
+  desired: IToken;
+  expiry: string;
+}
+
+interface IToken {
+  token: string;
+  amount: number;
 }

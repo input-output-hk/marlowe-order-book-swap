@@ -2,9 +2,9 @@ import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
-import type { TableBodyProps } from "./table.interface";
+import type { TableProps } from "./table.interface";
 
-export const TableBodyDesktop = ({ data }: TableBodyProps) => {
+export const TableBodyDesktop = ({ data }: TableProps) => {
   const options: Intl.DateTimeFormatOptions = {
     year: "2-digit",
     month: "2-digit",

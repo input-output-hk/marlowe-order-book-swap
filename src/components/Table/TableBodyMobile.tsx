@@ -3,11 +3,13 @@ import MarloweIcon from "public/marlowe.svg";
 import SwapIcon from "public/swap.svg";
 import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
-import type { TableBodyProps } from "./table.interface";
+import type { TableProps } from "./table.interface";
 
-export const TableBodyMobile = ({ data }: TableBodyProps) => {
-  const truncateText = (text: string, letters: number) => {
-    return text.length > letters ? text.substring(0, letters) + "..." : text;
+export const TableBodyMobile = ({ data }: TableProps) => {
+  const truncateTokenName = (tokenName: string, letters: number) => {
+    return tokenName.length > letters
+      ? tokenName.substring(0, letters) + "..."
+      : tokenName;
   };
 
   return (
@@ -45,13 +47,13 @@ export const TableBodyMobile = ({ data }: TableBodyProps) => {
                 {/* TODO: replace with icons from marlowe runtime */}
                 <Image src={MarloweIcon as string} alt="M" width={16} />
                 <p>
-                  {row.offered.amount} {truncateText(row.offered.token, 7)}
+                  {row.offered.amount} {truncateTokenName(row.offered.token, 7)}
                 </p>
               </div>
               <div className="flex gap-2">
                 <Image src={MarloweIcon as string} alt="M" width={16} />
                 <p>
-                  {row.desired.amount} {truncateText(row.desired.token, 7)}
+                  {row.desired.amount} {truncateTokenName(row.desired.token, 7)}
                 </p>
               </div>
             </div>

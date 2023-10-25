@@ -1,23 +1,16 @@
 import { TableBodyDesktop } from "./TableBodyDesktop";
 import { TableBodyMobile } from "./TableBodyMobile";
 import { TableHead } from "./TableHead";
-
-interface TableProps {
-  data: Array<{
-    id: number;
-    createdBy: string;
-    offered: { token: string; amount: number };
-    desired: { token: string; amount: number };
-    expiry: string;
-  }>;
-}
+import type { TableProps } from "./table.interface";
 
 export const Table = ({ data }: TableProps) => {
   return (
-    <div className="table min-h-min w-full">
-      <TableHead />
+    <>
+      <div className="hidden min-h-min w-full md:table">
+        <TableHead />
+        <TableBodyDesktop data={data} />
+      </div>
       <TableBodyMobile data={data} />
-      <TableBodyDesktop data={data} />
-    </div>
+    </>
   );
 };
