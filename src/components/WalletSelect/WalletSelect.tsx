@@ -14,11 +14,11 @@ export const WalletSelect = () => {
   };
 
   return (
-    <div className="shadow-container flex w-full flex-col justify-center rounded-lg p-8 md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4">
-      <p className="text-1xl pb-2 font-bold lg:text-2xl xl:text-3xl">
+    <div className="flex w-full flex-col justify-center rounded-lg p-8 shadow-container md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4">
+      <p className="pb-2 text-2xl font-bold lg:text-3xl xl:text-4xl">
         Choose a wallet
       </p>
-      <p className="text-sm text-m-disabled lg:text-base xl:text-lg">
+      <p className="text-base text-m-disabled lg:text-lg xl:text-xl">
         Please select a wallet to deploy a contract
       </p>
 

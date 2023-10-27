@@ -24,7 +24,7 @@ export const Header = () => {
     };
 
     getWallet().catch((e) => console.error(e));
-  }, []);
+  }, [push]);
 
   const changeOpen = () => {
     setOpen(!open);

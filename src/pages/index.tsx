@@ -17,7 +17,7 @@ export default function Home() {
     };
 
     checkWallet().catch((e) => console.log(e));
-  }, []);
+  }, [router]);
 
   return (
     <>
