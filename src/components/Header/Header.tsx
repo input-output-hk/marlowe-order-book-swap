@@ -55,7 +55,7 @@ export const Header = () => {
         />
         {wallet ? (
           <div
-            className="flex cursor-pointer items-center gap-5"
+            className="flex cursor-pointer items-center gap-2"
             onClick={changeOpen}
           >
             {walletLogos[wallet]}
