@@ -21,7 +21,7 @@ export const RetractModal = ({ open, setOpen }: ModalProps) => {
   };
   const receive: ITokenAmount = {
     token: "MRL",
-    icon: <Image src={MarloweIcon as string} height={20} alt="C" />,
+    icon: <Image src={MarloweIcon as string} height={20} alt="M" />,
     amount: 10,
   };
 
