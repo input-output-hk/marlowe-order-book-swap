@@ -54,7 +54,10 @@ export const Header = () => {
           className="block sm:hidden"
         />
         {wallet ? (
-          <div className="flex cursor-pointer gap-5" onClick={changeOpen}>
+          <div
+            className="flex cursor-pointer items-center gap-5"
+            onClick={changeOpen}
+          >
             {walletLogos[wallet]}
             <div className="hidden sm:block">{addr}</div>
           </div>
