@@ -47,7 +47,7 @@ export const ListingPage = () => {
     : example;
 
   return (
-    <main className="flex-grow-1 flex h-fit w-full flex-col gap-4">
+    <main className="flex h-fit w-full flex-grow flex-col gap-4">
       <UtilityMobile
         filterOwnListings={filterOwnListings}
         setFilterOwnListings={setFilterOwnListings}
