@@ -41,7 +41,7 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
               </p>
             </div>
           </div>
-          <div className="table-cell w-1/5 text-center md:w-1/4">
+          <div className="table-cell w-1/4 text-center">
             <div className="items-center justify-center px-2 py-6">
               {new Date(row.expiry).toLocaleDateString(undefined, options)}
             </div>
