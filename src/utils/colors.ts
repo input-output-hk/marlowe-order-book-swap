@@ -8,6 +8,7 @@ export const COLORS = {
   LIGHT_PURPLE: "#F8F6FF",
   RED: "#FF525B",
   WHITE: "#FFFFFF",
+  BLUE: "#0038FF",
 } as const;
 
 export type COLORS = (typeof COLORS)[keyof typeof COLORS];
@@ -22,4 +23,5 @@ export const stringedColors: Record<COLORS, string> = {
   [COLORS.LIGHT_PURPLE]: "m-light-purple",
   [COLORS.RED]: "m-red",
   [COLORS.WHITE]: "white",
+  [COLORS.BLUE]: "m-blue",
 };
