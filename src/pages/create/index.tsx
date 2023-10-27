@@ -29,7 +29,7 @@ export default function CreateListingPage() {
         <link rel="icon" href="/marlowe.svg" />
       </Head>
       <Header />
-      <CreateListing TokenOptions={example} />
+      <CreateListing tokenOptions={example} />
     </>
   );
 }

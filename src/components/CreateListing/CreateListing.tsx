@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import CalendarIcon from "public/calendar.svg";
 import DownIcon from "public/down_arrow.svg";
 import OpenIcon from "public/open_input.svg";
@@ -10,28 +10,22 @@ import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 
 interface CreateListingProps {
-  TokenOptions: IToken[];
+  tokenOptions: IToken[];
 }
 
 export const CreateListing = ({
-  TokenOptions: options,
+  tokenOptions: options,
 }: CreateListingProps) => {
-  const router = useRouter();
-
-  const goToListing = async () => {
-    await router.push(PAGES.LISTING);
-  };
-
   return (
     <main className="flex flex-col items-center text-m-disabled">
-      <div className="flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle md:w-2/3 lg:w-2/5">
+      <div className="shadow-container flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle md:w-2/3 lg:w-2/5">
         <h1 className="flex items-start self-stretch text-2xl font-bold">
           Token Swap Listing
         </h1>
         <div className="flex w-full flex-col content-start items-start gap-2">
           <div className="font-bold">Details</div>
-          <div className="text-sm font-normal">You will swap</div>
           <Input
+            label="You will swap"
             type="number"
             min={0}
             pointerEvents
@@ -44,8 +38,8 @@ export const CreateListing = ({
             height={30}
             className="flex justify-center self-center"
           />
-          <div className="text-sm font-normal">You will receive</div>
           <Input
+            label="You will receive"
             type="number"
             min={0}
             pointerEvents
@@ -57,8 +51,8 @@ export const CreateListing = ({
           <div className="font-bold">Expiry</div>
           <div className="flex w-full flex-col gap-8 text-sm font-normal md:flex-row ">
             <div className="flex w-full flex-col gap-2">
-              Listing start date
               <Input
+                label="Listing start date"
                 type="date"
                 endContent={
                   <div className="flex">
@@ -69,8 +63,8 @@ export const CreateListing = ({
               />
             </div>
             <div className="flex w-full flex-col gap-2">
-              Listing expiry date
               <Input
+                label="Listing expiry date"
                 type="date"
                 endContent={
                   <div className="flex">
@@ -84,16 +78,16 @@ export const CreateListing = ({
         </div>
         <div className="flex w-full justify-end pt-5 text-sm">
           <div className="flex w-2/3 items-center justify-end gap-6">
-            <Button
-              size={SIZE.SMALL}
-              color={COLORS.BLACK}
-              onClick={goToListing}
-            >
-              Cancel
-            </Button>
-            <Button size={SIZE.SMALL} filled onClick={goToListing}>
-              Accept
-            </Button>
+            <Link href={PAGES.LISTING}>
+              <Button size={SIZE.SMALL} color={COLORS.BLACK}>
+                Cancel
+              </Button>
+            </Link>
+            <Link href={PAGES.LISTING}>
+              <Button size={SIZE.SMALL} filled>
+                Accept
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
