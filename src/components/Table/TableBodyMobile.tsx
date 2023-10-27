@@ -45,7 +45,7 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                 <div>Expires in {getExpiration(row.expiry)}</div>
                 <div className="w-1/3">
                   {/* TODO: change when we implement wallets */}
-                  {row.createdBy === "me" ? (
+                  {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
                     <div>
                       <Button size={SIZE.SMALL} color={COLORS.RED}>
                         Retract
