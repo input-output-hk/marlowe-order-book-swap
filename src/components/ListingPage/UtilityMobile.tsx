@@ -11,6 +11,8 @@ export const UtilityMobile = ({
   filterOwnListings,
   setFilterOwnListings,
 }: UtilityProps) => {
+  const handleLabelClick = () => setFilterOwnListings((prev) => !prev);
+
   return (
     <div className="md:hidden">
       <div className="mx-4 flex items-center justify-between gap-2 sm:flex-row sm:gap-0">
@@ -22,7 +24,9 @@ export const UtilityMobile = ({
           className="w-1/2"
         />
         <div className="mr-4 flex items-center gap-2">
-          <label className="font-bold">My listings</label>
+          <label className="font-bold" onClick={handleLabelClick}>
+            My listings
+          </label>
           <Switch
             enabled={filterOwnListings}
             setEnabled={setFilterOwnListings}
