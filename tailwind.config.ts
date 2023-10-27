@@ -18,7 +18,7 @@ export default {
       },
     },
     boxShadow: {
-      "button-shadow": "0px 2px 2px 0px rgba(205, 205, 205, 0.25)",
+      "custom-shadow": "0px 2px 2px 0px rgba(205, 205, 205, 0.25)",
     },
   },
   plugins: [],
