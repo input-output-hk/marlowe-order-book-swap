@@ -25,7 +25,7 @@ export const RetractModal = ({ open, setOpen }: ModalProps) => {
     amount: 10,
   };
 
-  const goToListing = () => {
+  const closeModal = () => {
     setOpen(false);
   };
   return (
@@ -33,8 +33,8 @@ export const RetractModal = ({ open, setOpen }: ModalProps) => {
       <main className="flex w-full flex-col items-center text-m-disabled">
         <div className="flex w-full flex-col items-center justify-center gap-5 align-middle">
           <div className="flex w-full flex-col content-start items-start gap-2">
-            <div className="text-sm font-normal">Retract swap offer</div>
             <Input
+              label="Retract swap offer"
               type="number"
               disabled
               placeholder={offer.amount.toString()}
@@ -43,8 +43,8 @@ export const RetractModal = ({ open, setOpen }: ModalProps) => {
             />
 
             <hr className="mb-5 mt-9 h-1 w-full " />
-            <div className="text-sm font-normal">You will receive</div>
             <Input
+              label="You will receive"
               type="number"
               disabled
               placeholder={receive.amount.toString()}
@@ -57,18 +57,14 @@ export const RetractModal = ({ open, setOpen }: ModalProps) => {
             fee.
           </div>
           <div className="flex w-full flex-col justify-end gap-5 pt-5 text-sm sm:flex-row">
-            <Button
-              size={SIZE.SMALL}
-              color={COLORS.BLACK}
-              onClick={goToListing}
-            >
+            <Button size={SIZE.SMALL} color={COLORS.BLACK} onClick={closeModal}>
               Cancel
             </Button>
             <Button
               color={COLORS.RED}
               size={SIZE.SMALL}
               filled
-              onClick={goToListing}
+              onClick={closeModal}
             >
               Retract Swap
             </Button>

@@ -31,7 +31,7 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
   const address =
     "addr_test5ar6f7hwk4fg281xasahtk6t9k6w3aql943uxz8rt62d4dvqu3c6jv";
 
-  const goToListing = () => {
+  const closeModal = () => {
     setOpen(false);
   };
   return (
@@ -39,8 +39,8 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
       <main className="flex w-full flex-col items-center text-m-disabled">
         <div className="flex w-full flex-col items-center justify-center gap-5 align-middle">
           <div className="flex w-full flex-col content-start items-start gap-2">
-            <div className="text-sm font-normal">You will swap</div>
             <Input
+              label="You will swap"
               type="number"
               disabled
               placeholder={offer.amount.toString()}
@@ -62,8 +62,8 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
               </div>
             )}
             <hr className="h-1 w-full " />
-            <div className="text-sm font-normal">You will receive</div>
             <Input
+              label="You will receive"
               type="number"
               disabled
               placeholder={receive.amount.toString()}
@@ -84,18 +84,14 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
             </div>
           </div>
           <div className="flex w-full flex-col justify-end gap-5 pt-5 text-sm sm:flex-row">
-            <Button
-              size={SIZE.SMALL}
-              color={COLORS.BLACK}
-              onClick={goToListing}
-            >
+            <Button size={SIZE.SMALL} color={COLORS.BLACK} onClick={closeModal}>
               Cancel
             </Button>
             <Button
               size={SIZE.SMALL}
               disabled={!isEnough}
               filled
-              onClick={goToListing}
+              onClick={closeModal}
             >
               Confirm Swap
             </Button>
