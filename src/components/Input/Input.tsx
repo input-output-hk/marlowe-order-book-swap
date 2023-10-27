@@ -36,7 +36,7 @@ export const Input = ({
           {label}
         </label>
       )}
-      <div className="relative flex items-center">
+      <div className="relative flex items-center w-full">
         <div className={`${pointerEvents} absolute p-4`}>{startContent}</div>
         <input
           type={type}

@@ -16,6 +16,7 @@ export default {
         "m-purple": "#4B1FED",
         "m-red": "#FF525B",
         "m-blue": "#0038FF",
+        "m-light-blue": "#EFF2FE",
       },
     },
     boxShadow: {
@@ -27,7 +28,7 @@ export default {
   safelist: [
     {
       pattern:
-        /(text|bg|border)-(m-disabled|m-dark-gray|m-green|m-purple|m-red|m-blue|m-light-purple|m-light-gray)/,
+        /(text|bg|border)-(m-disabled|m-dark-gray|m-green|m-purple|m-red|m-blue|m-light-purple|m-light-gray|m-light-blue)/,
       variants: ["hover"],
     },
   ],

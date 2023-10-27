@@ -6,9 +6,10 @@ import { Button, SIZE } from "../Button/Button";
 
 export interface DropdownProps {
   options: Array<IToken>;
+  disabled?: boolean;
 }
 
-export const DropDown = ({ options }: DropdownProps) => {
+export const DropDown = ({ options, disabled = false }: DropdownProps) => {
   const [openDropDown, setOpenDropDown] = useState(false);
   const [selected, setSelected] = useState(options[0]);
   if (!selected) {
@@ -24,19 +25,21 @@ export const DropDown = ({ options }: DropdownProps) => {
         size={SIZE.XSMALL}
         color={COLORS.LIGHT_GRAY}
         filled
-        onClick={() => setOpenDropDown(!openDropDown)}
+        onClick={() => disabled && setOpenDropDown(!openDropDown)}
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center justify-around gap-2 text-xl font-medium text-m-dark-gray">
             {selected.icon}
             {selected.token}
           </div>
-          <Image
-            src={DownArrowIcon as string}
-            alt="tag"
-            height={20}
-            width={20}
-          />
+          {!disabled && (
+            <Image
+              src={DownArrowIcon as string}
+              alt="↓"
+              height={20}
+              width={20}
+            />
+          )}
         </div>
       </Button>
       {openDropDown && (
