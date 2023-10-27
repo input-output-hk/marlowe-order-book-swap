@@ -1,10 +1,11 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import CalendarIcon from "public/calendar.svg";
 import DownIcon from "public/down_arrow.svg";
 import OpenIcon from "public/open_input.svg";
 import { Button, SIZE } from "~/components/Button/Button";
 import type { IToken } from "~/utils";
-import { COLORS } from "~/utils";
+import { COLORS, PAGES } from "~/utils";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 
@@ -15,6 +16,12 @@ interface CreateListingProps {
 export const CreateListing = ({
   TokenOptions: options,
 }: CreateListingProps) => {
+  const router = useRouter();
+
+  const goToListing = async () => {
+    await router.push(PAGES.LISTING);
+  };
+
   return (
     <main className="flex flex-col items-center text-m-disabled">
       <div className="flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle md:w-2/3 lg:w-2/5">
@@ -77,10 +84,14 @@ export const CreateListing = ({
         </div>
         <div className="flex w-full justify-end pt-5 text-sm">
           <div className="flex w-2/3 items-center justify-end gap-6">
-            <Button size={SIZE.SMALL} color={COLORS.BLACK}>
+            <Button
+              size={SIZE.SMALL}
+              color={COLORS.BLACK}
+              onClick={goToListing}
+            >
               Cancel
             </Button>
-            <Button size={SIZE.SMALL} filled>
+            <Button size={SIZE.SMALL} filled onClick={goToListing}>
               Accept
             </Button>
           </div>
