@@ -15,10 +15,8 @@ export const WalletSelect = () => {
 
   return (
     <div className="flex w-full flex-col justify-center rounded-lg p-8 shadow-container md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4">
-      <p className="pb-2 text-2xl font-bold lg:text-3xl xl:text-4xl">
-        Choose a wallet
-      </p>
-      <p className="text-base text-m-disabled lg:text-lg xl:text-xl">
+      <p className="pb-2 text-2xl font-bold lg:text-3xl">Choose a wallet</p>
+      <p className="text-base text-m-disabled lg:text-lg">
         Please select a wallet to deploy a contract
       </p>
 
