@@ -1,7 +1,7 @@
 import Image from "next/image";
 import DownArrowIcon from "public/open_input.svg";
 import { useState } from "react";
-import { COLORS, IToken } from "~/utils";
+import { COLORS, type IToken } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 
 export interface DropdownProps {
@@ -19,14 +19,14 @@ export const DropDown = ({ options }: DropdownProps) => {
     );
   }
   return (
-    <div className="w-32">
+    <div className="relative w-full">
       <Button
         size={SIZE.XSMALL}
         color={COLORS.LIGHT_GRAY}
         filled
         onClick={() => setOpenDropDown(!openDropDown)}
       >
-        <div className="w-inherit flex items-center justify-between">
+        <div className="flex w-full items-center justify-between">
           <div className="flex items-center justify-around gap-2 text-xl font-medium text-m-dark-gray">
             {selected.icon}
             {selected.token}
@@ -40,7 +40,7 @@ export const DropDown = ({ options }: DropdownProps) => {
         </div>
       </Button>
       {openDropDown && (
-        <div className="bg-m-light-gray w-inherit absolute z-10 rounded-b-lg px-[.85%]">
+        <div className="absolute z-10 w-full rounded-b-lg bg-m-light-gray px-1 ">
           <ul className="overflow-y-auto text-m-dark-gray">
             {options.map((option, index) => {
               return (
