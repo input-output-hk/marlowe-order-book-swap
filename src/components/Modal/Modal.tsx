@@ -1,6 +1,7 @@
 import Image from "next/image";
 import CloseIcon from "public/close.svg";
 import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
+import { ICON_SIZES } from "~/utils";
 
 interface ModalProps {
   title: string;
@@ -28,6 +29,7 @@ export const Modal = ({
               className="cursor-pointer"
               src={CloseIcon as string}
               alt="x"
+              height={ICON_SIZES.S}
             ></Image>
           </div>
         </div>

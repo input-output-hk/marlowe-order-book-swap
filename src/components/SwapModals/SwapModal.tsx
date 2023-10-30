@@ -3,7 +3,7 @@ import CrossIcon from "public/cancel.svg";
 import CheckIcon from "public/check.svg";
 import DownArrowIcon from "public/down_arrow.svg";
 import type { Dispatch, SetStateAction } from "react";
-import { COLORS, type ITokenAmount } from "~/utils";
+import { COLORS, ICON_SIZES, type ITokenAmount } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -37,12 +37,20 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
             />
             {isEnough ? (
               <div className="flex gap-2 pb-11 text-sm text-m-green">
-                <Image src={CheckIcon as string} height={15} alt="✓" />
+                <Image
+                  src={CheckIcon as string}
+                  height={ICON_SIZES.S}
+                  alt="✓"
+                />
                 You have sufficient funds in your wallet
               </div>
             ) : (
               <div className="flex gap-2 pb-11 text-sm text-m-red">
-                <Image src={CrossIcon as string} height={15} alt="✗" />
+                <Image
+                  src={CrossIcon as string}
+                  height={ICON_SIZES.S}
+                  alt="✗"
+                />
                 Insufficient funds,
                 <div className="font-medium underline">
                   add tokens to wallet
@@ -61,7 +69,11 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
           </div>
           <div className="flex w-full flex-col content-start items-start gap-4">
             <div className="flex items-center gap-2 align-middle text-lg font-medium">
-              <Image src={DownArrowIcon as string} height={20} alt="↓" />
+              <Image
+                src={DownArrowIcon as string}
+                height={ICON_SIZES.M}
+                alt="↓"
+              />
               Transferred to
             </div>
             <div className="flex w-full flex-col gap-2 text-sm font-normal ">
