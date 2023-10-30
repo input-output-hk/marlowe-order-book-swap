@@ -47,11 +47,15 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
             <div className="flex items-center justify-center">
               {/* TODO: change when we implement wallets */}
               {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
-                <Button size={SIZE.SMALL} color={COLORS.RED}>
-                  Retract offer
-                </Button>
+                <div>
+                  <Button size={SIZE.SMALL} color={COLORS.RED}>
+                    Retract offer
+                  </Button>
+                </div>
               ) : (
-                <Button size={SIZE.SMALL}>Accept Offer</Button>
+                <div>
+                  <Button size={SIZE.SMALL}>Accept Offer</Button>
+                </div>
               )}
             </div>
           </div>
