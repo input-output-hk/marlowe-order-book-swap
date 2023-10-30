@@ -16,13 +16,14 @@ export const UtilityMobile = ({
   return (
     <div className="md:hidden">
       <div className="mx-4 flex items-center justify-between gap-2 sm:flex-row sm:gap-0">
-        <Input
-          placeholder="Search"
-          startContent={
-            <Image src={SearchIcon as string} width={20} alt="Search" />
-          }
-          className="w-1/2"
-        />
+        <div className="w-1/2">
+          <Input
+            placeholder="Search"
+            startContent={
+              <Image src={SearchIcon as string} width={20} alt="Search" />
+            }
+          />
+        </div>
         <div className="mr-4 flex items-center gap-2">
           <label className="font-bold" onClick={handleLabelClick}>
             My listings

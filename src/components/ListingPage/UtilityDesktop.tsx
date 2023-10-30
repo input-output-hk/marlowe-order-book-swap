@@ -15,13 +15,14 @@ export const UtilityDesktop = ({
 
   return (
     <div className="w-inherit mx-12 hidden justify-between md:flex lg:mx-24 xl:mx-32">
-      <Input
-        className="w-1/3"
-        startContent={
-          <Image src={SearchIcon as string} width={20} alt="Search" />
-        }
-        placeholder="Search"
-      />
+      <div className="w-1/3">
+        <Input
+          startContent={
+            <Image src={SearchIcon as string} width={20} alt="Search" />
+          }
+          placeholder="Search"
+        />
+      </div>
 
       <div className="flex w-1/2 items-center justify-end gap-4 lg:w-5/12 lg:gap-6 xl:w-1/3 xl:gap-8">
         <div className="flex items-center gap-2">
@@ -36,7 +37,7 @@ export const UtilityDesktop = ({
 
         <div className="flex w-fit">
           <Link href={PAGES.CREATE}>
-            <Button>Create a listing</Button>
+            <Button hovered>Create a listing</Button>
           </Link>
         </div>
       </div>

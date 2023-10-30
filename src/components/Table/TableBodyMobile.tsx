@@ -1,5 +1,4 @@
 import Image from "next/image";
-import MarloweIcon from "public/marlowe.svg";
 import SwapIcon from "public/swap.svg";
 import { COLORS, getExpiration, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
@@ -22,8 +21,7 @@ export const TableBodyMobile = ({ data }: TableProps) => {
               </div>
               <div className="flex justify-between px-4">
                 <div className="flex gap-2">
-                  {/* TODO: replace with icons from marlowe runtime */}
-                  <Image src={MarloweIcon as string} alt="M" width={16} />
+                  {row.offered.icon}
                   <p className="font-bold">
                     {row.offered.amount}{" "}
                     <abbr title={row.offered.token}>
@@ -32,7 +30,7 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Image src={MarloweIcon as string} alt="M" width={16} />
+                  {row.desired.icon}
                   <p className="font-bold">
                     {row.desired.amount}{" "}
                     <abbr title={row.desired.token}>
@@ -47,13 +45,13 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                   {/* TODO: change when we implement wallets */}
                   {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
                     <div>
-                      <Button size={SIZE.SMALL} color={COLORS.RED}>
+                      <Button size={SIZE.XSMALL} color={COLORS.RED}>
                         Retract
                       </Button>
                     </div>
                   ) : (
                     <div>
-                      <Button size={SIZE.SMALL}>Accept</Button>
+                      <Button size={SIZE.XSMALL}>Accept</Button>
                     </div>
                   )}
                 </div>
