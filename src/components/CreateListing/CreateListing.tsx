@@ -7,7 +7,7 @@ import OpenIcon from "public/open_input.svg";
 import type { FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import type { IToken } from "~/utils";
-import { COLORS, PAGES } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 
@@ -47,7 +47,7 @@ export const CreateListing = ({
           <Image
             src={DownIcon as string}
             alt="↓"
-            height={30}
+            height={ICON_SIZES.L}
             className="flex justify-center self-center"
           />
           <Input
@@ -69,8 +69,16 @@ export const CreateListing = ({
                 type="date"
                 endContent={
                   <div className="flex">
-                    <Image src={CalendarIcon as string} alt="" height={20} />
-                    <Image src={OpenIcon as string} alt="" height={20} />
+                    <Image
+                      src={CalendarIcon as string}
+                      alt=""
+                      height={ICON_SIZES.M}
+                    />
+                    <Image
+                      src={OpenIcon as string}
+                      alt="↓"
+                      height={ICON_SIZES.M}
+                    />
                   </div>
                 }
               />
@@ -82,8 +90,16 @@ export const CreateListing = ({
                 type="date"
                 endContent={
                   <div className="flex">
-                    <Image src={CalendarIcon as string} alt="" height={20} />
-                    <Image src={OpenIcon as string} alt="" height={20} />
+                    <Image
+                      src={CalendarIcon as string}
+                      alt=""
+                      height={ICON_SIZES.M}
+                    />
+                    <Image
+                      src={OpenIcon as string}
+                      alt="↓"
+                      height={ICON_SIZES.M}
+                    />
                   </div>
                 }
               />

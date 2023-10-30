@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SearchIcon from "public/search.svg";
 import type { ChangeEvent } from "react";
-import { PAGES } from "~/utils";
+import { ICON_SIZES, PAGES } from "~/utils";
 import { Button } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { Switch } from "../Switch/Switch";
@@ -27,7 +27,11 @@ export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
           value={filters.searchQuery}
           onChange={handleChange}
           startContent={
-            <Image src={SearchIcon as string} width={20} alt="Search" />
+            <Image
+              src={SearchIcon as string}
+              height={ICON_SIZES.M}
+              alt="Search"
+            />
           }
           placeholder="Search"
         />

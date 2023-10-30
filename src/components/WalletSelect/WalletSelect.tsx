@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import CardanoIcon from "public/cardano.svg";
-import { COLORS, PAGES } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { WALLETS, walletLogos } from "~/utils/wallets";
 import { Button, SIZE } from "../Button/Button";
 
@@ -37,7 +37,11 @@ export const WalletSelect = () => {
                 onClick={handleWalletSelect(value)}
               >
                 <div className="flex items-center justify-center gap-4">
-                  <Image src={CardanoIcon as string} alt={"C"} height={20} />
+                  <Image
+                    src={CardanoIcon as string}
+                    alt={"C"}
+                    height={ICON_SIZES.M}
+                  />
                   <p className="font-normal text-black">Cardano</p>
                 </div>
               </Button>
