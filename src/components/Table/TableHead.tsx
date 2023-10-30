@@ -41,7 +41,7 @@ export const TableHead = () => {
             key={index}
             className={`table-cell ${columnStyle(
               index,
-            )} py-4 text-center text-xs font-medium sm:text-sm md:text-base`}
+            )} py-4 text-center text-base font-medium`}
           >
             <div className="flex justify-center">{icon}</div>
             {column}
