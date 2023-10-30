@@ -1,13 +1,16 @@
 import type { Dispatch, SetStateAction } from "react";
+import type { IFilters } from "~/utils";
 
 interface SwitchProps {
   enabled: boolean;
-  setEnabled: Dispatch<SetStateAction<boolean>>;
+  setEnabled: Dispatch<SetStateAction<IFilters>>;
 }
 
 export const Switch = ({ enabled, setEnabled }: SwitchProps) => {
   const toggle = () => {
-    setEnabled(!enabled);
+    setEnabled((prev) => {
+      return { ...prev, filterOwnListings: !prev.filterOwnListings };
+    });
   };
 
   return (
