@@ -21,6 +21,7 @@ export default {
     boxShadow: {
       container: "0px 4.8px 2px 0px #1F26D826, 0px 0px 16.7px 0px #5673DB1A",
       "custom-shadow": "0px 2px 2px 0px rgba(205, 205, 205, 0.25)",
+      add: "4px 4px 8px 1px #8C8C8C",
     },
   },
   plugins: [],

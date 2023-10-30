@@ -1,5 +1,3 @@
-import Image from "next/image";
-import MarloweIcon from "public/marlowe.svg";
 import { COLORS, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
@@ -20,7 +18,7 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
         <div key={row.id} className="table-row">
           <div className="table-cell w-1/4">
             <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
-              <Image src={MarloweIcon as string} alt="M" width={16} />
+              {row.offered.icon}
               <p className="font-bold">
                 {row.offered.amount}
                 <abbr title={row.offered.token}>
@@ -31,7 +29,7 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
           </div>
           <div className="table-cell w-1/4">
             <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
-              <Image src={MarloweIcon as string} alt="M" width={16} />
+              {row.desired.icon}
               <p className="font-bold">
                 {row.desired.amount}
                 <abbr title={row.desired.token}>
@@ -40,7 +38,7 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
               </p>
             </div>
           </div>
-          <div className="table-cell w-1/5 text-center md:w-1/4">
+          <div className="table-cell w-1/4 text-center">
             <div className="items-center justify-center px-2 py-6">
               {new Date(row.expiry).toLocaleDateString(undefined, options)}
             </div>
@@ -48,7 +46,7 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
           <div className="table-cell w-1/4">
             <div className="flex items-center justify-center">
               {/* TODO: change when we implement wallets */}
-              {row.createdBy === "me" ? (
+              {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
                 <div>
                   <Button size={SIZE.SMALL} color={COLORS.RED}>
                     Retract offer
