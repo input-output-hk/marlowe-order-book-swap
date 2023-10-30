@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import CalendarIcon from "public/calendar.svg";
 import DownIcon from "public/down_arrow.svg";
 import OpenIcon from "public/open_input.svg";
+import type { FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import type { IToken } from "~/utils";
 import { COLORS, PAGES } from "~/utils";
@@ -16,15 +18,25 @@ interface CreateListingProps {
 export const CreateListing = ({
   tokenOptions: options,
 }: CreateListingProps) => {
+  const router = useRouter();
+  const submitForm = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    void router.push(PAGES.LISTING);
+    // TODO: Check if form is valid
+  };
   return (
-    <main className="flex flex-col items-center text-m-disabled">
-      <div className="shadow-container flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle md:w-2/3 lg:w-2/5">
+    <form
+      className="flex flex-col items-center text-m-disabled"
+      onSubmit={submitForm}
+    >
+      <div className="flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle shadow-container md:w-2/3 lg:w-2/5">
         <h1 className="flex items-start self-stretch text-2xl font-bold">
           Token Swap Listing
         </h1>
         <div className="flex w-full flex-col content-start items-start gap-2">
           <div className="font-bold">Details</div>
           <Input
+            required
             label="You will swap"
             type="number"
             min={0}
@@ -39,6 +51,7 @@ export const CreateListing = ({
             className="flex justify-center self-center"
           />
           <Input
+            required
             label="You will receive"
             type="number"
             min={0}
@@ -64,6 +77,7 @@ export const CreateListing = ({
             </div>
             <div className="flex w-full flex-col gap-2">
               <Input
+                required
                 label="Listing expiry date"
                 type="date"
                 endContent={
@@ -83,14 +97,12 @@ export const CreateListing = ({
                 Cancel
               </Button>
             </Link>
-            <Link href={PAGES.LISTING}>
-              <Button size={SIZE.SMALL} filled>
-                Accept
-              </Button>
-            </Link>
+            <Button size={SIZE.SMALL} filled type="submit">
+              Accept
+            </Button>
           </div>
         </div>
       </div>
-    </main>
+    </form>
   );
 };

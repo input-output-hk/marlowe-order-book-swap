@@ -1,5 +1,5 @@
-export const truncateTokenName = (tokenName: string, letters: number) => {
-  return tokenName.length > letters
-    ? tokenName.substring(0, letters) + "..."
-    : tokenName;
+export const truncateString = (string: string, letters: number) => {
+  return string.length > letters
+    ? string.substring(0, letters) + "..."
+    : string;
 };
