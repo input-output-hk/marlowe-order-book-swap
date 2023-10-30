@@ -32,18 +32,32 @@ export const DropDown = ({ options, disabled = false }: DropdownProps) => {
       icon: option.icon,
     };
   });
+
+  const handleClick = () => {
+    disabled && setOpenDropDown(!openDropDown);
+  };
+
   return (
     <div className="relative w-full">
       <Button
         size={SIZE.XSMALL}
         color={COLORS.LIGHT_GRAY}
         filled
-        onClick={() => disabled && setOpenDropDown(!openDropDown)}
+        onClick={handleClick}
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center justify-around gap-2 text-xs font-medium text-m-dark-gray">
-            {selected.icon}
-            {selected.token}
+            {disabled ? (
+              <>
+                {options[0]!.icon}
+                {options[0]!.token}
+              </>
+            ) : (
+              <>
+                {selected.icon}
+                {selected.token}
+              </>
+            )}
           </div>
           {!disabled && (
             <Image
