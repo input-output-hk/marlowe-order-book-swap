@@ -97,9 +97,11 @@ export const CreateListing = ({
                 Cancel
               </Button>
             </Link>
-            <Button size={SIZE.SMALL} filled type="submit">
-              Accept
-            </Button>
+            <div>
+              <Button size={SIZE.SMALL} filled type="submit">
+                Accept
+              </Button>
+            </div>
           </div>
         </div>
       </div>
