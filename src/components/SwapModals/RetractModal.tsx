@@ -29,12 +29,12 @@ export const RetractModal = ({ open, setOpen }: ModalProps) => {
     setOpen(false);
   };
   return (
-    <Modal open={open} setOpen={setOpen} title="Swap Offer">
+    <Modal open={open} setOpen={setOpen} title="Retract Swap Offer">
       <main className="flex w-full flex-col items-center text-m-disabled">
         <div className="flex w-full flex-col items-center justify-center gap-5 align-middle">
           <div className="flex w-full flex-col content-start items-start gap-2">
             <Input
-              label="Retract swap offer"
+              label="You will swap"
               type="number"
               disabled
               placeholder={offer.amount.toString()}

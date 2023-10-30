@@ -24,6 +24,7 @@ export const Button = ({
   onClick,
   disabled,
   hovered,
+  className: customClassName,
 }: PropsWithChildren<ButtonProps>) => {
   const getBgColor = () => {
     if (color === COLORS.WHITE) return "bg-white text-black ";
@@ -58,7 +59,7 @@ export const Button = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`shadow-button-shadow h-min w-full whitespace-nowrap rounded-md font-bold ${getBgColor()} ${getBorder()} ${getPadding()}`}
+      className={`shadow-button-shadow h-min w-full whitespace-nowrap rounded-md font-bold ${getBgColor()} ${getBorder()} ${getPadding()} ${customClassName}`}
     >
       {children}
     </button>
