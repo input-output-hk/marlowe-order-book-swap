@@ -9,7 +9,7 @@ import { Switch } from "../Switch/Switch";
 import type { UtilityProps } from "./listing.interface";
 
 export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
-  const handleLabelClick = () =>
+  const setEnabledSwitch = () =>
     setFilters((prev) => {
       return { ...prev, filterOwnListings: !prev.filterOwnListings };
     });
@@ -37,11 +37,14 @@ export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
         <div className="flex items-center gap-2">
           <label
             className="cursor-pointer font-bold"
-            onClick={handleLabelClick}
+            onClick={setEnabledSwitch}
           >
             My listings
           </label>
-          <Switch enabled={filters.filterOwnListings} setEnabled={setFilters} />
+          <Switch
+            enabled={filters.filterOwnListings}
+            setEnabled={setEnabledSwitch}
+          />
         </div>
 
         <div className="flex w-fit">
