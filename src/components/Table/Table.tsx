@@ -19,7 +19,7 @@ export const Table = ({ data }: TableProps) => {
       <div className="flex h-96 flex-col items-center justify-center gap-4">
         <Image src={SearchNoneIcon as string} alt="X" width={64} height={64} />
         <div className="text-2xl font-bold text-m-dark-gray">
-          There is not any listing to display
+          There is no listing to display
         </div>
       </div>
     );

@@ -44,15 +44,11 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                 <div className="w-1/3">
                   {/* TODO: change when we implement wallets */}
                   {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
-                    <div>
-                      <Button size={SIZE.XSMALL} color={COLORS.RED}>
-                        Retract
-                      </Button>
-                    </div>
+                    <Button size={SIZE.XSMALL} color={COLORS.RED}>
+                      Retract
+                    </Button>
                   ) : (
-                    <div>
-                      <Button size={SIZE.XSMALL}>Accept</Button>
-                    </div>
+                    <Button size={SIZE.XSMALL}>Accept</Button>
                   )}
                 </div>
               </div>
