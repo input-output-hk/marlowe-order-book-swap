@@ -1,7 +1,7 @@
 import Image from "next/image";
 import DownArrowIcon from "public/open_input.svg";
 import { useState } from "react";
-import { COLORS, truncateString, type IToken } from "~/utils";
+import { COLORS, ICON_SIZES, truncateString, type IToken } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 
 export interface DropdownProps {
@@ -63,8 +63,7 @@ export const DropDown = ({ options, disabled = false }: DropdownProps) => {
             <Image
               src={DownArrowIcon as string}
               alt="↓"
-              height={20}
-              width={20}
+              height={ICON_SIZES.M}
             />
           )}
         </div>

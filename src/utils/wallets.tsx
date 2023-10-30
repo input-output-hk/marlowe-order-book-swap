@@ -1,6 +1,7 @@
 import Image from "next/image";
 import LaceIcon from "public/lace.svg";
 import NamiIcon from "public/nami.svg";
+import { ICON_SIZES } from "./iconSizes";
 
 export const WALLETS = {
   LACE: "Lace",
@@ -10,6 +11,10 @@ export const WALLETS = {
 export type WALLETS = (typeof WALLETS)[keyof typeof WALLETS];
 
 export const walletLogos: Record<WALLETS, JSX.Element> = {
-  [WALLETS.LACE]: <Image src={LaceIcon as string} alt="L" />,
-  [WALLETS.NAMI]: <Image src={NamiIcon as string} alt="N" />,
+  [WALLETS.LACE]: (
+    <Image src={LaceIcon as string} alt="L" height={ICON_SIZES.L} />
+  ),
+  [WALLETS.NAMI]: (
+    <Image src={NamiIcon as string} alt="N" height={ICON_SIZES.L} />
+  ),
 };
