@@ -1,9 +1,7 @@
 import Image from "next/image";
 import CrossIcon from "public/cancel.svg";
-import CardanoIcon from "public/cardano.svg";
 import CheckIcon from "public/check.svg";
 import DownArrowIcon from "public/down_arrow.svg";
-import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
 import { COLORS, type ITokenAmount } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
@@ -14,23 +12,13 @@ import { Modal } from "../Modal/Modal";
 interface ModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  offer: ITokenAmount;
+  receive: ITokenAmount;
 }
 
-export const SwapModal = ({ open, setOpen }: ModalProps) => {
-  const offer: ITokenAmount = {
-    token: "ADA",
-    icon: <Image src={CardanoIcon as string} height={20} alt="C" />,
-    amount: 12,
-  };
-  const receive: ITokenAmount = {
-    token: "MRL",
-    icon: <Image src={MarloweIcon as string} height={20} alt="M" />,
-    amount: 10,
-  };
+export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
   const isEnough = true;
-  const address =
-    "addr_test5ar6f7hwk4fg281xasahtk6t9k6w3aql943uxz8rt62d4dvqu3c6jv";
-
+  const address = process.env.NEXT_PUBLIC_OWN_ADDRESS;
   const closeModal = () => {
     setOpen(false);
   };
