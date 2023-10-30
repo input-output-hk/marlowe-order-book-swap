@@ -34,7 +34,7 @@ export const DropDown = ({ options, disabled = false }: DropdownProps) => {
   });
 
   const handleClick = () => {
-    disabled && setOpenDropDown(!openDropDown);
+    !disabled && setOpenDropDown(!openDropDown);
   };
 
   return (
