@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import DisconnectIcon from "~/../public/disconnect.svg";
 import MarloweIcon from "~/../public/marlowe-logo.svg";
 import LogoIcon from "~/../public/marlowe.svg";
-import { PAGES } from "~/utils";
+import { ICON_SIZES, PAGES } from "~/utils";
 import { WALLETS, walletLogos } from "~/utils/wallets";
 
 export const Header = () => {
@@ -41,10 +41,14 @@ export const Header = () => {
     <header className="px-10 py-5 sm:px-12 sm:py-8 md:px-20 lg:px-32">
       <div className="relative flex flex-wrap items-center justify-between gap-5">
         <Link href={PAGES.LISTING} className="hidden sm:block">
-          <Image src={MarloweIcon as string} alt="Marlowe" width={150} />
+          <Image
+            src={MarloweIcon as string}
+            alt="Marlowe"
+            height={ICON_SIZES.L}
+          />
         </Link>
         <Link href={PAGES.LISTING} className="block sm:hidden">
-          <Image src={LogoIcon as string} alt="Marlowe" width={30} />
+          <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
         </Link>
         {wallet && (
           <div
@@ -65,7 +69,11 @@ export const Header = () => {
               onClick={disconnectWallet}
             >
               Disconnect Wallet
-              <Image src={DisconnectIcon as string} alt="Marlowe" width={30} />
+              <Image
+                src={DisconnectIcon as string}
+                alt=""
+                height={ICON_SIZES.L}
+              />
             </div>
           </div>
         )}

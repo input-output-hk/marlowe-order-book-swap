@@ -2,24 +2,37 @@ import Image from "next/image";
 import CalendarIcon from "public/calendar-dark.svg";
 import HandShakeIcon from "public/handshake.svg";
 import TagIcon from "public/tag.svg";
+import { ICON_SIZES } from "~/utils";
 
 export const TableHead = () => {
   const columns = [
     {
       column: "Token Offered",
-      icon: <Image src={TagIcon as string} alt="tag" />,
+      icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.M} />,
     },
     {
       column: "Desired Token",
-      icon: <Image src={TagIcon as string} alt="tag" />,
+      icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.M} />,
     },
     {
       column: "Expiry Date",
-      icon: <Image src={CalendarIcon as string} alt="tag" />,
+      icon: (
+        <Image
+          src={CalendarIcon as string}
+          alt="calendar"
+          height={ICON_SIZES.M}
+        />
+      ),
     },
     {
-      column: "Actions",
-      icon: <Image src={HandShakeIcon as string} alt="tag" />,
+      column: "actions",
+      icon: (
+        <Image
+          src={HandShakeIcon as string}
+          alt="actions"
+          height={ICON_SIZES.M}
+        />
+      ),
     },
   ];
 
