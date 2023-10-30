@@ -36,9 +36,7 @@ export const Input = ({
           {label}
         </label>
       )}
-      <div
-        className={`${customClassName} relative flex w-full items-center shadow-custom-shadow`}
-      >
+      <div className="relative flex w-full items-center shadow-custom-shadow">
         {startContent && (
           <div className={`${pointerEvents} absolute p-4`}>{startContent}</div>
         )}
@@ -52,7 +50,7 @@ export const Input = ({
           onChange={onChange}
           disabled={disabled}
           required={required}
-          className={`m-dark-grey w-full flex-grow rounded-md border p-3 focus:border-m-purple focus:ring-m-purple ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1`}
+          className={`m-dark-grey w-full flex-grow rounded-md border p-3 focus:border-m-purple focus:ring-m-purple ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1 ${customClassName}`}
         />
         <div className={`${pointerEvents} absolute right-0 p-4`}>
           {endContent}
