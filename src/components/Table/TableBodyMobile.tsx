@@ -1,7 +1,7 @@
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import SwapIcon from "public/swap.svg";
-import { COLORS, getExpiration, truncateTokenName } from "~/utils";
+import { COLORS, getExpiration, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -27,7 +27,7 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                   <p className="font-bold">
                     {row.offered.amount}{" "}
                     <abbr title={row.offered.token}>
-                      {truncateTokenName(row.offered.token, 7)}
+                      {truncateString(row.offered.token, 7)}
                     </abbr>
                   </p>
                 </div>
@@ -36,7 +36,7 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                   <p className="font-bold">
                     {row.desired.amount}{" "}
                     <abbr title={row.desired.token}>
-                      {truncateTokenName(row.desired.token, 7)}
+                      {truncateString(row.desired.token, 7)}
                     </abbr>
                   </p>
                 </div>

@@ -66,11 +66,11 @@ export const Header = () => {
         ) : null}
         {open && (
           <div
-            className="fixed inset-0 flex h-full items-center bg-gray-600 bg-opacity-50"
+            className="fixed inset-0 z-50 flex h-full items-center bg-gray-600 bg-opacity-50"
             onClick={changeOpen}
           >
             <div
-              className="absolute right-5 top-5 z-10 flex cursor-pointer items-center gap-10 rounded-md border bg-white p-2 sm:right-10 sm:top-8 md:right-20 lg:right-24"
+              className="absolute right-5 top-5  flex cursor-pointer items-center gap-10 rounded-md border bg-white p-2 sm:right-10 sm:top-8 md:right-20 lg:right-24"
               onClick={disconnectWallet}
             >
               Disconnect Wallet

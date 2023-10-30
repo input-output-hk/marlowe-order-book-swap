@@ -32,12 +32,16 @@ export const Input = ({
   return (
     <>
       {label && (
-        <label htmlFor={label} className="text-m-dark-gray">
+        <label htmlFor={label} className="text-sm text-m-disabled">
           {label}
         </label>
       )}
-      <div className={`relative flex items-center ${customClassName}`}>
-        <div className={`${pointerEvents} absolute p-4`}>{startContent}</div>
+      <div
+        className={`${customClassName} relative flex w-full items-center shadow-custom-shadow`}
+      >
+        {startContent && (
+          <div className={`${pointerEvents} absolute p-4`}>{startContent}</div>
+        )}
         <input
           type={type}
           id={label}

@@ -1,4 +1,4 @@
-import { COLORS, truncateTokenName } from "~/utils";
+import { COLORS, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -20,9 +20,9 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
             <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
               {row.offered.icon}
               <p className="font-bold">
-                {row.offered.amount}{" "}
+                {row.offered.amount}
                 <abbr title={row.offered.token}>
-                  {truncateTokenName(row.offered.token, 16)}
+                  {truncateString(row.offered.token, 16)}
                 </abbr>
               </p>
             </div>
@@ -31,10 +31,9 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
             <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
               {row.desired.icon}
               <p className="font-bold">
-                {row.desired.amount}{" "}
+                {row.desired.amount}
                 <abbr title={row.desired.token}>
-                  {" "}
-                  {truncateTokenName(row.desired.token, 16)}
+                  {truncateString(row.desired.token, 16)}
                 </abbr>
               </p>
             </div>
