@@ -50,7 +50,6 @@ export const Input = ({
           min={min}
           value={value?.toString()}
           onChange={onChange}
-          onError={() => console.log("error")}
           disabled={disabled}
           required={required}
           className={`m-dark-grey w-full flex-grow rounded-md border p-3 focus:border-m-purple focus:ring-m-purple ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1`}

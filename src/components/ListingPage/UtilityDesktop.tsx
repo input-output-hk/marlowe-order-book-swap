@@ -25,11 +25,7 @@ export const UtilityDesktop = ({
 
       <div className="flex w-1/2 items-center justify-end gap-4 lg:w-5/12 lg:gap-6 xl:w-1/3 xl:gap-8">
         <div className="flex items-center gap-2">
-          <label
-            className="font-bold"
-            htmlFor="test"
-            onClick={handleLabelClick}
-          >
+          <label className="font-bold" onClick={handleLabelClick}>
             My listings
           </label>
           <Switch
@@ -39,9 +35,9 @@ export const UtilityDesktop = ({
         </div>
 
         <div className="flex w-fit">
-          <Button>
-            <Link href={PAGES.CREATE}>Create a listing</Link>
-          </Button>
+          <Link href={PAGES.CREATE}>
+            <Button>Create a listing</Button>
+          </Link>
         </div>
       </div>
     </div>
