@@ -6,9 +6,10 @@ import { Button, SIZE } from "../Button/Button";
 
 export interface DropdownProps {
   options: Array<IToken>;
+  disabled?: boolean;
 }
 
-export const DropDown = ({ options }: DropdownProps) => {
+export const DropDown = ({ options, disabled = false }: DropdownProps) => {
   const [openDropDown, setOpenDropDown] = useState(false);
   const [selected, setSelected] = useState({
     token: "Token Select",
@@ -31,24 +32,40 @@ export const DropDown = ({ options }: DropdownProps) => {
       icon: option.icon,
     };
   });
+
+  const handleClick = () => {
+    !disabled && setOpenDropDown(!openDropDown);
+  };
+
   return (
     <div className="relative w-full">
       <Button
         size={SIZE.XSMALL}
         color={COLORS.LIGHT_GRAY}
         filled
-        onClick={() => setOpenDropDown(!openDropDown)}
+        onClick={handleClick}
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center justify-around gap-2 text-xs font-medium text-m-dark-gray">
-            {selected.icon}
-            {selected.token}
+            {disabled ? (
+              <>
+                {options[0]!.icon}
+                {options[0]!.token}
+              </>
+            ) : (
+              <>
+                {selected.icon}
+                {selected.token}
+              </>
+            )}
           </div>
-          <Image
-            src={DownArrowIcon as string}
-            alt="tag"
-            height={ICON_SIZES.M}
-          />
+          {!disabled && (
+            <Image
+              src={DownArrowIcon as string}
+              alt="↓"
+              height={ICON_SIZES.M}
+            />
+          )}
         </div>
       </Button>
       {openDropDown && (
