@@ -29,7 +29,7 @@ export default {
   safelist: [
     {
       pattern:
-        /(text|bg|border)-(m-disabled|m-dark-gray|m-green|m-purple|m-red|m-blue|m-light-purple|m-light-gray|m-light-blue)/,
+        /(text|bg|border)-(m-disabled|m-dark-gray|m-green|m-purple|m-red|m-blue|m-light-purple|m-light-gray|m-light-blue|black)/,
       variants: ["hover"],
     },
   ],
