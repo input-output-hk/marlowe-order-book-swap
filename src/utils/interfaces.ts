@@ -14,3 +14,9 @@ export interface ITableData {
   desired: ITokenAmount;
   expiry: string;
 }
+
+export interface IFilters {
+  filterOwnListings: boolean;
+  owner: string;
+  searchQuery: string;
+}

@@ -1,4 +1,5 @@
 export * from "./colors";
+export * from "./filter";
 export * from "./iconSizes";
 export * from "./interfaces";
 export * from "./pages";

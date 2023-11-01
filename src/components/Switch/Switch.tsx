@@ -1,15 +1,9 @@
-import type { Dispatch, SetStateAction } from "react";
-
 interface SwitchProps {
   enabled: boolean;
-  setEnabled: Dispatch<SetStateAction<boolean>>;
+  setEnabled: () => void;
 }
 
 export const Switch = ({ enabled, setEnabled }: SwitchProps) => {
-  const toggle = () => {
-    setEnabled(!enabled);
-  };
-
   return (
     <div className="relative flex h-full flex-col items-center justify-center overflow-hidden">
       <div className="flex">
@@ -21,7 +15,7 @@ export const Switch = ({ enabled, setEnabled }: SwitchProps) => {
             readOnly
           />
           <div
-            onClick={toggle}
+            onClick={setEnabled}
             className="
               peer h-7 w-12 rounded-full bg-gray-300
               after:absolute after:left-1 after:top-1 after:h-5 after:w-5

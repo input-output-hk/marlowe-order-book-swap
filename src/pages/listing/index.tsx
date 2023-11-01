@@ -37,7 +37,7 @@ export default function Listing() {
         ),
       },
       desired: {
-        token: "Marlons",
+        token: "Merlons",
         amount: 0.00016,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.S} />
