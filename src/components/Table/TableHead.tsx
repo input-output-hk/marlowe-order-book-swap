@@ -1,21 +1,39 @@
 import Image from "next/image";
 import CalendarIcon from "public/calendar-dark.svg";
 import HandShakeIcon from "public/handshake.svg";
+import ArrowIcon from "public/open_input_black.svg";
 import TagIcon from "public/tag.svg";
-import { ICON_SIZES } from "~/utils";
+import type { Dispatch, SetStateAction } from "react";
+import { ICON_SIZES, type ISort } from "~/utils";
 
-export const TableHead = () => {
+interface TableHeadProps {
+  sort: ISort;
+  setSort: Dispatch<SetStateAction<ISort>>;
+}
+
+export const TableHead = ({ sort, setSort }: TableHeadProps) => {
+  const sortCallback = () =>
+    setSort((prev) => {
+      return {
+        ...prev,
+        sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+      };
+    });
+
   const columns = [
     {
       column: "Token Offered",
       icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.M} />,
+      sortable: false,
     },
     {
       column: "Desired Token",
       icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.M} />,
+      sortable: false,
     },
     {
       column: "Expiry Date",
+      onClick: sortCallback,
       icon: (
         <Image
           src={CalendarIcon as string}
@@ -23,9 +41,10 @@ export const TableHead = () => {
           height={ICON_SIZES.M}
         />
       ),
+      sortable: true,
     },
     {
-      column: "actions",
+      column: "Actions",
       icon: (
         <Image
           src={HandShakeIcon as string}
@@ -33,6 +52,7 @@ export const TableHead = () => {
           height={ICON_SIZES.M}
         />
       ),
+      sortable: false,
     },
   ];
 
@@ -46,18 +66,41 @@ export const TableHead = () => {
     }
   };
 
+  const isClickeable = (sortable: boolean) =>
+    sortable ? "cursor-pointer" : "";
+
+  const getSortArrowRotation = () =>
+    sort.sortOrder === "asc" ? "rotate-180" : "";
+
   return (
     <div className="hidden bg-m-light-purple md:table-header-group">
       <div className="table-row">
-        {columns.map(({ column, icon }, index) => (
+        {columns.map(({ column, icon, onClick, sortable }, index) => (
           <div
             key={index}
             className={`table-cell ${columnStyle(
               index,
             )} py-4 text-center text-base font-medium`}
+            onClick={onClick}
           >
-            <div className="flex justify-center">{icon}</div>
-            {column}
+            <div
+              className={`flex ${isClickeable(
+                sortable,
+              )} select-none flex-col items-center justify-center`}
+            >
+              {icon}
+              <div className="flex">
+                {column}
+                {sortable && (
+                  <Image
+                    src={ArrowIcon as string}
+                    alt={sort.sortOrder === "asc" ? "↑" : "↓"}
+                    className={`${getSortArrowRotation()}`}
+                    height={ICON_SIZES.M}
+                  />
+                )}
+              </div>
+            </div>
           </div>
         ))}
       </div>

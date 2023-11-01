@@ -20,3 +20,11 @@ export interface IFilters {
   owner: string;
   searchQuery: string;
 }
+
+export type SortOrder = "asc" | "desc";
+export type SortBy = "expiryDate";
+
+export interface ISort {
+  sortBy: SortBy;
+  sortOrder: SortOrder;
+}
