@@ -31,7 +31,12 @@ export const RetractModal = ({
               type="number"
               disabled
               placeholder={offer.amount.toString()}
-              endContent={<DropDown options={[offer]} disabled />}
+              endContent={
+                <DropDown
+                  options={[{ option: offer.token, icon: offer.icon }]}
+                  disabled
+                />
+              }
               className="py-4"
             />
 
@@ -41,7 +46,12 @@ export const RetractModal = ({
               type="number"
               disabled
               placeholder={receive.amount.toString()}
-              endContent={<DropDown options={[receive]} disabled />}
+              endContent={
+                <DropDown
+                  options={[{ option: receive.token, icon: receive.icon }]}
+                  disabled
+                />
+              }
               className="py-4"
             />
           </div>

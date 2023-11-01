@@ -3,7 +3,7 @@ import Image from "next/image";
 import SearchNoneIcon from "public/search-none.svg";
 import { ICON_SIZES } from "~/utils";
 import { TableHead } from "./TableHead";
-import type { TableProps } from "./table.interface";
+import type { TablePropsWithSort } from "./table.interface";
 
 const TableBodyMobile = dynamic(
   () => import("./TableBodyMobile").then((mod) => mod.TableBodyMobile),
@@ -14,7 +14,7 @@ const TableBodyDesktop = dynamic(
   { ssr: false },
 );
 
-export const Table = ({ data }: TableProps) => {
+export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
   if (!data.length) {
     return (
       <div className="flex h-96 flex-col items-center justify-center gap-4">
@@ -29,7 +29,7 @@ export const Table = ({ data }: TableProps) => {
   return (
     <>
       <div className="hidden min-h-min w-full md:table">
-        <TableHead />
+        <TableHead sort={sort} setSort={setSort} />
         <TableBodyDesktop data={data} />
       </div>
       <TableBodyMobile data={data} />
