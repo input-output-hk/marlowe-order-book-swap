@@ -2,6 +2,7 @@ export * from "./colors";
 export * from "./filter";
 export * from "./iconSizes";
 export * from "./interfaces";
+export * from "./numbers";
 export * from "./pages";
 export * from "./sort";
 export * from "./string";

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import SwapIcon from "public/swap.svg";
-import { COLORS, ICON_SIZES, getExpiration, truncateString } from "~/utils";
+import { COLORS, ICON_SIZES, getExpiration, humanReadableNum } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -31,19 +31,13 @@ export const TableBodyMobile = ({
                 <div className="flex gap-2">
                   {row.offered.icon}
                   <p className="font-bold">
-                    {row.offered.amount}
-                    <abbr title={row.offered.token}>
-                      {truncateString(row.offered.token, 7)}
-                    </abbr>
+                    {humanReadableNum(row.offered.amount)}&nbsp;
                   </p>
                 </div>
                 <div className="flex gap-2">
                   {row.desired.icon}
                   <p className="font-bold">
-                    {row.desired.amount}
-                    <abbr title={row.desired.token}>
-                      {truncateString(row.desired.token, 7)}
-                    </abbr>
+                    {humanReadableNum(row.desired.amount)}&nbsp;
                   </p>
                 </div>
               </div>
