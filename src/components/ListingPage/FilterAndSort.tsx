@@ -76,12 +76,14 @@ export const FiltersAndSort = ({
         <p className="font-semibold text-black">Sort</p>
         <hr className="mb-6" />
         <div className="flex justify-between gap-8">
-          <label className="w-3/4 text-black">Expiry date</label>
-          <DropDown
-            options={sortOptions}
-            selected={selectedSortByDate}
-            setSelected={setSelectedSortByDate}
-          />
+          <label className="text-black">Expiry date</label>
+          <div className="w-20">
+            <DropDown
+              options={sortOptions}
+              selected={selectedSortByDate}
+              setSelected={setSelectedSortByDate}
+            />
+          </div>
         </div>
       </Modal>
     </>
