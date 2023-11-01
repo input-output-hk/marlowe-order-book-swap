@@ -1,23 +1,11 @@
-import type { Dispatch, SetStateAction } from "react";
-import { COLORS, type ITokenAmount } from "~/utils";
+import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
+import { type ModalProps } from "./interface";
 
-interface RetractModalProps {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  offer: ITokenAmount;
-  receive: ITokenAmount;
-}
-
-export const RetractModal = ({
-  open,
-  setOpen,
-  offer,
-  receive,
-}: RetractModalProps) => {
+export const RetractModal = ({ open, setOpen, offer, receive }: ModalProps) => {
   const closeModal = () => {
     setOpen(false);
   };

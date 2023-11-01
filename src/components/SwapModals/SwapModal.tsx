@@ -1,20 +1,14 @@
 import Image from "next/image";
+import Link from "next/link";
 import CrossIcon from "public/cancel.svg";
 import CheckIcon from "public/check.svg";
 import DownArrowIcon from "public/down_arrow.svg";
-import type { Dispatch, SetStateAction } from "react";
-import { COLORS, ICON_SIZES, type ITokenAmount } from "~/utils";
+import { COLORS, ICON_SIZES } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
-
-interface ModalProps {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  offer: ITokenAmount;
-  receive: ITokenAmount;
-}
+import { type ModalProps } from "./interface";
 
 export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
   const isEnough = true;
@@ -94,17 +88,25 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
             </div>
           </div>
           <div className="flex w-full flex-col justify-end gap-5 pt-5 text-sm sm:flex-row">
-            <Button size={SIZE.SMALL} color={COLORS.BLACK} onClick={closeModal}>
-              Cancel
-            </Button>
-            <Button
-              size={SIZE.SMALL}
-              disabled={!isEnough}
-              filled
-              onClick={closeModal}
-            >
-              Confirm Swap
-            </Button>
+            <div>
+              <Button
+                size={SIZE.SMALL}
+                color={COLORS.BLACK}
+                onClick={closeModal}
+              >
+                Cancel
+              </Button>
+            </div>
+            <Link href="/listing/complete">
+              <Button
+                size={SIZE.SMALL}
+                disabled={!isEnough}
+                filled
+                // onClick={closeModal}
+              >
+                Confirm Swap
+              </Button>
+            </Link>
           </div>
         </div>
       </main>
