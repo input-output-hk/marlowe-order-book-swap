@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
+import type { IFilters } from "~/utils";
 
 export interface UtilityProps {
-  filterOwnListings: boolean;
-  setFilterOwnListings: Dispatch<SetStateAction<boolean>>;
+  filters: IFilters;
+  setFilters: Dispatch<SetStateAction<IFilters>>;
 }
