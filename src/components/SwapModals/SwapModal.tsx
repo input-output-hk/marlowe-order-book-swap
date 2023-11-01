@@ -3,7 +3,7 @@ import Link from "next/link";
 import CrossIcon from "public/cancel.svg";
 import CheckIcon from "public/check.svg";
 import DownArrowIcon from "public/down_arrow.svg";
-import { COLORS, ICON_SIZES } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -97,13 +97,8 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
                 Cancel
               </Button>
             </div>
-            <Link href="/listing/complete">
-              <Button
-                size={SIZE.SMALL}
-                disabled={!isEnough}
-                filled
-                // onClick={closeModal}
-              >
+            <Link href={PAGES.COMPLETE}>
+              <Button size={SIZE.SMALL} disabled={!isEnough} filled>
                 Confirm Swap
               </Button>
             </Link>
