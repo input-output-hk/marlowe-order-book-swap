@@ -1,14 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import CalendarIcon from "public/calendar.svg";
 import DownIcon from "public/down_arrow.svg";
-import OpenIcon from "public/open_input.svg";
 import { useState, type FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import type { IOptions } from "~/utils";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
-import { Input } from "../Input/Input";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
 
@@ -26,24 +23,60 @@ export const CreateListing = () => {
   });
   const [expiryDate, setExpiryDate] = useState<string>("");
 
+  const [valueOfferedError, setValueOfferedError] = useState<
+    string | undefined
+  >(undefined);
+  const [valueDesiredError, setValueDesiredError] = useState<
+    string | undefined
+  >(undefined);
+  const [dropOfferedError, setDropOfferedError] = useState<string | undefined>(
+    undefined,
+  );
+  const [dropDesiredError, setDropDesiredError] = useState<string | undefined>(
+    undefined,
+  );
+  const [expiryError, setExpiryError] = useState<string | undefined>(undefined);
+  const [startDateError, setStartDateError] = useState<string | undefined>(
+    undefined,
+  );
+
   const router = useRouter();
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (valueOffered <= 0 || valueDesired <= 0) {
-      return;
-    }
+    const startDateObj = startDate === "" ? new Date() : new Date(startDate);
+    const expiryDateObj = new Date(expiryDate);
+
+    valueDesired <= 0
+      ? setValueDesiredError("Value must be greater than 0")
+      : setValueDesiredError(undefined);
+    valueOffered <= 0
+      ? setValueOfferedError("Value must be greater than 0")
+      : setValueOfferedError(undefined);
+    selectedOffered.option === "Token Select"
+      ? setDropOfferedError("You must select an offered token")
+      : setDropOfferedError(undefined);
+    selectedDesired.option === "Token Select"
+      ? setDropDesiredError("You must select a desired token")
+      : setDropDesiredError(undefined);
+    expiryDate === ""
+      ? setExpiryError("You must select an expiry date")
+      : setExpiryError(undefined);
+    startDateObj > expiryDateObj
+      ? setStartDateError("Start date must be before expiry date")
+      : setStartDateError(undefined);
 
     if (
-      selectedOffered.option === "Token Select" ||
-      selectedDesired.option === "Token Select"
+      valueOffered > 0 &&
+      valueDesired > 0 &&
+      selectedOffered.option !== "Token Select" &&
+      selectedDesired.option !== "Token Select" &&
+      expiryDate !== "" &&
+      startDateObj < expiryDateObj
     ) {
-      return;
+      void router.push(PAGES.LISTING);
     }
-
-    void router.push(PAGES.LISTING);
-    // TODO: Check if form is valid
   };
 
   return (
@@ -63,6 +96,7 @@ export const CreateListing = () => {
             setValueOffered={setValueOffered}
             selectedOffered={selectedOffered}
             setSelectedOffered={setSelectedOffered}
+            errors={[dropOfferedError, valueOfferedError]}
           />
           <Image
             src={DownIcon as string}
@@ -76,6 +110,7 @@ export const CreateListing = () => {
             setValueOffered={setValueDesired}
             selectedOffered={selectedDesired}
             setSelectedOffered={setSelectedDesired}
+            errors={[dropDesiredError, valueDesiredError]}
           />
         </div>
         <div className="flex w-full flex-col content-start items-start gap-4">
@@ -86,27 +121,15 @@ export const CreateListing = () => {
                 label="Listing start date"
                 value={startDate}
                 setValue={setStartDate}
+                errors={[startDateError]}
               />
             </div>
             <div className="flex w-full flex-col gap-2">
-              <Input
-                value={expiryDate}
+              <CalendarInput
                 label="Listing expiry date"
-                type="date"
-                endContent={
-                  <div className="flex">
-                    <Image
-                      src={CalendarIcon as string}
-                      alt=""
-                      height={ICON_SIZES.M}
-                    />
-                    <Image
-                      src={OpenIcon as string}
-                      alt="↓"
-                      height={ICON_SIZES.M}
-                    />
-                  </div>
-                }
+                value={expiryDate}
+                setValue={setExpiryDate}
+                errors={[expiryError]}
               />
             </div>
           </div>

@@ -1,4 +1,4 @@
-import type { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import type { IOptions } from "~/utils";
 import { exampleTokens } from "~/utils/tokens";
 import { DropDown } from "../DropDown/DropDown";
@@ -10,6 +10,7 @@ interface TokenInputsProps {
   setValueOffered: Dispatch<SetStateAction<number>>;
   selectedOffered: IOptions;
   setSelectedOffered: Dispatch<SetStateAction<IOptions>>;
+  errors: (string | undefined)[];
 }
 
 export const TokenInputs = ({
@@ -18,6 +19,7 @@ export const TokenInputs = ({
   setSelectedOffered,
   valueOffered,
   setValueOffered,
+  errors = [],
 }: TokenInputsProps) => {
   const dropDownOptions = exampleTokens.map((token) => {
     return {
@@ -38,6 +40,7 @@ export const TokenInputs = ({
       type="number"
       pointerEvents
       placeholder="0"
+      error={errors}
       endContent={
         <DropDown
           options={dropDownOptions}
