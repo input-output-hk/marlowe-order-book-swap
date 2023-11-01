@@ -4,7 +4,7 @@ import HandShakeIcon from "public/handshake.svg";
 import ArrowIcon from "public/open_input_black.svg";
 import TagIcon from "public/tag.svg";
 import type { Dispatch, SetStateAction } from "react";
-import { ICON_SIZES, type ISort } from "~/utils";
+import { ICON_SIZES, SortOrder, type ISort } from "~/utils";
 
 interface TableHeadProps {
   sort: ISort;
@@ -16,7 +16,8 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
     setSort((prev) => {
       return {
         ...prev,
-        sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+        sortOrder:
+          prev.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
       };
     });
 
@@ -70,7 +71,7 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
     sortable ? "cursor-pointer" : "";
 
   const getSortArrowRotation = () =>
-    sort.sortOrder === "asc" ? "rotate-180" : "";
+    sort.sortOrder === SortOrder.ASC ? "rotate-180" : "";
 
   return (
     <div className="hidden bg-m-light-purple md:table-header-group">
@@ -94,7 +95,7 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
                 {sortable && (
                   <Image
                     src={ArrowIcon as string}
-                    alt={sort.sortOrder === "asc" ? "↑" : "↓"}
+                    alt={sort.sortOrder === SortOrder.ASC ? "↑" : "↓"}
                     className={`${getSortArrowRotation()}`}
                     height={ICON_SIZES.M}
                   />

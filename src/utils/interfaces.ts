@@ -21,10 +21,18 @@ export interface IFilters {
   searchQuery: string;
 }
 
-export type SortOrder = "asc" | "desc";
 export type SortBy = "expiryDate";
+export const SortOrder = {
+  ASC: "ASC",
+  DESC: "DESC",
+} as const;
 
 export interface ISort {
   sortBy: SortBy;
-  sortOrder: SortOrder;
+  sortOrder: string;
+}
+
+export interface IOptions {
+  option: string;
+  icon: JSX.Element;
 }

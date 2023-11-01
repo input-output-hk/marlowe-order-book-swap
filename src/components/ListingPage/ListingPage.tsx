@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Table } from "~/components/Table/Table";
 import { env } from "~/env.mjs";
 import {
+  SortOrder,
   filterTableData,
   sortTableData,
   type IFilters,
@@ -23,7 +24,7 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
   });
   const [sort, setSort] = useState<ISort>({
     sortBy: "expiryDate",
-    sortOrder: "asc",
+    sortOrder: SortOrder.ASC,
   });
 
   const sortedData = sortTableData(listingData, sort);

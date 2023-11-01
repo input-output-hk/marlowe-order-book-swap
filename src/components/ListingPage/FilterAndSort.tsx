@@ -1,7 +1,14 @@
 import Image from "next/image";
 import FilterIcon from "public/filter.svg";
-import { useState, type Dispatch, type SetStateAction } from "react";
-import { ICON_SIZES, type IFilters, type ISort } from "~/utils";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  ICON_SIZES,
+  SortOrder,
+  type IFilters,
+  type IOptions,
+  type ISort,
+} from "~/utils";
+import { DropDown } from "../DropDown/DropDown";
 import { Modal } from "../Modal/Modal";
 import { Switch } from "../Switch/Switch";
 
@@ -19,6 +26,15 @@ export const FiltersAndSort = ({
   setSort,
 }: FiltersAndSortProps) => {
   const [open, setOpen] = useState(false);
+  const [selectedSortByDate, setSelectedSortByDate] = useState({
+    option: sort.sortOrder,
+    icon: <></>,
+  });
+
+  const sortOptions: IOptions[] = [
+    { option: SortOrder.ASC, icon: <></> },
+    { option: SortOrder.DESC, icon: <></> },
+  ];
 
   const setEnabledSwitch = () =>
     setFilters((prev) => {
@@ -28,6 +44,12 @@ export const FiltersAndSort = ({
   const handleClick = () => {
     setOpen(true);
   };
+
+  useEffect(() => {
+    setSort((prev) => {
+      return { ...prev, sortOrder: selectedSortByDate.option };
+    });
+  }, [selectedSortByDate, setSort]);
 
   return (
     <>
@@ -55,6 +77,11 @@ export const FiltersAndSort = ({
         <hr className="mb-6" />
         <div className="flex justify-between gap-8">
           <label className="w-3/4 text-black">Expiry date</label>
+          <DropDown
+            options={sortOptions}
+            selected={selectedSortByDate}
+            setSelected={setSelectedSortByDate}
+          />
         </div>
       </Modal>
     </>

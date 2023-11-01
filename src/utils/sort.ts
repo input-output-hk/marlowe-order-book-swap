@@ -1,11 +1,11 @@
-import type { ISort, ITableData, SortOrder } from "./interfaces";
+import { SortOrder, type ISort, type ITableData } from "./interfaces";
 
-const sortByExpiry = (data: ITableData[], sortOrder: SortOrder) => {
+const sortByExpiry = (data: ITableData[], sortOrder: string) => {
   return data.sort((a, b) => {
     const aDate = new Date(a.expiry);
     const bDate = new Date(b.expiry);
 
-    if (sortOrder === "asc") {
+    if (sortOrder === SortOrder.ASC) {
       return aDate.getTime() - bDate.getTime();
     } else {
       return bDate.getTime() - aDate.getTime();
