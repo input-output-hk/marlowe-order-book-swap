@@ -1,4 +1,5 @@
 export const PAGES = {
+  COMPLETE: "/listing/complete",
   HOME: "/",
   LISTING: "/listing",
   CREATE: "/create",

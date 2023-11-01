@@ -37,7 +37,7 @@ export const DropDown = ({
     !disabled && setOpenDropDown(!openDropDown);
   };
 
-  if (!selected) {
+  if (!selected && !disabled) {
     return (
       <Button disabled size={SIZE.XSMALL}>
         No options
@@ -62,8 +62,8 @@ export const DropDown = ({
               </>
             ) : (
               <>
-                {selected.icon}
-                {selected.option}
+                {selected?.icon}
+                {selected?.option}
               </>
             )}
           </div>
@@ -81,9 +81,8 @@ export const DropDown = ({
           <ul className="overflow-y-auto text-m-dark-gray">
             {truncatedOptions.map((option, index) => {
               return (
-                <>
+                <div key={index}>
                   <li
-                    key={index}
                     className=" flex cursor-pointer gap-4 p-2"
                     onClick={selectOption(option)}
                   >
@@ -91,7 +90,7 @@ export const DropDown = ({
                     {option.option}
                   </li>
                   {index < truncatedOptions.length - 1 && <hr />}
-                </>
+                </div>
               );
             })}
           </ul>

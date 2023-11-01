@@ -1,36 +1,18 @@
 import Image from "next/image";
+import Link from "next/link";
 import CrossIcon from "public/cancel.svg";
-import CardanoIcon from "public/cardano.svg";
 import CheckIcon from "public/check.svg";
 import DownArrowIcon from "public/down_arrow.svg";
-import MarloweIcon from "public/marlowe.svg";
-import type { Dispatch, SetStateAction } from "react";
-import { COLORS, ICON_SIZES, type ITokenAmount } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
+import { type ModalProps } from "./interface";
 
-interface ModalProps {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-export const SwapModal = ({ open, setOpen }: ModalProps) => {
-  const offer: ITokenAmount = {
-    token: "ADA",
-    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
-    amount: 12,
-  };
-  const receive: ITokenAmount = {
-    token: "MRL",
-    icon: <Image src={MarloweIcon as string} height={ICON_SIZES.M} alt="M" />,
-    amount: 10,
-  };
+export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
   const isEnough = true;
-  const address =
-    "addr_test5ar6f7hwk4fg281xasahtk6t9k6w3aql943uxz8rt62d4dvqu3c6jv";
-
+  const address = process.env.NEXT_PUBLIC_OWN_ADDRESS;
   const closeModal = () => {
     setOpen(false);
   };
@@ -106,17 +88,20 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
             </div>
           </div>
           <div className="flex w-full flex-col justify-end gap-5 pt-5 text-sm sm:flex-row">
-            <Button size={SIZE.SMALL} color={COLORS.BLACK} onClick={closeModal}>
-              Cancel
-            </Button>
-            <Button
-              size={SIZE.SMALL}
-              disabled={!isEnough}
-              filled
-              onClick={closeModal}
-            >
-              Confirm Swap
-            </Button>
+            <div>
+              <Button
+                size={SIZE.SMALL}
+                color={COLORS.BLACK}
+                onClick={closeModal}
+              >
+                Cancel
+              </Button>
+            </div>
+            <Link href={PAGES.COMPLETE}>
+              <Button size={SIZE.SMALL} disabled={!isEnough} filled>
+                Confirm Swap
+              </Button>
+            </Link>
           </div>
         </div>
       </main>

@@ -1,30 +1,11 @@
-import Image from "next/image";
-import CardanoIcon from "public/cardano.svg";
-import MarloweIcon from "public/marlowe.svg";
-import type { Dispatch, SetStateAction } from "react";
-import { COLORS, ICON_SIZES, type ITokenAmount } from "~/utils";
+import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
+import { type ModalProps } from "./interface";
 
-interface ModalProps {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-export const RetractModal = ({ open, setOpen }: ModalProps) => {
-  const offer: ITokenAmount = {
-    token: "ADA",
-    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
-    amount: 12,
-  };
-  const receive: ITokenAmount = {
-    token: "MRL",
-    icon: <Image src={MarloweIcon as string} height={ICON_SIZES.M} alt="M" />,
-    amount: 10,
-  };
-
+export const RetractModal = ({ open, setOpen, offer, receive }: ModalProps) => {
   const closeModal = () => {
     setOpen(false);
   };
