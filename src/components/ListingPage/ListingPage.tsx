@@ -34,8 +34,8 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
       <UtilityMobile
         filters={filters}
         setFilters={setFilters}
-        // sort={sort}
-        // setSort={setSort}
+        sort={sort}
+        setSort={setSort}
       />
       <UtilityDesktop filters={filters} setFilters={setFilters} />
 
