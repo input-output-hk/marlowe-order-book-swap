@@ -2,18 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import PlusIcon from "public/add.svg";
 import SearchIcon from "public/search.svg";
-import type { ChangeEvent } from "react";
+import { type ChangeEvent } from "react";
 import { ICON_SIZES, PAGES } from "~/utils";
 import { Input } from "../Input/Input";
-import { Switch } from "../Switch/Switch";
-import type { UtilityProps } from "./listing.interface";
+import { FiltersAndSort } from "./FilterAndSort";
+import type { UtilityPropsMobile } from "./listing.interface";
 
-export const UtilityMobile = ({ filters, setFilters }: UtilityProps) => {
-  const setEnabledSwitch = () =>
-    setFilters((prev) => {
-      return { ...prev, filterOwnListings: !prev.filterOwnListings };
-    });
-
+export const UtilityMobile = ({
+  filters,
+  setFilters,
+  sort,
+  setSort,
+}: UtilityPropsMobile) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => {
       return { ...prev, searchQuery: e.target.value };
@@ -38,18 +38,17 @@ export const UtilityMobile = ({ filters, setFilters }: UtilityProps) => {
           />
         </div>
         <div className="mr-4 flex items-center gap-2">
-          <label className="font-bold" onClick={setEnabledSwitch}>
-            My listings
-          </label>
-          <Switch
-            enabled={filters.filterOwnListings}
-            setEnabled={setEnabledSwitch}
+          <FiltersAndSort
+            filters={filters}
+            setFilters={setFilters}
+            sort={sort}
+            setSort={setSort}
           />
         </div>
       </div>
       <Link
         href={PAGES.CREATE}
-        className="shadow-add fixed bottom-8 right-8 flex h-16 w-16 items-center justify-center rounded-full bg-m-purple"
+        className="fixed bottom-8 right-8 z-0 flex h-16 w-16 items-center justify-center rounded-full bg-m-purple shadow-add"
       >
         <Image
           src={PlusIcon as string}

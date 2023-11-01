@@ -4,9 +4,9 @@ import { useRouter } from "next/router";
 import CalendarIcon from "public/calendar.svg";
 import DownIcon from "public/down_arrow.svg";
 import OpenIcon from "public/open_input.svg";
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
-import type { IToken } from "~/utils";
+import type { IOptions, IToken } from "~/utils";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -18,12 +18,29 @@ interface CreateListingProps {
 export const CreateListing = ({
   tokenOptions: options,
 }: CreateListingProps) => {
+  const [selectedOffered, setSelectedOffered] = useState<IOptions>({
+    option: "Token Select",
+    icon: <></>,
+  });
+  const [selectedDesired, setSelectedDesired] = useState<IOptions>({
+    option: "Token Select",
+    icon: <></>,
+  });
   const router = useRouter();
+
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     void router.push(PAGES.LISTING);
     // TODO: Check if form is valid
   };
+
+  const dropDownOptions = options.map((token) => {
+    return {
+      option: token.token,
+      icon: token.icon,
+    };
+  });
+
   return (
     <form
       className="flex flex-col items-center text-m-disabled"
@@ -42,7 +59,13 @@ export const CreateListing = ({
             min={0}
             pointerEvents
             placeholder="0"
-            endContent={<DropDown options={options} />}
+            endContent={
+              <DropDown
+                options={dropDownOptions}
+                selected={selectedOffered}
+                setSelected={setSelectedOffered}
+              />
+            }
           />
           <Image
             src={DownIcon as string}
@@ -57,7 +80,13 @@ export const CreateListing = ({
             min={0}
             pointerEvents
             placeholder="0"
-            endContent={<DropDown options={options} />}
+            endContent={
+              <DropDown
+                options={dropDownOptions}
+                selected={selectedDesired}
+                setSelected={setSelectedDesired}
+              />
+            }
           />
         </div>
         <div className="flex w-full flex-col content-start items-start gap-4">

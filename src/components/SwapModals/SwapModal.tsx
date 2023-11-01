@@ -44,7 +44,12 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
               type="number"
               disabled
               placeholder={offer.amount.toString()}
-              endContent={<DropDown options={[offer]} disabled />}
+              endContent={
+                <DropDown
+                  options={[{ option: offer.token, icon: offer.icon }]}
+                  disabled
+                />
+              }
               className="py-4"
             />
             {isEnough ? (
@@ -75,7 +80,12 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
               type="number"
               disabled
               placeholder={receive.amount.toString()}
-              endContent={<DropDown options={[receive]} disabled />}
+              endContent={
+                <DropDown
+                  options={[{ option: receive.token, icon: receive.icon }]}
+                  disabled
+                />
+              }
               className="py-4"
             />
           </div>
@@ -90,7 +100,7 @@ export const SwapModal = ({ open, setOpen }: ModalProps) => {
             </div>
             <div className="flex w-full flex-col gap-2 text-sm font-normal ">
               Your wallet address
-              <div className="border-m-light-blue bg-m-light-blue break-words rounded-lg border px-5 py-3 font-semibold text-black">
+              <div className="break-words rounded-lg border border-m-light-blue bg-m-light-blue px-5 py-3 font-semibold text-black">
                 {address}
               </div>
             </div>

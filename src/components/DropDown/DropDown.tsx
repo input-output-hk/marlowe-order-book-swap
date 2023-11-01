@@ -1,34 +1,34 @@
 import Image from "next/image";
 import DownArrowIcon from "public/open_input.svg";
-import { useState } from "react";
-import { COLORS, ICON_SIZES, truncateString, type IToken } from "~/utils";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { COLORS, ICON_SIZES, truncateString, type IOptions } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 
 export interface DropdownProps {
-  options: Array<IToken>;
+  options: Array<IOptions>;
+  selected?: IOptions;
+  setSelected?: Dispatch<SetStateAction<IOptions>>;
   disabled?: boolean;
 }
 
-export const DropDown = ({ options, disabled = false }: DropdownProps) => {
+export const DropDown = ({
+  options,
+  selected,
+  setSelected,
+  disabled = false,
+}: DropdownProps) => {
   const [openDropDown, setOpenDropDown] = useState(false);
-  const [selected, setSelected] = useState({
-    token: "Token Select",
-    icon: <></>,
-  });
-  if (!selected) {
-    return (
-      <Button disabled size={SIZE.XSMALL}>
-        No options
-      </Button>
-    );
-  }
-  const selectOption = (option: IToken) => () => {
-    setSelected(option);
-    setOpenDropDown(false);
+
+  const selectOption = (option: IOptions) => () => {
+    if (setSelected) {
+      setSelected(option);
+      setOpenDropDown(false);
+    }
   };
+
   const truncatedOptions = options.map((option) => {
     return {
-      token: truncateString(option.token, 5),
+      option: truncateString(option.option, 5),
       icon: option.icon,
     };
   });
@@ -36,6 +36,14 @@ export const DropDown = ({ options, disabled = false }: DropdownProps) => {
   const handleClick = () => {
     !disabled && setOpenDropDown(!openDropDown);
   };
+
+  if (!selected) {
+    return (
+      <Button disabled size={SIZE.XSMALL}>
+        No options
+      </Button>
+    );
+  }
 
   return (
     <div className="relative w-full">
@@ -50,12 +58,12 @@ export const DropDown = ({ options, disabled = false }: DropdownProps) => {
             {disabled ? (
               <>
                 {options[0]!.icon}
-                {options[0]!.token}
+                {options[0]!.option}
               </>
             ) : (
               <>
                 {selected.icon}
-                {selected.token}
+                {selected.option}
               </>
             )}
           </div>
@@ -80,7 +88,7 @@ export const DropDown = ({ options, disabled = false }: DropdownProps) => {
                     onClick={selectOption(option)}
                   >
                     {option.icon}
-                    {option.token}
+                    {option.option}
                   </li>
                   {index < truncatedOptions.length - 1 && <hr />}
                 </>
