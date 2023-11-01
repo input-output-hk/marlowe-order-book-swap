@@ -6,40 +6,45 @@ import DownIcon from "public/down_arrow.svg";
 import OpenIcon from "public/open_input.svg";
 import { useState, type FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
-import type { IOptions, IToken } from "~/utils";
+import type { IOptions } from "~/utils";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
-import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
+import { CalendarInput } from "./CalendarInput";
+import { TokenInputs } from "./TokenInputs";
 
-interface CreateListingProps {
-  tokenOptions: IToken[];
-}
-
-export const CreateListing = ({
-  tokenOptions: options,
-}: CreateListingProps) => {
+export const CreateListing = () => {
+  const [valueOffered, setValueOffered] = useState<number>(0);
   const [selectedOffered, setSelectedOffered] = useState<IOptions>({
     option: "Token Select",
     icon: <></>,
   });
+  const [startDate, setStartDate] = useState<string>("");
+  const [valueDesired, setValueDesired] = useState<number>(0);
   const [selectedDesired, setSelectedDesired] = useState<IOptions>({
     option: "Token Select",
     icon: <></>,
   });
+  const [expiryDate, setExpiryDate] = useState<string>("");
+
   const router = useRouter();
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (valueOffered <= 0 || valueDesired <= 0) {
+      return;
+    }
+
+    if (
+      selectedOffered.option === "Token Select" ||
+      selectedDesired.option === "Token Select"
+    ) {
+      return;
+    }
+
     void router.push(PAGES.LISTING);
     // TODO: Check if form is valid
   };
-
-  const dropDownOptions = options.map((token) => {
-    return {
-      option: token.token,
-      icon: token.icon,
-    };
-  });
 
   return (
     <form
@@ -52,20 +57,12 @@ export const CreateListing = ({
         </h1>
         <div className="flex w-full flex-col content-start items-start gap-2">
           <div className="font-bold">Details</div>
-          <Input
-            required
+          <TokenInputs
             label="You will swap"
-            type="number"
-            min={0}
-            pointerEvents
-            placeholder="0"
-            endContent={
-              <DropDown
-                options={dropDownOptions}
-                selected={selectedOffered}
-                setSelected={setSelectedOffered}
-              />
-            }
+            valueOffered={valueOffered}
+            setValueOffered={setValueOffered}
+            selectedOffered={selectedOffered}
+            setSelectedOffered={setSelectedOffered}
           />
           <Image
             src={DownIcon as string}
@@ -73,48 +70,27 @@ export const CreateListing = ({
             height={ICON_SIZES.L}
             className="flex justify-center self-center"
           />
-          <Input
-            required
+          <TokenInputs
             label="You will receive"
-            type="number"
-            min={0}
-            pointerEvents
-            placeholder="0"
-            endContent={
-              <DropDown
-                options={dropDownOptions}
-                selected={selectedDesired}
-                setSelected={setSelectedDesired}
-              />
-            }
+            valueOffered={valueDesired}
+            setValueOffered={setValueDesired}
+            selectedOffered={selectedDesired}
+            setSelectedOffered={setSelectedDesired}
           />
         </div>
         <div className="flex w-full flex-col content-start items-start gap-4">
           <div className="font-bold">Expiry</div>
           <div className="flex w-full flex-col gap-8 text-sm font-normal md:flex-row ">
             <div className="flex w-full flex-col gap-2">
-              <Input
+              <CalendarInput
                 label="Listing start date"
-                type="date"
-                endContent={
-                  <div className="flex">
-                    <Image
-                      src={CalendarIcon as string}
-                      alt=""
-                      height={ICON_SIZES.M}
-                    />
-                    <Image
-                      src={OpenIcon as string}
-                      alt="↓"
-                      height={ICON_SIZES.M}
-                    />
-                  </div>
-                }
+                value={startDate}
+                setValue={setStartDate}
               />
             </div>
             <div className="flex w-full flex-col gap-2">
               <Input
-                required
+                value={expiryDate}
                 label="Listing expiry date"
                 type="date"
                 endContent={
