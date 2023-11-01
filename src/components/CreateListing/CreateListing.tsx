@@ -9,6 +9,15 @@ import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
 
+interface ICreateErrors {
+  valueOffered: string | undefined;
+  valueDesired: string | undefined;
+  dropOffered: string | undefined;
+  dropDesired: string | undefined;
+  expiry: string | undefined;
+  startDate: string | undefined;
+}
+
 export const CreateListing = () => {
   const [valueOffered, setValueOffered] = useState<number>(0);
   const [selectedOffered, setSelectedOffered] = useState<IOptions>({
@@ -22,23 +31,14 @@ export const CreateListing = () => {
     icon: <></>,
   });
   const [expiryDate, setExpiryDate] = useState<string>("");
-
-  const [valueOfferedError, setValueOfferedError] = useState<
-    string | undefined
-  >(undefined);
-  const [valueDesiredError, setValueDesiredError] = useState<
-    string | undefined
-  >(undefined);
-  const [dropOfferedError, setDropOfferedError] = useState<string | undefined>(
-    undefined,
-  );
-  const [dropDesiredError, setDropDesiredError] = useState<string | undefined>(
-    undefined,
-  );
-  const [expiryError, setExpiryError] = useState<string | undefined>(undefined);
-  const [startDateError, setStartDateError] = useState<string | undefined>(
-    undefined,
-  );
+  const [errors, setErrors] = useState<ICreateErrors>({
+    valueOffered: undefined,
+    valueDesired: undefined,
+    dropOffered: undefined,
+    dropDesired: undefined,
+    expiry: undefined,
+    startDate: undefined,
+  });
 
   const router = useRouter();
 
@@ -48,24 +48,25 @@ export const CreateListing = () => {
     const startDateObj = startDate === "" ? new Date() : new Date(startDate);
     const expiryDateObj = new Date(expiryDate);
 
-    valueDesired <= 0
-      ? setValueDesiredError("Value must be greater than 0")
-      : setValueDesiredError(undefined);
-    valueOffered <= 0
-      ? setValueOfferedError("Value must be greater than 0")
-      : setValueOfferedError(undefined);
-    selectedOffered.option === "Token Select"
-      ? setDropOfferedError("You must select an offered token")
-      : setDropOfferedError(undefined);
-    selectedDesired.option === "Token Select"
-      ? setDropDesiredError("You must select a desired token")
-      : setDropDesiredError(undefined);
-    expiryDate === ""
-      ? setExpiryError("You must select an expiry date")
-      : setExpiryError(undefined);
-    startDateObj > expiryDateObj
-      ? setStartDateError("Start date must be before expiry date")
-      : setStartDateError(undefined);
+    setErrors({
+      valueOffered:
+        valueOffered <= 0 ? "Value must be greater than 0" : undefined,
+      valueDesired:
+        valueDesired <= 0 ? "Value must be greater than 0" : undefined,
+      dropOffered:
+        selectedOffered.option === "Token Select"
+          ? "You must select an offered token"
+          : undefined,
+      dropDesired:
+        selectedDesired.option === "Token Select"
+          ? "You must select a desired token"
+          : undefined,
+      expiry: expiryDate === "" ? "You must select an expiry date" : undefined,
+      startDate:
+        startDateObj > expiryDateObj
+          ? "Start date must be before expiry date"
+          : undefined,
+    });
 
     if (
       valueOffered > 0 &&
@@ -96,7 +97,7 @@ export const CreateListing = () => {
             setValueOffered={setValueOffered}
             selectedOffered={selectedOffered}
             setSelectedOffered={setSelectedOffered}
-            errors={[dropOfferedError, valueOfferedError]}
+            errors={[errors.dropOffered, errors.valueOffered]}
           />
           <Image
             src={DownIcon as string}
@@ -110,7 +111,7 @@ export const CreateListing = () => {
             setValueOffered={setValueDesired}
             selectedOffered={selectedDesired}
             setSelectedOffered={setSelectedDesired}
-            errors={[dropDesiredError, valueDesiredError]}
+            errors={[errors.dropDesired, errors.valueDesired]}
           />
         </div>
         <div className="flex w-full flex-col content-start items-start gap-4">
@@ -121,7 +122,7 @@ export const CreateListing = () => {
                 label="Listing start date"
                 value={startDate}
                 setValue={setStartDate}
-                errors={[startDateError]}
+                errors={[errors.startDate]}
               />
             </div>
             <div className="flex w-full flex-col gap-2">
@@ -129,7 +130,7 @@ export const CreateListing = () => {
                 label="Listing expiry date"
                 value={expiryDate}
                 setValue={setExpiryDate}
-                errors={[expiryError]}
+                errors={[errors.expiry]}
               />
             </div>
           </div>
