@@ -1,9 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
 import CompleteIcon from "public/complete.svg";
 import CubeIcon from "public/cube.svg";
 import LeftArrowIcon from "public/go-back.svg";
 import SeeMoreIcon from "public/see-more.svg";
-import { COLORS, ICON_SIZES } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 
 export const CompleteSwap = () => {
@@ -34,18 +35,20 @@ export const CompleteSwap = () => {
               </div>
             </div>
           </Button>
-          <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
-            <div className="flex justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
-              <div className="hidden sm:block">
-                <Image
-                  src={LeftArrowIcon as string}
-                  height={ICON_SIZES.M}
-                  alt=""
-                />
+          <Link href={PAGES.LISTING}>
+            <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
+              <div className="flex justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
+                <div className="hidden sm:block">
+                  <Image
+                    src={LeftArrowIcon as string}
+                    height={ICON_SIZES.M}
+                    alt=""
+                  />
+                </div>
+                Return to vesting schedule
               </div>
-              Return to vesting schedule
-            </div>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </div>
     </main>

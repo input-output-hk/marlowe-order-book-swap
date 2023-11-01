@@ -1,7 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import Fail from "public/fail.svg";
 import LeftArrowIcon from "public/go-back.svg";
-import { COLORS } from "~/utils";
+import { COLORS, PAGES } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 
 export const TransactionError = () => {
@@ -19,16 +20,18 @@ export const TransactionError = () => {
             <li>Marlowe Runtime may have failed.</li>
           </ul>
         </div>
-        <div className="w-full lg:w-4/5">
-          <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
-            <div className="flex justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
-              <div className="hidden sm:block">
-                <Image src={LeftArrowIcon as string} height={20} alt="←" />
+        <Link href={PAGES.LISTING}>
+          <div className="w-full lg:w-4/5">
+            <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
+              <div className="flex justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
+                <div className="hidden sm:block">
+                  <Image src={LeftArrowIcon as string} height={20} alt="←" />
+                </div>
+                Return to vesting schedule
               </div>
-              Return to vesting schedule
-            </div>
-          </Button>
-        </div>
+            </Button>
+          </div>
+        </Link>
       </div>
     </main>
   );
