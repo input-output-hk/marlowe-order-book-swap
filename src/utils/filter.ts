@@ -1,4 +1,4 @@
-import type { ITableData } from "./interfaces";
+import type { IFilters, ITableData } from "./interfaces";
 
 const filterMyListing = (data: ITableData[], owner: string) => {
   return data.filter((item) => item.createdBy === owner);
@@ -11,12 +11,6 @@ const filterByTokenName = (data: ITableData[], tokenName: string) => {
       item.offered.token.toLowerCase().includes(tokenName.toLowerCase()),
   );
 };
-
-export interface IFilters {
-  filterOwnListings: boolean;
-  owner: string;
-  searchQuery: string;
-}
 
 export const filterTableData = (data: ITableData[], filters: IFilters) => {
   const { filterOwnListings, owner, searchQuery } = filters;
