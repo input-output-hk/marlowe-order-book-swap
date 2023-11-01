@@ -4,7 +4,11 @@ import { COLORS, ICON_SIZES, getExpiration, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
-export const TableBodyMobile = ({ data }: TableProps) => {
+export const TableBodyMobile = ({
+  data,
+  handleOpenAccept,
+  handleOpenRetract,
+}: TableProps) => {
   return (
     <>
       <div className="flex flex-col gap-2 rounded-lg bg-m-light-purple p-4 md:hidden">
@@ -48,11 +52,17 @@ export const TableBodyMobile = ({ data }: TableProps) => {
                 <div className="w-1/3">
                   {/* TODO: change when we implement wallets */}
                   {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
-                    <Button size={SIZE.XSMALL} color={COLORS.RED}>
+                    <Button
+                      size={SIZE.XSMALL}
+                      color={COLORS.RED}
+                      onClick={handleOpenRetract(row)}
+                    >
                       Retract
                     </Button>
                   ) : (
-                    <Button size={SIZE.XSMALL}>Accept</Button>
+                    <Button size={SIZE.XSMALL} onClick={handleOpenAccept(row)}>
+                      Accept
+                    </Button>
                   )}
                 </div>
               </div>

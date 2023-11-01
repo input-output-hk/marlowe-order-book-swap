@@ -1,7 +1,10 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import SearchNoneIcon from "public/search-none.svg";
-import { ICON_SIZES } from "~/utils";
+import { useState } from "react";
+import { ICON_SIZES, type ITableData, type ITokenAmount } from "~/utils";
+import { RetractModal } from "../SwapModals/RetractModal";
+import { SwapModal } from "../SwapModals/SwapModal";
 import { TableHead } from "./TableHead";
 import type { TablePropsWithSort } from "./table.interface";
 
@@ -15,6 +18,30 @@ const TableBodyDesktop = dynamic(
 );
 
 export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
+  const [openRetract, setOpenRetract] = useState(false);
+  const [openAccept, setOpenAccept] = useState(false);
+  const [desired, setDesired] = useState<ITokenAmount>({
+    token: "",
+    icon: <></>,
+    amount: 0,
+  });
+  const [offered, setOffered] = useState<ITokenAmount>({
+    token: "",
+    icon: <></>,
+    amount: 0,
+  });
+
+  const handleOpenRetract = (row: ITableData) => () => {
+    setOffered(row.offered);
+    setDesired(row.desired);
+    setOpenRetract(true);
+  };
+  const handleOpenAccept = (row: ITableData) => () => {
+    setOffered(row.offered);
+    setDesired(row.desired);
+    setOpenAccept(true);
+  };
+
   if (!data.length) {
     return (
       <div className="flex h-96 flex-col items-center justify-center gap-4">
@@ -30,9 +57,29 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
     <>
       <div className="hidden min-h-min w-full md:table">
         <TableHead sort={sort} setSort={setSort} />
-        <TableBodyDesktop data={data} />
+        <TableBodyDesktop
+          data={data}
+          handleOpenRetract={handleOpenRetract}
+          handleOpenAccept={handleOpenAccept}
+        />
       </div>
-      <TableBodyMobile data={data} />
+      <TableBodyMobile
+        data={data}
+        handleOpenRetract={handleOpenRetract}
+        handleOpenAccept={handleOpenAccept}
+      />
+      <RetractModal
+        open={openRetract}
+        setOpen={setOpenRetract}
+        offer={offered}
+        receive={desired}
+      />
+      <SwapModal
+        open={openAccept}
+        setOpen={setOpenAccept}
+        offer={offered}
+        receive={desired}
+      />
     </>
   );
 };

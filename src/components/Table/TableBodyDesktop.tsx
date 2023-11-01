@@ -2,7 +2,11 @@ import { COLORS, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
-export const TableBodyDesktop = ({ data }: TableProps) => {
+export const TableBodyDesktop = ({
+  data,
+  handleOpenAccept,
+  handleOpenRetract,
+}: TableProps) => {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -48,13 +52,19 @@ export const TableBodyDesktop = ({ data }: TableProps) => {
               {/* TODO: change when we implement wallets */}
               {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
                 <div>
-                  <Button size={SIZE.SMALL} color={COLORS.RED}>
+                  <Button
+                    size={SIZE.SMALL}
+                    color={COLORS.RED}
+                    onClick={handleOpenRetract(row)}
+                  >
                     Retract offer
                   </Button>
                 </div>
               ) : (
                 <div>
-                  <Button size={SIZE.SMALL}>Accept Offer</Button>
+                  <Button size={SIZE.SMALL} onClick={handleOpenAccept(row)}>
+                    Accept Offer
+                  </Button>
                 </div>
               )}
             </div>
