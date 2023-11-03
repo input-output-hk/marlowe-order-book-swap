@@ -2,7 +2,7 @@ import Head from "next/head";
 import { Header } from "~/components/Header/Header";
 import { Wallet } from "~/components/Wallet";
 
-export default function Home() {
+export default function Test() {
   return (
     <>
       <Head>
