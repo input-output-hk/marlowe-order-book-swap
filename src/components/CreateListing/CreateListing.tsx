@@ -102,7 +102,7 @@ export const CreateListing = () => {
       className="flex flex-col items-center text-m-disabled"
       onSubmit={submitForm}
     >
-      <div className="flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle shadow-container md:w-2/3 lg:w-2/5">
+      <div className="flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle shadow-container md:w-4/5 lg:w-3/5">
         <h1 className="flex items-start self-stretch text-2xl font-bold">
           Token Swap Listing
         </h1>
