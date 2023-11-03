@@ -63,11 +63,14 @@ export const Input = ({
           {endContent}
         </div>
       </div>
-      {error?.map((err) => (
-        <div key={err} className="text-m-red">
-          {err}
-        </div>
-      ))}
+      {error?.map(
+        (err, index) =>
+          err !== undefined && (
+            <div key={index} className="text-m-red">
+              {err}
+            </div>
+          ),
+      )}
     </>
   );
 };

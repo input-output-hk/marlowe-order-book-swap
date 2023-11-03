@@ -6,8 +6,8 @@ import { Input } from "../Input/Input";
 
 interface TokenInputsProps {
   label: string;
-  valueOffered: number;
-  setValueOffered: Dispatch<SetStateAction<number>>;
+  valueOffered: string;
+  setValueOffered: Dispatch<SetStateAction<string>>;
   selectedOffered: IOptions;
   setSelectedOffered: Dispatch<SetStateAction<IOptions>>;
   errors: (string | undefined)[];
@@ -29,7 +29,7 @@ export const TokenInputs = ({
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueOffered(Number(e.target.value));
+    setValueOffered(e.target.value || "");
   };
 
   return (
