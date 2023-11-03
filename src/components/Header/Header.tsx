@@ -6,7 +6,12 @@ import { useCardano } from "use-cardano";
 import DisconnectIcon from "~/../public/disconnect.svg";
 import MarloweIcon from "~/../public/marlowe-logo.svg";
 import LogoIcon from "~/../public/marlowe.svg";
-import { ICON_SIZES, IWalletInStorage, PAGES, truncateString } from "~/utils";
+import {
+  ICON_SIZES,
+  PAGES,
+  truncateString,
+  type IWalletInStorage,
+} from "~/utils";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -33,6 +38,7 @@ export const Header = () => {
       });
       setWalletProvider(walletInfoParsed.walletProvider);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setAccount, setWalletProvider]);
 
   const getWalletIcon = () => {
