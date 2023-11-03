@@ -1,4 +1,4 @@
-import { COLORS, truncateString } from "~/utils";
+import { COLORS, humanReadable, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -24,9 +24,9 @@ export const TableBodyDesktop = ({
             <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
               {row.offered.icon}
               <p className="font-bold">
-                {row.offered.amount}
-                <abbr title={row.offered.token}>
-                  {truncateString(row.offered.token, 16)}
+                <abbr title={row.offered.amount + " " + row.offered.token}>
+                  {humanReadable(row.offered.amount, 2)}&nbsp;
+                  {truncateString(row.offered.token, 7)}
                 </abbr>
               </p>
             </div>
@@ -35,9 +35,9 @@ export const TableBodyDesktop = ({
             <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
               {row.desired.icon}
               <p className="font-bold">
-                {row.desired.amount}
-                <abbr title={row.desired.token}>
-                  {truncateString(row.desired.token, 16)}
+                <abbr title={row.desired.amount + " " + row.desired.token}>
+                  {humanReadable(row.desired.amount, 2)}&nbsp;
+                  {truncateString(row.desired.token, 7)}
                 </abbr>
               </p>
             </div>

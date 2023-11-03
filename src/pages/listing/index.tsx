@@ -12,38 +12,57 @@ export default function Listing() {
       createdBy: "addr_test123456789",
       offered: {
         token: "ADA",
-        amount: 1.04,
+        amount: 999.0123778979214,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.S} />
         ),
       },
       desired: {
         token: "Marlons",
-        amount: 2,
+        amount: 278071203701,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.S} />
         ),
       },
-      expiry: "12/26/2023 11:35",
+      expiry: "12/30/2023 11:35",
     },
     {
       id: 2,
       createdBy: "test_123",
       offered: {
         token: "ADA",
-        amount: 20000,
+        amount: 20000001,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.S} />
         ),
       },
       desired: {
         token: "Merlons",
-        amount: 0.00016,
+        amount: 0.00123116,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.S} />
         ),
       },
       expiry: "12/26/2023 16:35",
+    },
+    {
+      id: 3,
+      createdBy: "addr_test123456789",
+      offered: {
+        token: "ADA",
+        amount: 0.00001,
+        icon: (
+          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.S} />
+        ),
+      },
+      desired: {
+        token: "Merluns",
+        amount: 10.0010023116,
+        icon: (
+          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.S} />
+        ),
+      },
+      expiry: "11/29/2023 16:38",
     },
   ];
 
