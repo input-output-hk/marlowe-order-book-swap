@@ -1,6 +1,11 @@
 import Image from "next/image";
 import DownArrowIcon from "public/open_input.svg";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import {
+  useState,
+  type Dispatch,
+  type MouseEvent,
+  type SetStateAction,
+} from "react";
 import { COLORS, ICON_SIZES, truncateString, type IOptions } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 
@@ -33,7 +38,8 @@ export const DropDown = ({
     };
   });
 
-  const handleClick = () => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     !disabled && setOpenDropDown(!openDropDown);
   };
 
@@ -52,6 +58,7 @@ export const DropDown = ({
         color={COLORS.LIGHT_GRAY}
         filled
         onClick={handleClick}
+        type="button"
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center justify-around gap-2 text-xs font-medium text-m-dark-gray">

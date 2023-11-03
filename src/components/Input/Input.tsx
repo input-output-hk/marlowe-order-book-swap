@@ -6,11 +6,13 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   pointerEvents?: boolean;
   startContent?: JSX.Element;
   useShadow?: boolean;
+  error?: (string | undefined)[];
 }
 
 export const Input = ({
   disabled = false,
   endContent,
+  error,
   label,
   max,
   min,
@@ -28,6 +30,11 @@ export const Input = ({
   const paddingLeftX = startContent ? "pl-12" : "pl-4";
   const paddingRightX = endContent ? "pr-12" : "pr-4";
   const pointerEvents = needsPointerEvents ? "" : "pointer-events-none";
+
+  const errorStyle =
+    error && error.length > 0 && error.some((err) => err !== undefined)
+      ? "ring-m-red focus:ring-m-red focus:border-m-red border-m-red"
+      : "";
 
   return (
     <>
@@ -50,12 +57,20 @@ export const Input = ({
           onChange={onChange}
           disabled={disabled}
           required={required}
-          className={`m-dark-grey w-full flex-grow rounded-md border p-3 focus:border-m-purple focus:ring-m-purple ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1 ${customClassName}`}
+          className={`m-dark-grey w-full flex-grow rounded-md border p-3 focus:border-m-purple focus:ring-m-purple ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1 ${customClassName} ${errorStyle}`}
         />
         <div className={`${pointerEvents} absolute right-0 p-4`}>
           {endContent}
         </div>
       </div>
+      {error?.map(
+        (err, index) =>
+          err !== undefined && (
+            <div key={index} className="text-m-red">
+              {err}
+            </div>
+          ),
+      )}
     </>
   );
 };

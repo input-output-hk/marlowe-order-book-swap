@@ -1,71 +1,120 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import CalendarIcon from "public/calendar.svg";
 import DownIcon from "public/down_arrow.svg";
-import OpenIcon from "public/open_input.svg";
 import { useState, type FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
-import type { IOptions, IToken } from "~/utils";
+import type { IOptions } from "~/utils";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
-import { DropDown } from "../DropDown/DropDown";
-import { Input } from "../Input/Input";
+import { CalendarInput } from "./CalendarInput";
+import { TokenInputs } from "./TokenInputs";
 
-interface CreateListingProps {
-  tokenOptions: IToken[];
+interface ICreateErrors {
+  valueOffered: string | undefined;
+  valueDesired: string | undefined;
+  dropOffered: string | undefined;
+  dropDesired: string | undefined;
+  expiryDate: string | undefined;
+  startDate: string | undefined;
+  beforeTodayStartError: string | undefined;
+  beforeTodayExpiryError: string | undefined;
 }
 
-export const CreateListing = ({
-  tokenOptions: options,
-}: CreateListingProps) => {
+export const CreateListing = () => {
+  const [valueOffered, setValueOffered] = useState<string>("");
   const [selectedOffered, setSelectedOffered] = useState<IOptions>({
     option: "Token Select",
     icon: <></>,
   });
+  const [startDate, setStartDate] = useState<string>("");
+  const [valueDesired, setValueDesired] = useState<string>("");
   const [selectedDesired, setSelectedDesired] = useState<IOptions>({
     option: "Token Select",
     icon: <></>,
   });
+  const [expiryDate, setExpiryDate] = useState<string>("");
+  const [errors, setErrors] = useState<ICreateErrors>({
+    valueOffered: undefined,
+    valueDesired: undefined,
+    dropOffered: undefined,
+    dropDesired: undefined,
+    expiryDate: undefined,
+    startDate: undefined,
+    beforeTodayStartError: undefined,
+    beforeTodayExpiryError: undefined,
+  });
+
   const router = useRouter();
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    void router.push(PAGES.LISTING);
-    // TODO: Check if form is valid
-  };
 
-  const dropDownOptions = options.map((token) => {
-    return {
-      option: token.token,
-      icon: token.icon,
-    };
-  });
+    const startDateObj = startDate === "" ? new Date() : new Date(startDate);
+    const expiryDateObj = new Date(expiryDate);
+
+    setErrors({
+      valueOffered:
+        Number(valueOffered) <= 0 || valueOffered === ""
+          ? "Value must be greater than 0"
+          : undefined,
+      valueDesired:
+        Number(valueDesired) <= 0 || valueDesired === ""
+          ? "Value must be greater than 0"
+          : undefined,
+      dropOffered:
+        selectedOffered.option === "Token Select"
+          ? "You must select an offered token"
+          : undefined,
+      dropDesired:
+        selectedDesired.option === "Token Select"
+          ? "You must select a desired token"
+          : undefined,
+      expiryDate:
+        expiryDate === "" ? "You must select an expiry date" : undefined,
+      startDate:
+        startDate !== "" && startDateObj > expiryDateObj
+          ? "Start date must be before expiry date"
+          : undefined,
+      beforeTodayStartError:
+        startDateObj < new Date()
+          ? "Start date must be after today's date"
+          : undefined,
+      beforeTodayExpiryError:
+        expiryDateObj < new Date()
+          ? "Expiry date must be after today's date"
+          : undefined,
+    });
+
+    if (
+      Number(valueOffered) > 0 &&
+      Number(valueDesired) > 0 &&
+      selectedOffered.option !== "Token Select" &&
+      selectedDesired.option !== "Token Select" &&
+      expiryDate !== "" &&
+      startDateObj < expiryDateObj
+    ) {
+      void router.push(PAGES.LISTING);
+    }
+  };
 
   return (
     <form
       className="flex flex-col items-center text-m-disabled"
       onSubmit={submitForm}
     >
-      <div className="flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle shadow-container md:w-2/3 lg:w-2/5">
+      <div className="flex w-4/5 flex-col items-center justify-center gap-5 rounded-lg border px-7 py-8 align-middle shadow-container md:w-4/5 lg:w-3/5">
         <h1 className="flex items-start self-stretch text-2xl font-bold">
           Token Swap Listing
         </h1>
         <div className="flex w-full flex-col content-start items-start gap-2">
           <div className="font-bold">Details</div>
-          <Input
-            required
-            label="You will swap"
-            type="number"
-            min={0}
-            pointerEvents
-            placeholder="0"
-            endContent={
-              <DropDown
-                options={dropDownOptions}
-                selected={selectedOffered}
-                setSelected={setSelectedOffered}
-              />
-            }
+          <TokenInputs
+            label="You will swap *"
+            valueOffered={valueOffered}
+            setValueOffered={setValueOffered}
+            selectedOffered={selectedOffered}
+            setSelectedOffered={setSelectedOffered}
+            errors={[errors.dropOffered, errors.valueOffered]}
           />
           <Image
             src={DownIcon as string}
@@ -73,67 +122,39 @@ export const CreateListing = ({
             height={ICON_SIZES.L}
             className="flex justify-center self-center"
           />
-          <Input
-            required
-            label="You will receive"
-            type="number"
-            min={0}
-            pointerEvents
-            placeholder="0"
-            endContent={
-              <DropDown
-                options={dropDownOptions}
-                selected={selectedDesired}
-                setSelected={setSelectedDesired}
-              />
-            }
+          <TokenInputs
+            label="You will receive *"
+            valueOffered={valueDesired}
+            setValueOffered={setValueDesired}
+            selectedOffered={selectedDesired}
+            setSelectedOffered={setSelectedDesired}
+            errors={[errors.dropDesired, errors.valueDesired]}
           />
         </div>
         <div className="flex w-full flex-col content-start items-start gap-4">
           <div className="font-bold">Expiry</div>
           <div className="flex w-full flex-col gap-8 text-sm font-normal md:flex-row ">
             <div className="flex w-full flex-col gap-2">
-              <Input
+              <CalendarInput
                 label="Listing start date"
-                type="date"
-                endContent={
-                  <div className="flex">
-                    <Image
-                      src={CalendarIcon as string}
-                      alt=""
-                      height={ICON_SIZES.M}
-                    />
-                    <Image
-                      src={OpenIcon as string}
-                      alt="↓"
-                      height={ICON_SIZES.M}
-                    />
-                  </div>
-                }
+                value={startDate}
+                setValue={setStartDate}
+                errors={[errors.startDate, errors.beforeTodayStartError]}
               />
             </div>
             <div className="flex w-full flex-col gap-2">
-              <Input
-                required
-                label="Listing expiry date"
-                type="date"
-                endContent={
-                  <div className="flex">
-                    <Image
-                      src={CalendarIcon as string}
-                      alt=""
-                      height={ICON_SIZES.M}
-                    />
-                    <Image
-                      src={OpenIcon as string}
-                      alt="↓"
-                      height={ICON_SIZES.M}
-                    />
-                  </div>
-                }
+              <CalendarInput
+                label="Listing expiry date *"
+                value={expiryDate}
+                setValue={setExpiryDate}
+                errors={[errors.expiryDate, errors.beforeTodayExpiryError]}
               />
             </div>
           </div>
+          <span>
+            By default, clicking &ldquo;Accept&rdquo; will automatically start
+            the offer.
+          </span>
         </div>
         <div className="flex w-full justify-end pt-5 text-sm">
           <div className="flex w-2/3 items-center justify-end gap-6">
