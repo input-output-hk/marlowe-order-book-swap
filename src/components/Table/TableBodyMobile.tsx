@@ -1,6 +1,6 @@
 import Image from "next/image";
 import SwapIcon from "public/swap.svg";
-import { COLORS, ICON_SIZES, getExpiration, humanReadableNum } from "~/utils";
+import { COLORS, ICON_SIZES, getExpiration, humanReadable } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -31,13 +31,13 @@ export const TableBodyMobile = ({
                 <div className="flex gap-2">
                   {row.offered.icon}
                   <p className="font-bold">
-                    {humanReadableNum(row.offered.amount)}&nbsp;
+                    {humanReadable(row.offered.amount, 2)}&nbsp;
                   </p>
                 </div>
                 <div className="flex gap-2">
                   {row.desired.icon}
                   <p className="font-bold">
-                    {humanReadableNum(row.desired.amount)}&nbsp;
+                    {humanReadable(row.desired.amount, 2)}&nbsp;
                   </p>
                 </div>
               </div>

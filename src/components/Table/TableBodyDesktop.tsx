@@ -1,4 +1,4 @@
-import { COLORS, humanReadableNum, truncateString } from "~/utils";
+import { COLORS, humanReadable, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -25,7 +25,7 @@ export const TableBodyDesktop = ({
               {row.offered.icon}
               <p className="font-bold">
                 <abbr title={row.offered.amount + " " + row.offered.token}>
-                  {humanReadableNum(row.offered.amount)}&nbsp;
+                  {humanReadable(row.offered.amount, 2)}&nbsp;
                   {truncateString(row.offered.token, 7)}
                 </abbr>
               </p>
@@ -36,7 +36,7 @@ export const TableBodyDesktop = ({
               {row.desired.icon}
               <p className="font-bold">
                 <abbr title={row.desired.amount + " " + row.desired.token}>
-                  {humanReadableNum(row.desired.amount)}&nbsp;
+                  {humanReadable(row.desired.amount, 2)}&nbsp;
                   {truncateString(row.desired.token, 7)}
                 </abbr>
               </p>
