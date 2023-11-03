@@ -2,7 +2,7 @@ import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
 import {
   CardanoProvider,
-  UseCardanoNodeOptions,
+  type UseCardanoNodeOptions,
   type UseCardanoOptions,
 } from "use-cardano";
 import { env } from "~/env.mjs";

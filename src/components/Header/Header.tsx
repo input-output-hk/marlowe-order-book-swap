@@ -6,7 +6,7 @@ import { useCardano } from "use-cardano";
 import DisconnectIcon from "~/../public/disconnect.svg";
 import MarloweIcon from "~/../public/marlowe-logo.svg";
 import LogoIcon from "~/../public/marlowe.svg";
-import { ICON_SIZES, PAGES, truncateString } from "~/utils";
+import { ICON_SIZES, IWalletInStorage, PAGES, truncateString } from "~/utils";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -15,21 +15,25 @@ export const Header = () => {
     account,
     walletProvider,
     availableProviders,
-    accountLoaded,
     setWalletProvider,
     setAccount,
-    setAccountLoaded,
   } = useCardano();
 
   useEffect(() => {
-    // setAccountLoaded(account.address !== undefined);
-    // if (accountLoaded) {
-    //   void router.push(PAGES.LISTING);
-    // }
-    // if (!account.address) {
-    //   void router.push(PAGES.HOME);
-    // }
-  }, [account, account.address, accountLoaded]);
+    const walletInfo = window.localStorage.getItem("walletInfo");
+
+    if (walletInfo === "{}" || walletInfo === null) {
+      void router.push(PAGES.HOME);
+    } else {
+      const walletInfoParsed = JSON.parse(walletInfo) as IWalletInStorage;
+
+      setAccount({
+        address: walletInfoParsed.address,
+        rewardAddress: walletInfoParsed.rewardAddress,
+      });
+      setWalletProvider(walletInfoParsed.walletProvider);
+    }
+  }, [setAccount, setWalletProvider]);
 
   const getWalletIcon = () => {
     const prov = availableProviders.find((prov) => {
@@ -50,6 +54,7 @@ export const Header = () => {
   };
 
   const disconnectWallet = () => {
+    window.localStorage.removeItem("walletInfo");
     setWalletProvider(undefined);
     setAccount({ address: undefined, rewardAddress: undefined });
     void router.push(PAGES.HOME);

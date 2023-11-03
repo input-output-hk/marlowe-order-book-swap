@@ -12,6 +12,7 @@ export const Wallet = () => {
     account,
     availableProviders,
     accountLoaded,
+    walletProvider,
     setWalletProvider,
     setAccountLoaded,
   } = useCardano();
@@ -20,9 +21,25 @@ export const Wallet = () => {
     setAccountLoaded(account.address !== undefined);
 
     if (accountLoaded) {
+      window.localStorage.setItem(
+        "walletInfo",
+        JSON.stringify({
+          address: account.address,
+          rewardAddress: account.rewardAddress,
+          walletProvider: walletProvider,
+        }),
+      );
+
       void router.push(PAGES.LISTING);
     }
-  }, [account.address, account]);
+  }, [
+    account.address,
+    account.rewardAddress,
+    accountLoaded,
+    router,
+    setAccountLoaded,
+    walletProvider,
+  ]);
 
   const handleSelectWallet = (provider: string) => () => {
     setWalletProvider(provider.toLowerCase() as WalletProvider);
@@ -44,7 +61,6 @@ export const Wallet = () => {
                 className="flex items-center justify-between gap-2 rounded-lg border p-4"
               >
                 <div className="flex w-1/4 items-center gap-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <Image
                     src={prov.icon}
                     alt={prov.name}

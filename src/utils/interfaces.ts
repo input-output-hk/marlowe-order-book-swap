@@ -1,3 +1,5 @@
+import { type WalletProvider } from "use-cardano";
+
 export interface IToken {
   token: string;
   icon: JSX.Element;
@@ -35,4 +37,10 @@ export interface ISort {
 export interface IOptions {
   option: string;
   icon: JSX.Element;
+}
+
+export interface IWalletInStorage {
+  address: string;
+  rewardAddress: string;
+  walletProvider: WalletProvider;
 }
