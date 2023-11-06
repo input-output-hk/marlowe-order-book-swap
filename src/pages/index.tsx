@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { Header } from "~/components/Header/Header";
-import { Wallet } from "~/components/Wallet";
+import { WalletSelect } from "~/components/WalletSelect/WalletSelect";
 
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
       <Header />
 
       <main className="h-screen w-full flex-grow px-4 pb-48 pt-4 sm:px-28 md:flex md:items-center md:justify-center md:px-0 ">
-        <Wallet />
+        <WalletSelect />
       </main>
     </>
   );
