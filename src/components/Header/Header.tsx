@@ -2,39 +2,68 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useCardano } from "use-cardano";
 import DisconnectIcon from "~/../public/disconnect.svg";
 import MarloweIcon from "~/../public/marlowe-logo.svg";
 import LogoIcon from "~/../public/marlowe.svg";
-import { ICON_SIZES, PAGES } from "~/utils";
-import { WALLETS, walletLogos } from "~/utils/wallets";
+import {
+  ICON_SIZES,
+  PAGES,
+  truncateString,
+  type IWalletInStorage,
+} from "~/utils";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
-  const [wallet, setWallet] = useState<WALLETS | undefined>(undefined);
-  const { push } = useRouter();
-  const addr = "addr_test1qp8rc...";
+  const router = useRouter();
+  const {
+    account,
+    walletProvider,
+    availableProviders,
+    setWalletProvider,
+    setAccount,
+  } = useCardano();
 
   useEffect(() => {
-    const getWallet = async () => {
-      const wallet = window.localStorage.getItem("wallet");
-      if (wallet && Object.values(WALLETS).includes(wallet as WALLETS)) {
-        setWallet(wallet as WALLETS);
-      } else {
-        await push(PAGES.HOME);
-      }
-    };
+    const walletInfo = window.localStorage.getItem("walletInfo");
 
-    getWallet().catch((e) => console.error(e));
-  }, [push]);
+    if (walletInfo === "{}" || walletInfo === null) {
+      void router.push(PAGES.HOME);
+    } else {
+      const walletInfoParsed = JSON.parse(walletInfo) as IWalletInStorage;
+
+      setAccount({
+        address: walletInfoParsed.address,
+        rewardAddress: walletInfoParsed.rewardAddress,
+      });
+      setWalletProvider(walletInfoParsed.walletProvider);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setAccount, setWalletProvider]);
+
+  const getWalletIcon = () => {
+    const prov = availableProviders.find((prov) => {
+      if (prov.key === walletProvider) {
+        return prov;
+      }
+    });
+
+    if (prov) {
+      return prov.icon;
+    } else {
+      return "";
+    }
+  };
 
   const changeOpen = () => {
     setOpen(!open);
   };
 
-  const disconnectWallet = async () => {
-    setWallet(undefined);
-    window.localStorage.removeItem("wallet");
-    await push(PAGES.HOME);
+  const disconnectWallet = () => {
+    window.localStorage.removeItem("walletInfo");
+    setWalletProvider(undefined);
+    setAccount({ address: undefined, rewardAddress: undefined });
+    void router.push(PAGES.HOME);
   };
 
   return (
@@ -50,13 +79,20 @@ export const Header = () => {
         <Link href={PAGES.LISTING} className="block sm:hidden">
           <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
         </Link>
-        {wallet && (
+        {account.address && walletProvider && (
           <div
             className="flex cursor-pointer items-center gap-2"
             onClick={changeOpen}
           >
-            {walletLogos[wallet]}
-            <div className="hidden sm:block">{addr}</div>
+            <Image
+              src={getWalletIcon()}
+              alt={"wallet"}
+              width={ICON_SIZES.L}
+              height={ICON_SIZES.L}
+            />
+            <div className="hidden sm:block">
+              {truncateString(account.address, 14)}
+            </div>
           </div>
         )}
         {open && (
