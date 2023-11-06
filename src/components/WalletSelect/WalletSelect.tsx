@@ -36,7 +36,7 @@ export const WalletSelect = () => {
         }),
       );
 
-      void router.push(PAGES.LISTING).then(() => setLoading(false));
+      void router.push(PAGES.LISTING);
     }
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (walletInfo === null || walletInfo === "{}") {

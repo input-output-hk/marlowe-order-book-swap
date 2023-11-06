@@ -3,21 +3,21 @@ import LogoIcon from "~/../public/marlowe.svg";
 import { ICON_SIZES } from "~/utils";
 
 interface LoadingProps {
-  size?: (typeof ICON_SIZES)[keyof typeof ICON_SIZES];
+  sizeDesktop?: (typeof ICON_SIZES)[keyof typeof ICON_SIZES];
+  sizeMobile?: (typeof ICON_SIZES)[keyof typeof ICON_SIZES];
 }
 
-export const Loading = ({ size = ICON_SIZES.XXL }: LoadingProps) => {
+export const Loading = ({
+  sizeDesktop = ICON_SIZES.XXL,
+  sizeMobile = ICON_SIZES.XL,
+}: LoadingProps) => {
   return (
     <>
       <div className="hidden animate-ping sm:block">
-        <Image src={LogoIcon as string} alt="Loading..." height={size} />
+        <Image src={LogoIcon as string} alt="Loading..." height={sizeDesktop} />
       </div>
       <div className="block animate-ping sm:hidden">
-        <Image
-          src={LogoIcon as string}
-          alt="Loading..."
-          height={ICON_SIZES.XL}
-        />
+        <Image src={LogoIcon as string} alt="Loading..." height={sizeMobile} />
       </div>
     </>
   );

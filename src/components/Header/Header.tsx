@@ -96,7 +96,9 @@ export const Header = () => {
             </div>
           </div>
         ) : (
-          router.pathname !== PAGES.HOME && <Loading size={ICON_SIZES.M} />
+          router.pathname !== PAGES.HOME && (
+            <Loading sizeDesktop={ICON_SIZES.M} sizeMobile={ICON_SIZES.M} />
+          )
         )}
         {open && (
           <div
