@@ -58,7 +58,11 @@ export const WalletSelect = () => {
   const toggleInfo = () => setOpenInfo((prev) => !prev);
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="flex flex-grow items-center justify-center ">
+        <Loading />
+      </div>
+    );
   }
 
   if (availableProviders.length === 0) {
