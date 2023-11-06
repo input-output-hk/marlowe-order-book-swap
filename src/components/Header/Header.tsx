@@ -12,6 +12,7 @@ import {
   truncateString,
   type IWalletInStorage,
 } from "~/utils";
+import { Loading } from "../Loading/Loading";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -79,7 +80,7 @@ export const Header = () => {
         <Link href={PAGES.LISTING} className="block sm:hidden">
           <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
         </Link>
-        {account.address && walletProvider && (
+        {account.address ? (
           <div
             className="flex cursor-pointer items-center gap-2"
             onClick={changeOpen}
@@ -94,6 +95,8 @@ export const Header = () => {
               {truncateString(account.address, 14)}
             </div>
           </div>
+        ) : (
+          router.pathname !== PAGES.HOME && <Loading size={ICON_SIZES.M} />
         )}
         {open && (
           <div
