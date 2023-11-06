@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 import { useCardano, type WalletProvider } from "use-cardano";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
+import { Loading } from "../Loading/Loading";
 import { WalletsSupported } from "./WalletSupported";
 
 export const WalletSelect = () => {
   const [openInfo, setOpenInfo] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
   const {
@@ -34,7 +36,11 @@ export const WalletSelect = () => {
         }),
       );
 
-      void router.push(PAGES.LISTING);
+      void router.push(PAGES.LISTING).then(() => setLoading(false));
+    }
+    const walletInfo = window.localStorage.getItem("walletInfo");
+    if (walletInfo === null || walletInfo === "{}") {
+      setLoading(false);
     }
   }, [
     account.address,
@@ -50,6 +56,10 @@ export const WalletSelect = () => {
   };
 
   const toggleInfo = () => setOpenInfo((prev) => !prev);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   if (availableProviders.length === 0) {
     return (
