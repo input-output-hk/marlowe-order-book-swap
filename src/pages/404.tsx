@@ -3,10 +3,20 @@ import Image from "next/image";
 import Link from "next/link";
 import MarloweIcon from "public/marlowe-logo.svg";
 import LogoIcon from "public/marlowe.svg";
+import { useCardano } from "use-cardano";
 import { Button } from "~/components/Button/Button";
 import { ICON_SIZES, PAGES } from "~/utils";
 
 export default function FourZeroFour() {
+  const { account } = useCardano();
+
+  const getLink = () => {
+    if (account.address) {
+      return PAGES.LISTING;
+    }
+    return PAGES.HOME;
+  };
+
   return (
     <>
       <Head>
@@ -17,14 +27,14 @@ export default function FourZeroFour() {
 
       <header className="px-10 py-5 sm:px-12 sm:py-8 md:px-20 lg:px-32">
         <div className="relative flex flex-wrap items-center justify-between gap-5">
-          <Link href={PAGES.LISTING} className="hidden sm:block">
+          <Link href={getLink()} className="hidden sm:block">
             <Image
               src={MarloweIcon as string}
               alt="Marlowe"
               height={ICON_SIZES.L}
             />
           </Link>
-          <Link href={PAGES.LISTING} className="block sm:hidden">
+          <Link href={getLink()} className="block sm:hidden">
             <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
           </Link>
         </div>
@@ -43,7 +53,7 @@ export default function FourZeroFour() {
             </p>
           </div>
           <div className="w-1/2">
-            <Link href={PAGES.HOME}>
+            <Link href={getLink()}>
               <Button>Go to Home</Button>
             </Link>
           </div>
