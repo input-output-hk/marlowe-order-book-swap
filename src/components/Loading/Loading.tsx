@@ -8,8 +8,17 @@ interface LoadingProps {
 
 export const Loading = ({ size = ICON_SIZES.XXL }: LoadingProps) => {
   return (
-    <div className="animate-ping">
-      <Image src={LogoIcon as string} alt="Loading..." height={size} />
-    </div>
+    <>
+      <div className="hidden animate-ping sm:block">
+        <Image src={LogoIcon as string} alt="Loading..." height={size} />
+      </div>
+      <div className="block animate-ping sm:hidden">
+        <Image
+          src={LogoIcon as string}
+          alt="Loading..."
+          height={ICON_SIZES.XL}
+        />
+      </div>
+    </>
   );
 };
