@@ -78,7 +78,7 @@ export const WalletSelect = () => {
             className="cursor-pointer pb-1"
           />
           {openInfo && (
-            <div className="absolute top-8 w-48 rounded-lg bg-white px-4 py-2 shadow-container lg:w-56">
+            <div className="absolute right-0 top-8 w-48 rounded-lg bg-white px-4 py-2 shadow-container sm:left-0 lg:w-56">
               <WalletsSupported />
             </div>
           )}
