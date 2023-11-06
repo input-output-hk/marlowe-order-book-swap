@@ -40,7 +40,7 @@ export default function FourZeroFour() {
         </div>
       </header>
 
-      <main className="flex h-screen w-full flex-grow flex-col items-center justify-center gap-20 px-4 pb-48 pt-4 sm:px-28 md:flex-row md:px-0">
+      <main className="flex h-screen w-full flex-grow flex-col items-center justify-center gap-8 px-4 pb-48 pt-4 sm:px-28 md:flex-row md:gap-20 md:px-0">
         <Image
           src={LogoIcon as string}
           alt="Marlowe"
@@ -54,7 +54,7 @@ export default function FourZeroFour() {
           className="block md:hidden"
         />
 
-        <div className="flex w-3/4 flex-col items-center justify-center gap-4 md:w-1/4">
+        <div className="flex w-3/4 flex-col items-center justify-center gap-4 md:w-1/4 md:items-start">
           <div className="text-center md:text-left">
             <h1 className="pb-2 text-4xl font-bold lg:text-5xl">404</h1>
             <h2 className="text-2xl font-semibold lg:text-3xl">
@@ -65,7 +65,7 @@ export default function FourZeroFour() {
             </p>
           </div>
 
-          <div className="w-1/2 md:w-2/3 lg:w-1/2">
+          <div className="w-1/2 md:w-full lg:w-4/5">
             <Link href={getLink()}>
               <Button>Go to Home</Button>
             </Link>
