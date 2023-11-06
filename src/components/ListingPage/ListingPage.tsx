@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "~/components/Table/Table";
 import { env } from "~/env.mjs";
 import {
@@ -9,6 +9,7 @@ import {
   type ISort,
   type ITableData,
 } from "~/utils";
+import { Loading } from "../Loading/Loading";
 import { UtilityDesktop } from "./UtilityDesktop";
 import { UtilityMobile } from "./UtilityMobile";
 
@@ -17,6 +18,7 @@ interface ListingPageProps {
 }
 
 export const ListingPage = ({ listingData }: ListingPageProps) => {
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<IFilters>({
     filterOwnListings: false,
     searchQuery: "",
@@ -29,6 +31,19 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
 
   const sortedData = sortTableData(listingData, sort);
   const data = filterTableData(sortedData, filters);
+
+  useEffect(() => {
+    const walletInfo = window.localStorage.getItem("walletInfo");
+    setLoading(walletInfo === "{}" || walletInfo === null);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-grow items-center justify-center ">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <main className="flex h-fit w-full flex-grow flex-col gap-4 ">

@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import DownIcon from "public/down_arrow.svg";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import type { IOptions } from "~/utils";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
+import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
 
@@ -21,6 +22,7 @@ interface ICreateErrors {
 }
 
 export const CreateListing = () => {
+  const [loading, setLoading] = useState(true);
   const [valueOffered, setValueOffered] = useState<string>("");
   const [selectedOffered, setSelectedOffered] = useState<IOptions>({
     option: "Token Select",
@@ -96,6 +98,19 @@ export const CreateListing = () => {
       void router.push(PAGES.LISTING);
     }
   };
+
+  useEffect(() => {
+    const walletInfo = window.localStorage.getItem("walletInfo");
+    setLoading(walletInfo === "{}" || walletInfo === null);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-grow items-center justify-center ">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <form
