@@ -22,6 +22,7 @@ export const Header = () => {
     availableProviders,
     setWalletProvider,
     setAccount,
+    walletApi,
   } = useCardano();
 
   useEffect(() => {
