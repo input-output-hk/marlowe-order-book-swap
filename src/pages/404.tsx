@@ -35,7 +35,12 @@ export default function FourZeroFour() {
             />
           </Link>
           <Link href={getLink()} className="block sm:hidden">
-            <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
+            <Image
+              src={LogoIcon as string}
+              alt="M"
+              height={ICON_SIZES.L}
+              className="h-auto w-auto"
+            />
           </Link>
         </div>
       </header>
