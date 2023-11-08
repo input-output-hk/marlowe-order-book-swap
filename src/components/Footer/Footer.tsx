@@ -90,6 +90,7 @@ export const Footer = () => {
                 alt="GitHub"
                 height={ICON_SIZES.M}
                 width={ICON_SIZES.M}
+                className="h-auto w-auto"
               />
             </a>
             <a
@@ -102,6 +103,7 @@ export const Footer = () => {
                 alt="Discord"
                 height={ICON_SIZES.M}
                 width={ICON_SIZES.M}
+                className="h-auto w-auto"
               />
             </a>
             <a
@@ -126,6 +128,7 @@ export const Footer = () => {
                 alt="YouTube"
                 height={ICON_SIZES.M}
                 width={ICON_SIZES.M}
+                className="h-auto w-auto"
               />
             </a>
           </div>
