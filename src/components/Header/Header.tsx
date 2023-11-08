@@ -102,16 +102,10 @@ export const Header = () => {
             src={MarloweIcon as string}
             alt="Marlowe"
             height={ICON_SIZES.L}
-            priority
           />
         </Link>
         <Link href={PAGES.LISTING} className="block sm:hidden">
-          <Image
-            src={LogoIcon as string}
-            alt="M"
-            height={ICON_SIZES.L}
-            className="h-auto w-auto"
-          />
+          <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
         </Link>
         {account.address ? (
           <div className="flex cursor-pointer items-center gap-3">
