@@ -42,6 +42,17 @@ export const Header = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setAccount, setWalletProvider]);
 
+  useEffect(() => {
+    const walletBalance = async () => {
+      if (lucid) {
+        const balance = await getBalance(lucid);
+        setBalance(balance.lovelace!);
+      }
+    };
+
+    void walletBalance();
+  }, [lucid]);
+
   const getWalletIcon = () => {
     const prov = availableProviders.find((prov) => {
       if (prov.key === walletProvider) {
@@ -76,17 +87,6 @@ export const Header = () => {
     }
   };
 
-  useEffect(() => {
-    const walletBalance = async () => {
-      if (lucid) {
-        const balance = await getBalance(lucid);
-        setBalance(balance.lovelace!);
-      }
-    };
-
-    void walletBalance();
-  }, [lucid]);
-
   const balanceInt = Math.floor(Number(balance) / 1e6);
 
   const balanceDecimals = ((Number(balance) / 1e6) % 1)
@@ -102,10 +102,16 @@ export const Header = () => {
             src={MarloweIcon as string}
             alt="Marlowe"
             height={ICON_SIZES.L}
+            priority
           />
         </Link>
         <Link href={PAGES.LISTING} className="block sm:hidden">
-          <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
+          <Image
+            src={LogoIcon as string}
+            alt="M"
+            height={ICON_SIZES.L}
+            className="h-auto w-auto"
+          />
         </Link>
         {account.address ? (
           <div className="flex cursor-pointer items-center gap-3">
@@ -113,12 +119,15 @@ export const Header = () => {
               onClick={changeOpen}
               className="flex cursor-pointer items-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1"
             >
-              <Image
-                src={getWalletIcon()}
-                alt={"wallet"}
-                width={ICON_SIZES.L}
-                height={ICON_SIZES.L}
-              />
+              {getWalletIcon() && (
+                <Image
+                  src={getWalletIcon()}
+                  alt={"wallet"}
+                  width={ICON_SIZES.M}
+                  height={ICON_SIZES.M}
+                  priority
+                />
+              )}
               <div className="hidden sm:block">
                 {balanceInt}.<span className="text-xs">{balanceDecimals}</span>
                 &nbsp;
