@@ -29,7 +29,7 @@ export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
           startContent={
             <Image
               src={SearchIcon as string}
-              height={ICON_SIZES.M}
+              height={ICON_SIZES.S}
               alt="Search"
             />
           }

@@ -29,7 +29,7 @@ export const TableBodyMobile = ({
                 <Image
                   src={SwapIcon as string}
                   alt={"<-->"}
-                  height={ICON_SIZES.M}
+                  height={ICON_SIZES.S}
                 />
                 <p>Desired</p>
               </div>

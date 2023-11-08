@@ -24,12 +24,12 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
   const columns = [
     {
       column: "Token Offered",
-      icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.M} />,
+      icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.S} />,
       sortable: false,
     },
     {
       column: "Desired Token",
-      icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.M} />,
+      icon: <Image src={TagIcon as string} alt="tag" height={ICON_SIZES.S} />,
       sortable: false,
     },
     {
@@ -39,7 +39,7 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
         <Image
           src={CalendarIcon as string}
           alt="calendar"
-          height={ICON_SIZES.M}
+          height={ICON_SIZES.S}
         />
       ),
       sortable: true,
@@ -50,7 +50,7 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
         <Image
           src={HandShakeIcon as string}
           alt="actions"
-          height={ICON_SIZES.M}
+          height={ICON_SIZES.S}
         />
       ),
       sortable: false,
@@ -97,7 +97,7 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
                     src={ArrowIcon as string}
                     alt={sort.sortOrder === SortOrder.ASC ? "↑" : "↓"}
                     className={`${getSortArrowRotation()}`}
-                    height={ICON_SIZES.M}
+                    height={ICON_SIZES.S}
                   />
                 )}
               </div>

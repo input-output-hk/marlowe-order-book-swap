@@ -31,7 +31,7 @@ export const UtilityMobile = ({
             startContent={
               <Image
                 src={SearchIcon as string}
-                height={ICON_SIZES.M}
+                height={ICON_SIZES.S}
                 alt="Search"
               />
             }
@@ -54,7 +54,7 @@ export const UtilityMobile = ({
           src={PlusIcon as string}
           alt="+"
           className="scale-125 invert"
-          height={ICON_SIZES.M}
+          height={ICON_SIZES.S}
         />
       </Link>
     </div>

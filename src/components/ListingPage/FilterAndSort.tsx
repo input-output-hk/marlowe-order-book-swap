@@ -57,7 +57,7 @@ export const FiltersAndSort = ({
         className="flex h-full w-full gap-1 rounded-lg bg-m-light-purple px-2 py-2"
         onClick={handleClick}
       >
-        <Image src={FilterIcon as string} alt="Filter" height={ICON_SIZES.M} />
+        <Image src={FilterIcon as string} alt="Filter" height={ICON_SIZES.S} />
         <p>Filters & Sort</p>
       </div>
       <Modal open={open} setOpen={setOpen} title="Filters & Sort">

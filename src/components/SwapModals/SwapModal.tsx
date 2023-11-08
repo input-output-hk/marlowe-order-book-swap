@@ -40,7 +40,7 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
               <div className="flex gap-2 pb-11 text-sm text-m-green">
                 <Image
                   src={CheckIcon as string}
-                  height={ICON_SIZES.S}
+                  height={ICON_SIZES.XS}
                   alt="✓"
                 />
                 You have sufficient funds in your wallet
@@ -49,7 +49,7 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
               <div className="flex gap-2 pb-11 text-sm text-m-red">
                 <Image
                   src={CrossIcon as string}
-                  height={ICON_SIZES.S}
+                  height={ICON_SIZES.XS}
                   alt="✗"
                 />
                 <p>
@@ -79,7 +79,7 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
             <div className="flex items-center gap-2 align-middle text-lg font-medium">
               <Image
                 src={DownArrowIcon as string}
-                height={ICON_SIZES.M}
+                height={ICON_SIZES.S}
                 alt="↓"
               />
               Transferred to

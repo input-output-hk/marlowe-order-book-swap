@@ -128,7 +128,7 @@ export const WalletSelect = () => {
                     <Image
                       src={CardanoIcon as string}
                       alt={"C"}
-                      height={ICON_SIZES.S}
+                      height={ICON_SIZES.XS}
                     />
                     <p className="font-normal text-black">Cardano</p>
                   </div>

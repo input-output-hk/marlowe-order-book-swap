@@ -78,7 +78,7 @@ export const DropDown = ({
             <Image
               src={DownArrowIcon as string}
               alt="↓"
-              height={ICON_SIZES.M}
+              height={ICON_SIZES.S}
             />
           )}
         </div>
