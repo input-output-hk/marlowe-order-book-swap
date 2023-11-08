@@ -96,7 +96,7 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
                   <Image
                     src={ArrowIcon as string}
                     alt={sort.sortOrder === SortOrder.ASC ? "↑" : "↓"}
-                    className={`${getSortArrowRotation()}`}
+                    className={`${getSortArrowRotation()} h-auto w-auto`}
                     height={ICON_SIZES.M}
                   />
                 )}

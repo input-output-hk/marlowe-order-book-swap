@@ -3,19 +3,18 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCardano } from "use-cardano";
+import CheckIcon from "~/../public/check.svg";
+import CopyIcon from "~/../public/copy.svg";
 import DisconnectIcon from "~/../public/disconnect.svg";
 import MarloweIcon from "~/../public/marlowe-logo.svg";
 import LogoIcon from "~/../public/marlowe.svg";
-import {
-  ICON_SIZES,
-  PAGES,
-  truncateString,
-  type IWalletInStorage,
-} from "~/utils";
+import { ICON_SIZES, PAGES, getBalance, type IWalletInStorage } from "~/utils";
 import { Loading } from "../Loading/Loading";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [balance, setBalance] = useState(BigInt(0));
   const router = useRouter();
   const {
     account,
@@ -23,6 +22,7 @@ export const Header = () => {
     availableProviders,
     setWalletProvider,
     setAccount,
+    lucid,
   } = useCardano();
 
   useEffect(() => {
@@ -42,6 +42,17 @@ export const Header = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setAccount, setWalletProvider]);
 
+  useEffect(() => {
+    const walletBalance = async () => {
+      if (lucid) {
+        const balance = await getBalance(lucid);
+        setBalance(balance.lovelace!);
+      }
+    };
+
+    void walletBalance();
+  }, [lucid]);
+
   const getWalletIcon = () => {
     const prov = availableProviders.find((prov) => {
       if (prov.key === walletProvider) {
@@ -49,11 +60,7 @@ export const Header = () => {
       }
     });
 
-    if (prov) {
-      return prov.icon;
-    } else {
-      return "";
-    }
+    return prov ? prov.icon : "";
   };
 
   const changeOpen = () => {
@@ -66,6 +73,26 @@ export const Header = () => {
     setAccount({ address: undefined, rewardAddress: undefined });
     void router.push(PAGES.HOME);
   };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(account.address!).then(() => {
+        setCopied(true);
+        setTimeout(() => {
+          setCopied(false);
+        }, 3000);
+      });
+    } catch (err) {
+      console.error("Failed to copy address: ", err);
+    }
+  };
+
+  const balanceInt = Math.floor(Number(balance) / 1e6);
+
+  const balanceDecimals = ((Number(balance) / 1e6) % 1)
+    .toFixed(6)
+    .toString()
+    .slice(2);
 
   return (
     <header className="px-10 py-5 sm:px-12 sm:py-8 md:px-20 lg:px-32">
@@ -81,19 +108,49 @@ export const Header = () => {
           <Image src={LogoIcon as string} alt="M" height={ICON_SIZES.L} />
         </Link>
         {account.address ? (
-          <div
-            className="flex cursor-pointer items-center gap-2"
-            onClick={changeOpen}
-          >
-            <Image
-              src={getWalletIcon()}
-              alt={"wallet"}
-              width={ICON_SIZES.L}
-              height={ICON_SIZES.L}
-            />
-            <div className="hidden sm:block">
-              {truncateString(account.address, 14)}
+          <div className="flex cursor-pointer items-center gap-3">
+            <div
+              onClick={changeOpen}
+              className="flex cursor-pointer items-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1"
+            >
+              {getWalletIcon() && (
+                <Image
+                  src={getWalletIcon()}
+                  alt={"wallet"}
+                  width={ICON_SIZES.M}
+                  height={ICON_SIZES.M}
+                  priority
+                />
+              )}
+              <div className="hidden sm:block">
+                {balanceInt}.<span className="text-xs">{balanceDecimals}</span>
+                &nbsp;
+                <b>t₳</b>
+              </div>
             </div>
+            {copied ? (
+              <div className="animate-bounce">
+                <abbr title="Copied!">
+                  <Image
+                    src={CheckIcon as string}
+                    alt="✓"
+                    width={ICON_SIZES.M}
+                    height={ICON_SIZES.M}
+                  />
+                </abbr>
+              </div>
+            ) : (
+              <div onClick={copyToClipboard}>
+                <abbr title="Copy Address">
+                  <Image
+                    src={CopyIcon as string}
+                    alt={"Copy"}
+                    width={ICON_SIZES.M}
+                    height={ICON_SIZES.M}
+                  />
+                </abbr>
+              </div>
+            )}
           </div>
         ) : (
           router.pathname !== PAGES.HOME && (
@@ -106,7 +163,7 @@ export const Header = () => {
             onClick={changeOpen}
           >
             <div
-              className="absolute right-5 top-5  flex cursor-pointer items-center gap-10 rounded-md border bg-white p-2 sm:right-10 sm:top-8 md:right-20 lg:right-24"
+              className="absolute right-5 top-5 flex cursor-pointer items-center gap-2 rounded-md border bg-white p-2 sm:right-10 sm:top-8 sm:px-4 md:right-11 md:gap-4 md:px-6 lg:right-32 "
               onClick={disconnectWallet}
             >
               Disconnect Wallet

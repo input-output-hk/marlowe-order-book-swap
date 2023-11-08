@@ -32,7 +32,12 @@ export const CalendarInput = ({
       endContent={
         <div className="flex">
           <Image src={CalendarIcon as string} alt="" height={ICON_SIZES.M} />
-          <Image src={OpenIcon as string} alt="↓" height={ICON_SIZES.M} />
+          <Image
+            src={OpenIcon as string}
+            alt="↓"
+            height={ICON_SIZES.M}
+            className="h-auto w-auto"
+          />
         </div>
       }
     />
