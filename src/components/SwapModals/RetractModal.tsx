@@ -5,7 +5,12 @@ import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
 import { type ModalProps } from "./interface";
 
-export const RetractModal = ({ open, setOpen, offer, receive }: ModalProps) => {
+export const RetractModal = ({
+  open,
+  setOpen,
+  offered,
+  desired,
+}: ModalProps) => {
   const closeModal = () => {
     setOpen(false);
   };
@@ -18,10 +23,10 @@ export const RetractModal = ({ open, setOpen, offer, receive }: ModalProps) => {
               label="You will swap"
               type="number"
               disabled
-              placeholder={offer.amount.toString()}
+              placeholder={offered.amount.toString()}
               endContent={
                 <DropDown
-                  options={[{ option: offer.token, icon: offer.icon }]}
+                  options={[{ option: offered.token, icon: offered.icon }]}
                   disabled
                 />
               }
@@ -33,10 +38,10 @@ export const RetractModal = ({ open, setOpen, offer, receive }: ModalProps) => {
               label="You will receive"
               type="number"
               disabled
-              placeholder={receive.amount.toString()}
+              placeholder={desired.amount.toString()}
               endContent={
                 <DropDown
-                  options={[{ option: receive.token, icon: receive.icon }]}
+                  options={[{ option: desired.token, icon: desired.icon }]}
                   disabled
                 />
               }

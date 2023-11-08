@@ -10,12 +10,14 @@ import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
 import { type ModalProps } from "./interface";
 
-export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
-  const isEnough = true;
+export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
+  const isEnough = false;
   const address = process.env.NEXT_PUBLIC_OWN_ADDRESS;
+
   const closeModal = () => {
     setOpen(false);
   };
+
   return (
     <Modal open={open} setOpen={setOpen} title="Swap Offer">
       <main className="flex w-full flex-col items-center text-m-disabled">
@@ -25,10 +27,10 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
               label="You will swap"
               type="number"
               disabled
-              placeholder={offer.amount.toString()}
+              placeholder={desired.amount.toString()}
               endContent={
                 <DropDown
-                  options={[{ option: offer.token, icon: offer.icon }]}
+                  options={[{ option: desired.token, icon: desired.icon }]}
                   disabled
                 />
               }
@@ -50,10 +52,12 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
                   height={ICON_SIZES.S}
                   alt="✗"
                 />
-                Insufficient funds,
-                <div className="font-medium underline">
-                  add tokens to wallet
-                </div>
+                <p>
+                  Insufficient funds,&nbsp;
+                  <span className="p-0 font-medium underline">
+                    add tokens to wallet
+                  </span>
+                </p>
               </div>
             )}
             <hr className="h-1 w-full " />
@@ -61,10 +65,10 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
               label="You will receive"
               type="number"
               disabled
-              placeholder={receive.amount.toString()}
+              placeholder={offered.amount.toString()}
               endContent={
                 <DropDown
-                  options={[{ option: receive.token, icon: receive.icon }]}
+                  options={[{ option: offered.token, icon: offered.icon }]}
                   disabled
                 />
               }

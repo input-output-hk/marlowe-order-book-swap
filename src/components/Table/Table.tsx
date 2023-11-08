@@ -71,14 +71,14 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
       <RetractModal
         open={openRetract}
         setOpen={setOpenRetract}
-        offer={offered}
-        receive={desired}
+        offered={offered}
+        desired={desired}
       />
       <SwapModal
         open={openAccept}
         setOpen={setOpenAccept}
-        offer={offered}
-        receive={desired}
+        offered={offered}
+        desired={desired}
       />
     </>
   );
