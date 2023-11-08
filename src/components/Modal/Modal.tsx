@@ -29,7 +29,7 @@ export const Modal = ({
               className="cursor-pointer"
               src={CloseIcon as string}
               alt="x"
-              height={ICON_SIZES.S}
+              height={ICON_SIZES.XS}
             ></Image>
           </div>
         </div>

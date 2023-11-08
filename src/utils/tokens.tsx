@@ -6,10 +6,10 @@ import type { IToken } from "./interfaces";
 export const exampleTokens: IToken[] = [
   {
     token: "ADA",
-    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
+    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
   },
   {
     token: "ADA2",
-    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
+    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
   },
 ];
