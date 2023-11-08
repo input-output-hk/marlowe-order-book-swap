@@ -3,10 +3,7 @@ import Link from "next/link";
 import CrossIcon from "public/cancel.svg";
 import CheckIcon from "public/check.svg";
 import DownArrowIcon from "public/down_arrow.svg";
-import { useEffect, useState } from "react";
-import { useCardano } from "use-cardano";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
-import { getTokenNames } from "~/utils/cardano";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -14,23 +11,8 @@ import { Modal } from "../Modal/Modal";
 import { type ModalProps } from "./interface";
 
 export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
-  const [isEnough, setIsEnough] = useState<boolean | null>(null);
+  const isEnough = false;
   const address = process.env.NEXT_PUBLIC_OWN_ADDRESS;
-  const { walletApi, lucid } = useCardano();
-
-  useEffect(() => {
-    const tokenNames = async () => {
-      if (walletApi && lucid) {
-        const walletFromLucid = lucid?.selectWallet(walletApi);
-        const tokensFromWallet = await getTokenNames(walletFromLucid);
-        setIsEnough(
-          Object.keys(tokensFromWallet).includes(desired.token) &&
-            tokensFromWallet[desired.token]! >= desired.amount,
-        );
-      }
-    };
-    void tokenNames();
-  }, [desired, lucid, walletApi]);
 
   const closeModal = () => {
     setOpen(false);
@@ -54,31 +36,30 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
               }
               className="py-4"
             />
-            {isEnough !== null &&
-              (isEnough ? (
-                <div className="flex gap-2 pb-11 text-sm text-m-green">
-                  <Image
-                    src={CheckIcon as string}
-                    height={ICON_SIZES.S}
-                    alt="✓"
-                  />
-                  You have sufficient funds in your wallet
-                </div>
-              ) : (
-                <div className="flex gap-2 pb-11 text-sm text-m-red">
-                  <Image
-                    src={CrossIcon as string}
-                    height={ICON_SIZES.S}
-                    alt="✗"
-                  />
-                  <p>
-                    Insufficient funds,&nbsp;
-                    <span className="p-0 font-medium underline">
-                      add tokens to wallet
-                    </span>
-                  </p>
-                </div>
-              ))}
+            {isEnough ? (
+              <div className="flex gap-2 pb-11 text-sm text-m-green">
+                <Image
+                  src={CheckIcon as string}
+                  height={ICON_SIZES.S}
+                  alt="✓"
+                />
+                You have sufficient funds in your wallet
+              </div>
+            ) : (
+              <div className="flex gap-2 pb-11 text-sm text-m-red">
+                <Image
+                  src={CrossIcon as string}
+                  height={ICON_SIZES.S}
+                  alt="✗"
+                />
+                <p>
+                  Insufficient funds,&nbsp;
+                  <span className="p-0 font-medium underline">
+                    add tokens to wallet
+                  </span>
+                </p>
+              </div>
+            )}
             <hr className="h-1 w-full " />
             <Input
               label="You will receive"
