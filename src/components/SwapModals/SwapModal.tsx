@@ -20,8 +20,8 @@ import { Loading } from "../Loading/Loading";
 import { Modal } from "../Modal/Modal";
 import { type ModalProps } from "./interface";
 
-export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
-  const [balance, setBalance] = useState<Assets>({});
+export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
+  const [balance, setBalance] = useState<Assets | null>(null);
   const { walletApi, lucid, account } = useCardano();
   const { address } = account;
 
@@ -34,7 +34,7 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
       }
     };
 
-    getBalanceFromWallet().catch((err) => console.log(err));
+    void getBalanceFromWallet();
   }, [lucid, walletApi]);
 
   const closeModal = () => {
@@ -43,7 +43,7 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
 
   return (
     <Modal open={open} setOpen={setOpen} title="Swap Offer">
-      {Object.keys(balance).length === 0 ? (
+      {!balance ? (
         <div className="flex flex-grow items-center justify-center py-8">
           <Loading sizeDesktop={ICON_SIZES.XL} sizeMobile={ICON_SIZES.L} />
         </div>
@@ -55,16 +55,16 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
                 label="You will swap"
                 type="number"
                 disabled
-                placeholder={offer.amount.toString()}
+                placeholder={desired.amount.toString()}
                 endContent={
                   <DropDown
-                    options={[{ option: offer.token, icon: offer.icon }]}
+                    options={[{ option: desired.token, icon: desired.icon }]}
                     disabled
                   />
                 }
                 className="py-4"
               />
-              {isEnoughBalance(balance, receive) ? (
+              {isEnoughBalance(balance, desired) ? (
                 <div className="flex gap-2 pb-11 text-sm text-m-green">
                   <Image
                     src={CheckIcon as string}
@@ -91,10 +91,10 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
                 label="You will receive"
                 type="number"
                 disabled
-                placeholder={receive.amount.toString()}
+                placeholder={offered.amount.toString()}
                 endContent={
                   <DropDown
-                    options={[{ option: receive.token, icon: receive.icon }]}
+                    options={[{ option: offered.token, icon: offered.icon }]}
                     disabled
                   />
                 }
@@ -130,7 +130,7 @@ export const SwapModal = ({ open, setOpen, offer, receive }: ModalProps) => {
               <Link href={PAGES.COMPLETE}>
                 <Button
                   size={SIZE.SMALL}
-                  disabled={!isEnoughBalance(balance, receive)}
+                  disabled={!isEnoughBalance(balance, desired)}
                   filled
                 >
                   Confirm Swap
