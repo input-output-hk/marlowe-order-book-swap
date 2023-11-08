@@ -80,10 +80,12 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
                     height={ICON_SIZES.S}
                     alt="✗"
                   />
-                  Insufficient funds,
-                  <div className="font-medium underline">
-                    add tokens to wallet
-                  </div>
+                  <p>
+                    Insufficient funds,&nbsp;
+                    <span className="font-medium underline">
+                      add tokens to wallet
+                    </span>
+                  </p>
                 </div>
               )}
               <hr className="h-1 w-full " />
