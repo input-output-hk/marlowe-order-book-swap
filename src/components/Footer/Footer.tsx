@@ -1,7 +1,7 @@
 import Image from "next/image";
 import DiscordLogo from "public/discord.svg";
 import GithubLogo from "public/github.svg";
-import TwitterLogo from "public/twitter.svg";
+import XLogo from "public/x-logo.svg";
 import YoutubeLogo from "public/youtube.svg";
 import { ICON_SIZES } from "~/utils";
 
@@ -105,12 +105,12 @@ export const Footer = () => {
               />
             </a>
             <a
-              href="https://twitter.com/marlowe_io"
+              href="https://x.com/marlowe_io"
               target="_blank"
               className="cursor-pointer hover:brightness-50"
             >
               <Image
-                src={TwitterLogo as string}
+                src={XLogo as string}
                 alt="Twitter"
                 height={ICON_SIZES.M}
                 width={ICON_SIZES.M}
