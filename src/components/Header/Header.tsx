@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import MarloweIcon from "public/marlowe.svg";
 import MenuIcon from "public/menu.svg";
 import { useState } from "react";
-import { ICON_SIZES, PAGES } from "~/utils";
+import { ICON_SIZES, PAGES, type ILink } from "~/utils";
 
 interface HeaderProps {
   title: string;
-  links: { displayText: string; href: string }[];
+  links: ILink[];
   homeLink?: string;
   className?: string;
   children?: React.ReactNode;

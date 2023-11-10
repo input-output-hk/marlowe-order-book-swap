@@ -1,25 +1,37 @@
 import Image from "next/image";
-import { ICON_SIZES } from "~/utils";
-import { footerLinks, socialMediaLinks } from "./utils";
+import MarloweIcon from "public/marlowe-logo.svg";
+import { ICON_SIZES, type ILink } from "~/utils";
 
-export const Footer = () => {
+interface FooterProps {
+  socialMediaLinks: {
+    href: string;
+    logo: string;
+    alt: string;
+  }[];
+  footerLinks: {
+    title: string;
+    links: ILink[];
+  }[];
+}
+
+export const Footer = ({ footerLinks, socialMediaLinks }: FooterProps) => {
   return (
-    <footer className="px-10 py-5 sm:px-12 sm:py-8 md:px-20 lg:px-32">
-      <hr className="pb-6" />
-      <div className="flex flex-col justify-between gap-8 px-4 md:flex-row md:gap-14">
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 sm:gap-8 md:grid-cols-2 md:gap-4 lg:grid-cols-3 lg:grid-rows-1 lg:gap-14">
+    <footer className="flex flex-col gap-4 px-8 py-5 pb-24 sm:px-12 sm:py-8 md:px-24 lg:px-28">
+      <hr />
+      <div className=" flex flex-col justify-between gap-8 md:flex-row md:gap-4 lg:gap-8">
+        <div className="grid grid-cols-2 grid-rows-2 gap-4 sm:gap-8  lg:grid-cols-4 lg:grid-rows-1 ">
           {footerLinks.map((footerLink) => {
             return (
               <div key={footerLink.title}>
-                <b>{footerLink.title}</b>
+                <b className="text-m-purple">{footerLink.title}</b>
                 {footerLink.links.map((link) => (
                   <a
                     href={link.href}
                     target="_blank"
                     className="block"
-                    key={link.text}
+                    key={link.displayText}
                   >
-                    {link.text}
+                    {link.displayText}
                   </a>
                 ))}
               </div>
@@ -27,29 +39,36 @@ export const Footer = () => {
           })}
         </div>
 
-        <div className="flex w-full flex-col items-center justify-between gap-4 md:w-1/2 md:items-end md:gap-0 lg:w-1/3">
-          <div className="flex gap-6">
+        <div className="flex w-full flex-col items-center justify-start gap-6 md:w-1/2 md:items-end lg:w-1/4">
+          <Image
+            src={MarloweIcon as string}
+            alt="Marlowe"
+            height={ICON_SIZES.XL}
+          />
+          <div
+            className="flex items-center justify-items-center gap-6 md:grid md:grid-cols-5 lg:gap-3"
+            dir="rtl"
+          >
             {socialMediaLinks.map((social) => (
               <a
                 href={social.href}
                 target="_blank"
                 key={social.alt}
-                className="cursor-pointer hover:brightness-50"
+                className="block cursor-pointer hover:brightness-50"
               >
                 <Image
                   src={social.logo}
                   alt={social.alt}
                   height={ICON_SIZES.M}
                   width={ICON_SIZES.M}
-                  className={social.alt !== "X" ? "h-auto w-auto" : ""}
                 />
               </a>
             ))}
           </div>
-          <div className="text-center md:text-right">
-            &copy; 2023 Input Output Global, Inc. All Rights Reserved.
-          </div>
         </div>
+      </div>
+      <div className="text-center">
+        &copy; 2023 Input Output Global, Inc. All Rights Reserved.
       </div>
     </footer>
   );

@@ -11,7 +11,7 @@ export const CompleteSwap = () => {
   return (
     <main className="flex h-full w-full flex-col items-center text-center">
       <div className="m-auto mt-3 flex w-2/3 flex-col items-center justify-center gap-5 align-middle lg:w-1/3">
-        <Image src={CompleteIcon as string} height={ICON_SIZES.XXL} alt="" />
+        <Image src={CompleteIcon as string} height={ICON_SIZES.XXXL} alt="" />
         <div className="text-3xl font-extrabold">
           Nice, you&apos;ve completed a swap! 🎉
         </div>

@@ -44,3 +44,8 @@ export interface IWalletInStorage {
   rewardAddress: string;
   walletProvider: WalletProvider;
 }
+
+export interface ILink {
+  displayText: string;
+  href: string;
+}
