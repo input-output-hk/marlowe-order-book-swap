@@ -2,7 +2,6 @@ import Head from "next/head";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import { Footer } from "~/components/Footer/Footer";
-import { Header } from "~/components/Header/Header";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { ICON_SIZES, type ITableData } from "~/utils";
 
@@ -70,12 +69,10 @@ export default function Listing() {
   return (
     <>
       <Head>
-        <title>Token Swap</title>
+        <title>Order Book Swap Prototype - Listing</title>
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
-
-      <Header />
 
       <ListingPage listingData={example} />
 

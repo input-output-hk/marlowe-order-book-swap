@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import MarloweIcon from "public/marlowe-logo.svg";
 import LogoIcon from "public/marlowe.svg";
 import { useCardano } from "use-cardano";
 import { Button } from "~/components/Button/Button";
@@ -24,26 +23,6 @@ export default function FourZeroFour() {
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
-
-      <header className="px-10 py-5 sm:px-12 sm:py-8 md:px-20 lg:px-32">
-        <div className="relative flex flex-wrap items-center justify-between gap-5">
-          <Link href={getLink()} className="hidden sm:block">
-            <Image
-              src={MarloweIcon as string}
-              alt="Marlowe"
-              height={ICON_SIZES.L}
-            />
-          </Link>
-          <Link href={getLink()} className="block sm:hidden">
-            <Image
-              src={LogoIcon as string}
-              alt="M"
-              height={ICON_SIZES.L}
-              className="h-auto w-auto"
-            />
-          </Link>
-        </div>
-      </header>
 
       <main className="flex h-screen w-full flex-grow flex-col items-center justify-center gap-8 px-4 pb-48 pt-4 sm:px-28 md:flex-row md:gap-20 md:px-0">
         <Image
