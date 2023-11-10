@@ -2,15 +2,8 @@ import Head from "next/head";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import { Footer } from "~/components/Footer/Footer";
-import { Header } from "~/components/Header/Header";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
-import {
-  HEADER_TITLE,
-  ICON_SIZES,
-  PAGES,
-  headerLinks,
-  type ITableData,
-} from "~/utils";
+import { HEADER_TITLE, ICON_SIZES, type ITableData } from "~/utils";
 
 export default function Listing() {
   const example: ITableData[] = [
@@ -80,12 +73,6 @@ export default function Listing() {
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
-
-      <Header
-        title={HEADER_TITLE}
-        links={headerLinks}
-        homeLink={PAGES.LISTING}
-      />
 
       <ListingPage listingData={example} />
 

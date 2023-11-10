@@ -5,9 +5,11 @@ import {
   type UseCardanoNodeOptions,
   type UseCardanoOptions,
 } from "use-cardano";
+import { Header } from "~/components/Header/Header";
 import { env } from "~/env.mjs";
 
 import "~/styles/globals.css";
+import { HEADER_TITLE, PAGES, headerLinks } from "~/utils";
 import { api } from "~/utils/api";
 
 const inter = Inter({
@@ -39,6 +41,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         `}
       </style>
       <CardanoProvider options={options}>
+        <Header
+          links={headerLinks}
+          title={HEADER_TITLE}
+          homeLink={PAGES.LISTING}
+        />
         <Component {...pageProps} />
       </CardanoProvider>
     </>
