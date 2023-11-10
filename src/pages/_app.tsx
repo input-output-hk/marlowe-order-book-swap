@@ -5,6 +5,8 @@ import {
   type UseCardanoNodeOptions,
   type UseCardanoOptions,
 } from "use-cardano";
+import { Footer } from "~/components/Footer/Footer";
+import { footerLinks, socialMediaLinks } from "~/components/Footer/utils";
 import { env } from "~/env.mjs";
 
 import "~/styles/globals.css";
@@ -40,6 +42,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </style>
       <CardanoProvider options={options}>
         <Component {...pageProps} />
+        <Footer footerLinks={footerLinks} socialMediaLinks={socialMediaLinks} />
       </CardanoProvider>
     </>
   );
