@@ -8,8 +8,8 @@ interface LoadingProps {
 }
 
 export const Loading = ({
-  sizeDesktop = ICON_SIZES.XXL,
-  sizeMobile = ICON_SIZES.XL,
+  sizeDesktop = ICON_SIZES.XXXL,
+  sizeMobile = ICON_SIZES.XXL,
 }: LoadingProps) => {
   return (
     <>

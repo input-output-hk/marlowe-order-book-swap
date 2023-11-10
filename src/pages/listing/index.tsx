@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
-import { Footer } from "~/components/Footer/Footer";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { ICON_SIZES, type ITableData } from "~/utils";
 
@@ -75,8 +74,6 @@ export default function Listing() {
       </Head>
 
       <ListingPage listingData={example} />
-
-      <Footer />
     </>
   );
 }

@@ -24,17 +24,17 @@ export default function FourZeroFour() {
         <link rel="icon" href="/marlowe.svg" />
       </Head>
 
-      <main className="flex h-screen w-full flex-grow flex-col items-center justify-center gap-8 px-4 pb-48 pt-4 sm:px-28 md:flex-row md:gap-20 md:px-0">
+      <main className="flex h-screen w-full flex-grow flex-col items-center justify-center gap-8 md:flex-row md:gap-20 md:py-32 ">
         <Image
           src={LogoIcon as string}
           alt="Marlowe"
-          width={ICON_SIZES.XXL}
+          width={ICON_SIZES.XXXL}
           className="hidden md:block"
         />
         <Image
           src={LogoIcon as string}
           alt="Marlowe"
-          width={ICON_SIZES.XL}
+          width={ICON_SIZES.XXL}
           className="block md:hidden"
         />
 

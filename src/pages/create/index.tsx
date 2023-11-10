@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { CreateListing } from "~/components/CreateListing/CreateListing";
-import { Footer } from "~/components/Footer/Footer";
 
 export default function CreateListingPage() {
   return (
@@ -12,7 +11,6 @@ export default function CreateListingPage() {
       </Head>
 
       <CreateListing />
-      <Footer />
     </>
   );
 }

@@ -8,4 +8,3 @@ export * from "./pages";
 export * from "./sort";
 export * from "./string";
 export * from "./time";
-export * from "./wallets";
