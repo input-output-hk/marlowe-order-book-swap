@@ -49,13 +49,13 @@ export default function FourZeroFour() {
         <Image
           src={LogoIcon as string}
           alt="Marlowe"
-          width={ICON_SIZES.XXL}
+          width={ICON_SIZES.XXXL}
           className="hidden md:block"
         />
         <Image
           src={LogoIcon as string}
           alt="Marlowe"
-          width={ICON_SIZES.XL}
+          width={ICON_SIZES.XXL}
           className="block md:hidden"
         />
 

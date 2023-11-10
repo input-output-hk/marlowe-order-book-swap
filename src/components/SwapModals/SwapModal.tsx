@@ -45,7 +45,7 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
     <Modal open={open} setOpen={setOpen} title="Swap Offer">
       {!balance ? (
         <div className="flex flex-grow items-center justify-center py-8">
-          <Loading sizeDesktop={ICON_SIZES.XL} sizeMobile={ICON_SIZES.L} />
+          <Loading sizeDesktop={ICON_SIZES.XXL} sizeMobile={ICON_SIZES.L} />
         </div>
       ) : (
         <div className="flex w-full flex-col items-center text-m-disabled">

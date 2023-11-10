@@ -30,25 +30,25 @@ export const footerLinks = [
   {
     title: "Resources",
     links: [
-      { text: "Official Website", href: "https://marlowe.iohk.io/" },
-      { text: "Documentation", href: "https://docs.marlowe.iohk.io/" },
-      { text: "Playground", href: "https://play.marlowe.iohk.io/" },
-      { text: "Blog", href: "https://marlowe.iohk.io/blog" },
+      { displayText: "Official Website", href: "https://marlowe.iohk.io/" },
+      { displayText: "Documentation", href: "https://docs.marlowe.iohk.io/" },
+      { displayText: "Playground", href: "https://play.marlowe.iohk.io/" },
+      { displayText: "Blog", href: "https://marlowe.iohk.io/blog" },
     ],
   },
   {
     title: "Legal",
     links: [
       {
-        text: "Cookie Policy",
+        displayText: "Cookie Policy",
         href: "https://docs.google.com/document/d/13zJ5jdaKjXgAytvDn0kln8UFDhyFr3AS/view",
       },
       {
-        text: "Privacy Policy",
+        displayText: "Privacy Policy",
         href: "https://static.iohk.io/terms/iog-privacy-policy.pdf",
       },
       {
-        text: "Terms of Use",
+        displayText: "Terms of Use",
         href: "https://plutus-static.s3.eu-central-1.amazonaws.com/IOHK+Website+Terms+%26+Conditions+(Final).pdf",
       },
     ],
@@ -57,7 +57,7 @@ export const footerLinks = [
     title: "Support",
     links: [
       {
-        text: "IOG tech support",
+        displayText: "IOG tech support",
         href: "https://iohk.zendesk.com/hc/en-us/requests/new",
       },
     ],

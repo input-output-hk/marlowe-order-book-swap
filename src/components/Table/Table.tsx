@@ -45,7 +45,11 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
   if (!data.length) {
     return (
       <div className="flex h-96 flex-col items-center justify-center gap-4">
-        <Image src={SearchNoneIcon as string} alt="X" height={ICON_SIZES.XXL} />
+        <Image
+          src={SearchNoneIcon as string}
+          alt="X"
+          height={ICON_SIZES.XXXL}
+        />
         <div className="text-2xl font-bold text-m-dark-gray">
           There is no listing to display
         </div>
