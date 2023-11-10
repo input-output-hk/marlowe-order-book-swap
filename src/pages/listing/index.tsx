@@ -4,7 +4,13 @@ import MarloweIcon from "public/marlowe.svg";
 import { Footer } from "~/components/Footer/Footer";
 import { Header } from "~/components/Header/Header";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
-import { ICON_SIZES, type ITableData } from "~/utils";
+import {
+  HEADER_TITLE,
+  ICON_SIZES,
+  PAGES,
+  headerLinks,
+  type ITableData,
+} from "~/utils";
 
 export default function Listing() {
   const example: ITableData[] = [
@@ -75,7 +81,11 @@ export default function Listing() {
         <link rel="icon" href="/marlowe.svg" />
       </Head>
 
-      <Header />
+      <Header
+        title={HEADER_TITLE}
+        links={headerLinks}
+        homeLink={PAGES.LISTING}
+      />
 
       <ListingPage listingData={example} />
 
