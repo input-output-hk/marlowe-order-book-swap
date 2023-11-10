@@ -76,7 +76,7 @@ export default function Listing() {
   return (
     <>
       <Head>
-        <title>Token Swap</title>
+        <title>{HEADER_TITLE} - Listing</title>
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>

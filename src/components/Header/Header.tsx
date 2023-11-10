@@ -1,44 +1,93 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import MarloweIcon from "public/marlowe.svg";
+import MenuIcon from "public/menu.svg";
+import { useState } from "react";
 import { ICON_SIZES, PAGES } from "~/utils";
-import { WalletWidget } from "../WalletWidget/WalletWidget";
 
 interface HeaderProps {
   title: string;
   links: { displayText: string; href: string }[];
   homeLink?: string;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export const Header = ({
   title,
   links,
   homeLink = PAGES.HOME,
+  children,
+  className: customClassName,
 }: HeaderProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { pathname } = useRouter();
+
+  const styleForSelectedPage = (href: string) =>
+    pathname === href ? "text-m-purple font-bold" : "";
+
+  const openMenu = () => setIsMenuOpen((prev) => !prev);
+
   return (
-    <header className="px-10 py-5 sm:px-12 sm:py-8 md:px-20 lg:px-32">
+    <header
+      className={`px-4 py-5 md:px-12 lg:px-24 xl:px-32 ${customClassName}`}
+    >
       <div className="relative flex flex-wrap items-center justify-between gap-5">
         <a href={homeLink} className="flex items-center gap-2">
           <Image
             src={MarloweIcon as string}
             alt="Marlowe"
             height={ICON_SIZES.L}
+            className="hidden md:block"
           />
-          <h1 className="text-3xl">{title}</h1>
+          <Image
+            src={MarloweIcon as string}
+            alt="Marlowe"
+            height={ICON_SIZES.M}
+            className="block md:hidden"
+          />
+          <h1 className="text-lg md:text-2xl xl:text-3xl">{title}</h1>
         </a>
 
-        <div className="flex gap-8">
+        <div className="hidden gap-8 lg:flex">
           <ul className="flex gap-6 text-lg font-normal">
             {links.map((link) => (
               <a
                 href={link.href}
                 key={link.href}
-                className="hover:text-m-purple"
+                className={`${styleForSelectedPage(
+                  link.href,
+                )} hover:text-m-purple`}
               >
                 <li>{link.displayText}</li>
               </a>
             ))}
           </ul>
-          <WalletWidget />
+          {children}
+        </div>
+
+        <div className="relative z-40 flex cursor-pointer gap-4 lg:hidden">
+          {children}
+          <Image
+            src={MenuIcon as string}
+            height={ICON_SIZES.L}
+            alt={"≣"}
+            onClick={openMenu}
+          />
+          {isMenuOpen && (
+            <ul className="border-m-gray absolute right-0 top-8 flex h-min w-min flex-col gap-3 rounded-lg border bg-m-light-purple px-1 pb-1 pt-1">
+              {links.map((link) => (
+                <li
+                  key={link.href}
+                  className={`rounded-md px-14 py-2 hover:bg-m-purple hover:text-white ${styleForSelectedPage(
+                    link.href,
+                  )}`}
+                >
+                  {link.displayText}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </header>

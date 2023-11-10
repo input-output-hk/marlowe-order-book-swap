@@ -8,7 +8,7 @@ export default function CreateListingPage() {
   return (
     <>
       <Head>
-        <title>Create Listing</title>
+        <title>{HEADER_TITLE} - Create</title>
         <meta name="description" content="Create Listing" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>

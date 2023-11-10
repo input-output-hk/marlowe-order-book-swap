@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Token Swap</title>
+        <title>{HEADER_TITLE}</title>
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
