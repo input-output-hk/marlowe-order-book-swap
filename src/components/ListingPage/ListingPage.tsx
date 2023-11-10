@@ -34,7 +34,7 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
-    setLoading(walletInfo === "{}" || walletInfo === null);
+    setLoading(walletInfo !== "{}" && walletInfo !== null);
   }, []);
 
   if (loading) {

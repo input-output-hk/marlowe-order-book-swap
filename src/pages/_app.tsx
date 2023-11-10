@@ -7,7 +7,9 @@ import {
 } from "use-cardano";
 import { Footer } from "~/components/Footer/Footer";
 import { Header } from "~/components/Header/Header";
+import { WalletWidget } from "~/components/WalletWidget/WalletWidget";
 import { env } from "~/env.mjs";
+import "~/styles/globals.css";
 import {
   HEADER_TITLE,
   PAGES,
@@ -15,8 +17,6 @@ import {
   headerLinks,
   socialMediaLinks,
 } from "~/utils";
-
-import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
 const inter = Inter({
@@ -52,7 +52,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           links={headerLinks}
           title={HEADER_TITLE}
           homeLink={PAGES.LISTING}
-        />
+        >
+          <WalletWidget />
+        </Header>
         <Component {...pageProps} />
         <Footer footerLinks={footerLinks} socialMediaLinks={socialMediaLinks} />
       </CardanoProvider>

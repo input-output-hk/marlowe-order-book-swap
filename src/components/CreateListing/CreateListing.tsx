@@ -101,12 +101,12 @@ export const CreateListing = () => {
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
-    setLoading(walletInfo === "{}" || walletInfo === null);
+    setLoading(walletInfo !== "{}" && walletInfo !== null);
   }, []);
 
   if (loading) {
     return (
-      <div className="flex flex-grow items-center justify-center ">
+      <div className="flex flex-grow items-center justify-center">
         <Loading />
       </div>
     );

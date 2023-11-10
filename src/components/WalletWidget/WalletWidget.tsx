@@ -5,8 +5,7 @@ import CopyIcon from "public/copy.svg";
 import DisconnectIcon from "public/disconnect.svg";
 import { useEffect, useState } from "react";
 import { useCardano } from "use-cardano";
-import { ICON_SIZES, PAGES, getBalance, type IWalletInStorage } from "~/utils";
-import { Loading } from "../Loading/Loading";
+import { ICON_SIZES, getBalance, type IWalletInStorage } from "~/utils";
 
 export const WalletWidget = () => {
   const [open, setOpen] = useState(false);
@@ -26,9 +25,7 @@ export const WalletWidget = () => {
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
 
-    if (walletInfo === "{}" || walletInfo === null) {
-      void router.push(PAGES.HOME);
-    } else {
+    if (walletInfo !== "{}" && walletInfo !== null) {
       const walletInfoParsed = JSON.parse(walletInfo) as IWalletInStorage;
 
       setAccount({
@@ -66,10 +63,9 @@ export const WalletWidget = () => {
   };
 
   const disconnectWallet = () => {
-    window.localStorage.removeItem("walletInfo");
+    window.localStorage.setItem("walletInfo", "{}");
     setWalletProvider(undefined);
     setAccount({ address: undefined, rewardAddress: undefined });
-    void router.push(PAGES.HOME);
   };
 
   const copyToClipboard = async () => {
@@ -93,8 +89,8 @@ export const WalletWidget = () => {
     .slice(2);
 
   return (
-    <div className="flex h-8 w-40 items-center">
-      {account.address ? (
+    <div className="flex h-8 items-end">
+      {account.address && (
         <div className="flex cursor-pointer items-center gap-3">
           <div
             onClick={changeOpen}
@@ -139,12 +135,6 @@ export const WalletWidget = () => {
             </div>
           )}
         </div>
-      ) : (
-        router.pathname !== PAGES.HOME && (
-          <div className="flex w-full items-center justify-center">
-            <Loading sizeDesktop={ICON_SIZES.S} sizeMobile={ICON_SIZES.S} />
-          </div>
-        )
       )}
       {open && (
         <div

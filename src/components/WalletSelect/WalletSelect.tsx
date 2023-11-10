@@ -24,6 +24,8 @@ export const WalletSelect = () => {
   } = useCardano();
 
   useEffect(() => {
+    const walletInfo = window.localStorage.getItem("walletInfo");
+    setLoading(walletInfo !== "{}" && walletInfo !== null);
     setAccountLoaded(account.address !== undefined);
 
     if (accountLoaded) {
@@ -37,10 +39,6 @@ export const WalletSelect = () => {
       );
 
       void router.push(PAGES.LISTING);
-    }
-    const walletInfo = window.localStorage.getItem("walletInfo");
-    if (walletInfo === null || walletInfo === "{}") {
-      setLoading(false);
     }
   }, [
     account.address,
@@ -59,7 +57,7 @@ export const WalletSelect = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-grow items-center justify-center ">
+      <div className="flex flex-grow items-center justify-center">
         <Loading />
       </div>
     );
@@ -67,7 +65,7 @@ export const WalletSelect = () => {
 
   if (availableProviders.length === 0) {
     return (
-      <div className="flex w-full flex-col justify-center rounded-lg p-8 shadow-container md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4">
+      <div className="my-16 flex w-full flex-col justify-center rounded-lg p-8 shadow-container md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4">
         <p className="pb-2 text-2xl font-bold lg:text-3xl">No wallet found</p>
         <div className="flex flex-col gap-4">
           <p className="text-base text-m-disabled lg:text-lg">
