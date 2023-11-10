@@ -1,12 +1,11 @@
 import Head from "next/head";
 import { WalletSelect } from "~/components/WalletSelect/WalletSelect";
-import { HEADER_TITLE } from "~/utils";
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>{HEADER_TITLE}</title>
+        <title>Order Book Swap Prototype</title>
         <meta name="description" content="Token Swap Prototype" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
