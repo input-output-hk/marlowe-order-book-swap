@@ -77,14 +77,15 @@ export const Header = ({
           {isMenuOpen && (
             <ul className="border-m-gray absolute right-0 top-8 flex h-min w-min flex-col gap-3 rounded-lg border bg-m-light-purple px-1 pb-1 pt-1">
               {links.map((link) => (
-                <li
+                <a
+                  href={link.href}
                   key={link.href}
                   className={`rounded-md px-14 py-2 hover:bg-m-purple hover:text-white ${styleForSelectedPage(
                     link.href,
                   )}`}
                 >
-                  {link.displayText}
-                </li>
+                  <li>{link.displayText}</li>
+                </a>
               ))}
             </ul>
           )}
