@@ -52,8 +52,7 @@ export const TableBodyDesktop = ({
           </div>
           <div className="table-cell w-1/4">
             <div className="flex items-center justify-center">
-              {/* TODO: change when we implement wallets */}
-              {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
+              {row.createdBy === account.address ? (
                 <div>
                   <Button
                     size={SIZE.SMALL}
