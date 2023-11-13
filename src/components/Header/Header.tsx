@@ -50,8 +50,8 @@ export const Header = ({
           <h1 className="text-lg md:text-2xl xl:text-3xl">{title}</h1>
         </Link>
 
-        <div className="hidden gap-8 lg:flex">
-          <ul className="flex gap-6 text-lg font-normal">
+        <div className="hidden gap-8 lg:flex lg:h-12">
+          <ul className="flex h-full items-center gap-6 text-lg font-normal">
             {links.map((link) => (
               <Link
                 href={link.href}
@@ -67,13 +67,14 @@ export const Header = ({
           {children}
         </div>
 
-        <div className="relative z-40 flex cursor-pointer gap-4 lg:hidden">
+        <div className="relative z-40 flex h-12 cursor-pointer items-start gap-4 lg:hidden">
           {children}
           <Image
             src={MenuIcon as string}
             height={ICON_SIZES.L}
             alt={"≣"}
             onClick={openMenu}
+            className="h-full items-center "
           />
           {isMenuOpen && (
             <ul className="border-m-gray absolute right-0 top-8 flex h-min w-min flex-col gap-3 rounded-lg border bg-m-light-purple px-1 pb-1 pt-1">
