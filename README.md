@@ -18,6 +18,10 @@ This Order Book Token Swap was built using mainstream Web Technologies & Framewo
 
 We invite you to test [a deployed instance of the Order Book Token Swap Prototype](https://token-swap-prototype-franzavalla.vercel.app/) for yourself.
 
+## Requirements
+
+It is recommended to use `Node v18.0.0` or higher.
+
 # How To Run Locally
 
 To get the DApp up and running on your local machine, follow these steps:
@@ -47,7 +51,9 @@ To get the DApp up and running on your local machine, follow these steps:
    2. **Set the Blockfrost Project ID**:
       Locate the line `NEXT_PUBLIC_BLOCKFROST_PROJECT_ID="<Your-Project-ID>"`. Replace `<Your-Project-ID>` with your Project ID from Blockfrost.
 
-      MARLOWE_RUNTIME_WEB_URL=preprod123test321
+      **Currently only preprod projects are supported.**
+
+      NEXT_PUBLIC_BLOCKFROST_PROJECT_ID=preprod123test321
 
 4. **Rename the .env.example file**
 
