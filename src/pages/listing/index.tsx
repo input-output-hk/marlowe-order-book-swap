@@ -69,7 +69,7 @@ export default function Listing() {
     <>
       <Head>
         <title>Order Book Swap Prototype - Listing</title>
-        <meta name="description" content="Token Swap Prototype" />
+        <meta name="description" content="Order Book Listing" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
 
