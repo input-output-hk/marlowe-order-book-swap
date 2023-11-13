@@ -25,7 +25,7 @@ export const WalletWidget = () => {
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
 
-    if (walletInfo !== "{}" && walletInfo !== null) {
+    if (walletInfo) {
       const walletInfoParsed = JSON.parse(walletInfo) as IWalletInStorage;
 
       setAccount({
@@ -63,9 +63,10 @@ export const WalletWidget = () => {
   };
 
   const disconnectWallet = () => {
-    window.localStorage.setItem("walletInfo", "{}");
+    window.localStorage.setItem("walletInfo", "");
     setWalletProvider(undefined);
     setAccount({ address: undefined, rewardAddress: undefined });
+    router.reload();
   };
 
   const copyToClipboard = async () => {

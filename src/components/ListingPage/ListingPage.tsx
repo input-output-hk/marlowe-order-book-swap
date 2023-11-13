@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useCardano } from "use-cardano";
 import { Table } from "~/components/Table/Table";
 import { env } from "~/env.mjs";
 import {
@@ -29,24 +30,28 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
     sortOrder: SortOrder.ASC,
   });
 
-  const sortedData = sortTableData(listingData, sort);
-  const data = filterTableData(sortedData, filters);
+  const { account } = useCardano();
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
-    setLoading(walletInfo !== "{}" && walletInfo !== null);
-  }, []);
+    if (!account.address || walletInfo) {
+      setLoading(false);
+    }
+  }, [account.address]);
+
+  const sortedData = sortTableData(listingData, sort);
+  const data = filterTableData(sortedData, filters);
 
   if (loading) {
     return (
-      <div className="flex flex-grow items-center justify-center ">
+      <div className="flex flex-grow items-center justify-center">
         <Loading />
       </div>
     );
   }
 
   return (
-    <main className="flex h-fit w-full flex-grow flex-col gap-4 ">
+    <main className="flex h-fit w-full flex-grow flex-col gap-4">
       <UtilityMobile
         filters={filters}
         setFilters={setFilters}

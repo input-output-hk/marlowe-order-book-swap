@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SwapIcon from "public/swap.svg";
+import { useCardano } from "use-cardano";
 import {
   COLORS,
   ICON_SIZES,
@@ -15,6 +16,8 @@ export const TableBodyMobile = ({
   handleOpenAccept,
   handleOpenRetract,
 }: TableProps) => {
+  const { account } = useCardano();
+
   return (
     <>
       <div className="flex flex-col gap-2 rounded-lg bg-m-light-purple p-4 md:hidden">
@@ -58,11 +61,16 @@ export const TableBodyMobile = ({
                       size={SIZE.XSMALL}
                       color={COLORS.RED}
                       onClick={handleOpenRetract(row)}
+                      disabled={!account.address}
                     >
                       Retract
                     </Button>
                   ) : (
-                    <Button size={SIZE.XSMALL} onClick={handleOpenAccept(row)}>
+                    <Button
+                      size={SIZE.XSMALL}
+                      onClick={handleOpenAccept(row)}
+                      disabled={!account.address}
+                    >
                       Accept
                     </Button>
                   )}

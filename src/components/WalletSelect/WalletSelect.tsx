@@ -25,9 +25,11 @@ export const WalletSelect = () => {
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
-    setLoading(walletInfo !== "{}" && walletInfo !== null);
-    setAccountLoaded(account.address !== undefined);
+    if (!walletInfo || walletInfo === "") {
+      setLoading(false);
+    }
 
+    setAccountLoaded(account.address !== undefined || !!walletInfo);
     if (accountLoaded) {
       window.localStorage.setItem(
         "walletInfo",
@@ -37,7 +39,6 @@ export const WalletSelect = () => {
           walletProvider: walletProvider,
         }),
       );
-
       void router.push(PAGES.LISTING);
     }
   }, [

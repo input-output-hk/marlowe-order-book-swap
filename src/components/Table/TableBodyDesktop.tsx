@@ -1,3 +1,4 @@
+import { useCardano } from "use-cardano";
 import { COLORS, humanReadable, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
@@ -7,6 +8,8 @@ export const TableBodyDesktop = ({
   handleOpenAccept,
   handleOpenRetract,
 }: TableProps) => {
+  const { account } = useCardano();
+
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -56,13 +59,18 @@ export const TableBodyDesktop = ({
                     size={SIZE.SMALL}
                     color={COLORS.RED}
                     onClick={handleOpenRetract(row)}
+                    disabled={!account.address}
                   >
                     Retract offer
                   </Button>
                 </div>
               ) : (
                 <div>
-                  <Button size={SIZE.SMALL} onClick={handleOpenAccept(row)}>
+                  <Button
+                    size={SIZE.SMALL}
+                    onClick={handleOpenAccept(row)}
+                    disabled={!account.address}
+                  >
                     Accept Offer
                   </Button>
                 </div>
