@@ -1,23 +1,25 @@
 import Head from "next/head";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
+import { useCardano } from "use-cardano";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { ICON_SIZES, type ITableData } from "~/utils";
 
 export default function Listing() {
+  const { account } = useCardano();
   const example: ITableData[] = [
     {
       id: 1,
-      createdBy: "addr_test123456789",
+      createdBy: account.address ?? "test_123",
       offered: {
-        token: "ADA",
+        token: "Marlons",
         amount: 999.0123778979214,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
         ),
       },
       desired: {
-        token: "Marlons",
+        token: "ADA",
         amount: 278071203701,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
@@ -29,14 +31,14 @@ export default function Listing() {
       id: 2,
       createdBy: "test_123",
       offered: {
-        token: "ADA",
+        token: "Merlons",
         amount: 20000001,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
         ),
       },
       desired: {
-        token: "Merlons",
+        token: "ADA",
         amount: 0.00123116,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
@@ -46,16 +48,16 @@ export default function Listing() {
     },
     {
       id: 3,
-      createdBy: "addr_test123456789",
+      createdBy: account.address ?? "test_123",
       offered: {
-        token: "ADA",
+        token: "Merluns",
         amount: 0.00001,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
         ),
       },
       desired: {
-        token: "Merluns",
+        token: "ADA",
         amount: 10.0010023116,
         icon: (
           <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
