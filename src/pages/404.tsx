@@ -20,7 +20,7 @@ export default function FourZeroFour() {
     <>
       <Head>
         <title>404 - Page not found</title>
-        <meta name="description" content="Token Swap Prototype" />
+        <meta name="description" content="Not Found" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
 
