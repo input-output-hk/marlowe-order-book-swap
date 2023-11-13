@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import MarloweIcon from "public/marlowe.svg";
 import MenuIcon from "public/menu.svg";
@@ -33,7 +34,7 @@ export const Header = ({
       className={`px-4 py-5 md:px-12 lg:px-24 xl:px-32 ${customClassName}`}
     >
       <div className="relative flex flex-wrap items-center justify-between gap-5">
-        <a href={homeLink} className="flex items-center gap-2">
+        <Link href={homeLink} className="flex items-center gap-2">
           <Image
             src={MarloweIcon as string}
             alt="Marlowe"
@@ -47,12 +48,12 @@ export const Header = ({
             className="block md:hidden"
           />
           <h1 className="text-lg md:text-2xl xl:text-3xl">{title}</h1>
-        </a>
+        </Link>
 
         <div className="hidden gap-8 lg:flex">
           <ul className="flex gap-6 text-lg font-normal">
             {links.map((link) => (
-              <a
+              <Link
                 href={link.href}
                 key={link.href}
                 className={`${styleForSelectedPage(
@@ -60,7 +61,7 @@ export const Header = ({
                 )} hover:text-m-purple`}
               >
                 <li>{link.displayText}</li>
-              </a>
+              </Link>
             ))}
           </ul>
           {children}
@@ -77,7 +78,7 @@ export const Header = ({
           {isMenuOpen && (
             <ul className="border-m-gray absolute right-0 top-8 flex h-min w-min flex-col gap-3 rounded-lg border bg-m-light-purple px-1 pb-1 pt-1">
               {links.map((link) => (
-                <a
+                <Link
                   href={link.href}
                   key={link.href}
                   className={`rounded-md px-14 py-2 hover:bg-m-purple hover:text-white ${styleForSelectedPage(
@@ -85,7 +86,7 @@ export const Header = ({
                   )}`}
                 >
                   <li>{link.displayText}</li>
-                </a>
+                </Link>
               ))}
             </ul>
           )}
