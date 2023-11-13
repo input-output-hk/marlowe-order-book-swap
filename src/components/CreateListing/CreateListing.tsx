@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import DownIcon from "public/down_arrow.svg";
 import { useEffect, useState, type FormEvent } from "react";
+import { useCardano } from "use-cardano";
 import { Button, SIZE } from "~/components/Button/Button";
 import type { IOptions } from "~/utils";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
@@ -47,6 +48,14 @@ export const CreateListing = () => {
   });
 
   const router = useRouter();
+  const { account } = useCardano();
+
+  useEffect(() => {
+    const walletInfo = window.localStorage.getItem("walletInfo");
+    if (!account.address || walletInfo) {
+      setLoading(false);
+    }
+  }, [account.address]);
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,14 +108,9 @@ export const CreateListing = () => {
     }
   };
 
-  useEffect(() => {
-    const walletInfo = window.localStorage.getItem("walletInfo");
-    setLoading(walletInfo === "{}" || walletInfo === null);
-  }, []);
-
   if (loading) {
     return (
-      <div className="flex flex-grow items-center justify-center ">
+      <div className="flex flex-grow items-center justify-center">
         <Loading />
       </div>
     );
@@ -179,7 +183,12 @@ export const CreateListing = () => {
               </Button>
             </Link>
             <div>
-              <Button size={SIZE.SMALL} filled type="submit">
+              <Button
+                size={SIZE.SMALL}
+                filled
+                type="submit"
+                disabled={!account.address}
+              >
                 Accept
               </Button>
             </div>
