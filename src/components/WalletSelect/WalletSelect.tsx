@@ -31,12 +31,12 @@ export const WalletSelect = ({ isModal, closeModal }: WalletSelectProps) => {
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
-    if (!walletInfo || walletInfo === "") {
+    if (!walletInfo || walletInfo === "{}") {
       setLoading(false);
     }
 
     setAccountLoaded(account.address !== undefined || !!walletInfo);
-    if (accountLoaded) {
+    if (accountLoaded && account.address && walletProvider) {
       window.localStorage.setItem(
         "walletInfo",
         JSON.stringify({

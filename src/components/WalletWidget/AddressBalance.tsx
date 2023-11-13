@@ -49,8 +49,8 @@ export const AddressBalance = ({
     .slice(2);
 
   return (
-    <div className="flex h-12 cursor-pointer items-center gap-3 align-middle">
-      <div className="flex cursor-pointer items-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1">
+    <div className="flex h-12 items-center gap-3 align-middle">
+      <div className="flex cursor-default items-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1">
         {getWalletIcon() && (
           <Image
             src={getWalletIcon()}
@@ -78,7 +78,7 @@ export const AddressBalance = ({
           </abbr>
         </div>
       ) : (
-        <div onClick={copyToClipboard}>
+        <div onClick={copyToClipboard} className="cursor-pointer">
           <abbr title="Copy Address">
             <Image
               src={CopyIcon as string}
@@ -89,7 +89,7 @@ export const AddressBalance = ({
           </abbr>
         </div>
       )}
-      <div onClick={changeOpen}>
+      <div onClick={changeOpen} className="cursor-pointer">
         <Image src={DisconnectIcon as string} alt="" height={ICON_SIZES.M} />
       </div>
     </div>

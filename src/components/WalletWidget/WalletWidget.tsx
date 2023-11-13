@@ -22,16 +22,15 @@ export const WalletWidget = () => {
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
 
-    if (walletInfo) {
+    if (walletInfo && walletInfo !== "{}") {
       const walletInfoParsed = JSON.parse(walletInfo) as IWalletInStorage;
-
       setAccount({
         address: walletInfoParsed.address,
         rewardAddress: walletInfoParsed.rewardAddress,
       });
       setWalletProvider(walletInfoParsed.walletProvider);
     }
-    if (!walletInfo || (account.address && balance)) {
+    if (!walletInfo || walletInfo === "{}" || (account.address && balance)) {
       setLoading(false);
     }
 
@@ -54,7 +53,7 @@ export const WalletWidget = () => {
   };
 
   const disconnectWallet = () => {
-    window.localStorage.setItem("walletInfo", "");
+    window.localStorage.setItem("walletInfo", "{}");
     setWalletProvider(undefined);
     setAccount({ address: undefined, rewardAddress: undefined });
     router.reload();
@@ -75,7 +74,7 @@ export const WalletWidget = () => {
         ) : (
           <div className="flex h-12 items-center">
             <Button
-              color={COLORS.DARK_GRAY}
+              color={COLORS.BLACK}
               size={SIZE.XSMALL}
               onClick={changeOpenWalletSelect}
               className="flex items-center gap-1"
