@@ -1,28 +1,67 @@
-# Create T3 App
+<h2 align="center">
+  <a href="" target="blank_">
+    <img src="./doc/image/logo.svg" alt="Logo" height="75">
+  </a>
+  <br>
+  Order Book Swap Prototype
+</h2>
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+# Overview
 
-## What's next? How do I make an app with this?
+The **Order Book Token Swap Prototype** aims to create a decentralized platform where users can list tokens for swap, specifying the desired amount and type of other tokens in return. Interested parties from around the globe can accept these offers, leading to a finalized token swap.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+This Order Book Token Swap was built using mainstream Web Technologies & Frameworks (Typescript & React) on top of the Marlowe Web DApp Stack:
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- [Marlowe TypeScript SDK (TS-SDK)](https://github.com/input-output-hk/marlowe-ts-sdk/): a suite of TypeScript/JavaScript libraries for developing Web-DApp in the Cardano Blockchain using Marlowe Technologies.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Deployed Instance
 
-## Learn More
+We invite you to test [a deployed instance of the Order Book Token Swap Prototype](https://token-swap-prototype-franzavalla.vercel.app/) for yourself.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Requirements
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+It is recommended to use `Node v18.0.0` or higher.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+# How To Run Locally
 
-## How do I deploy this?
+To get the DApp up and running on your local machine, follow these steps:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/input-output-hk/marlowe-order-book-swap
+   cd marlowe-order-book-swap
+   ```
+
+2. **Install Dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure variables in .env.example**
+
+   To ensure that the dApp works correctly, you need to set the appropriate URLs in the `.env` file.
+
+   ### Steps
+
+   1. **Open the .env.example File**:
+      Navigate to the root directory of your project and open the `.env.example` file in your preferred text editor.
+
+   2. **Set the Blockfrost Project ID**:
+      Locate the line `NEXT_PUBLIC_BLOCKFROST_PROJECT_ID="<Your-Project-ID>"`. Replace `<Your-Project-ID>` with your Project ID from Blockfrost.
+
+      **Currently only preprod projects are supported.**
+
+      NEXT_PUBLIC_BLOCKFROST_PROJECT_ID=preprod123test321
+
+4. **Rename the .env.example file**
+
+   Since the `.env` file is gitignored, you need to rename the name of the file to `.env`.
+
+5. **Run the DApp**
+   ```bash
+   npm run dev
+   ```
+
+Enjoy and stay tuned for our next releases!
