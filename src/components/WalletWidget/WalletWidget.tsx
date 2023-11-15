@@ -80,7 +80,7 @@ export const WalletWidget = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow items-center justify-center py-1">
         <Loading sizeDesktop={ICON_SIZES.S} sizeMobile={ICON_SIZES.XS} />
       </div>
     );
@@ -92,7 +92,7 @@ export const WalletWidget = () => {
         <div className="flex cursor-pointer items-center gap-1">
           <div
             onClick={toggleOpenConnect}
-            className="flex items-center justify-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1 md:w-44"
+            className="flex items-center justify-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-6 py-1"
           >
             {getWalletIcon() && (
               <Image
