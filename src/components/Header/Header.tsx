@@ -50,8 +50,8 @@ export const Header = ({
           <h1 className="text-lg md:text-2xl xl:text-3xl">{title}</h1>
         </Link>
 
-        <div className="hidden gap-8 lg:flex">
-          <ul className="flex gap-6 text-lg font-normal">
+        <div className="hidden gap-8 lg:flex lg:items-center">
+          <ul className="flex gap-6 font-normal xl:text-lg">
             {links.map((link) => (
               <Link
                 href={link.href}

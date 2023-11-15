@@ -102,7 +102,7 @@ export const WalletSelect = () => {
       </p>
 
       <div className="flex flex-col gap-2 py-8">
-        {availableProviders.map((prov) => {
+        {availableProviders.sort().map((prov) => {
           return (
             <div
               key={prov.key}
@@ -115,7 +115,7 @@ export const WalletSelect = () => {
                   height={ICON_SIZES.L}
                   width={ICON_SIZES.L}
                 />
-                <p className="text-base font-bold">{prov.name}</p>
+                <p className="text-base font-bold capitalize">{prov.name}</p>
               </div>
               <div className="w-1/2 sm:w-2/5 md:w-2/5 xl:w-1/3 2xl:min-w-min 2xl:max-w-min">
                 <Button
