@@ -92,7 +92,7 @@ export const WalletWidget = () => {
         <div className="flex cursor-pointer items-center gap-1">
           <div
             onClick={toggleOpenConnect}
-            className="flex w-20 cursor-pointer items-center justify-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1 md:w-44"
+            className="flex items-center justify-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1 md:w-44"
           >
             {getWalletIcon() && (
               <Image
@@ -106,7 +106,7 @@ export const WalletWidget = () => {
             <Balance />
           </div>
 
-          <div className="flex">
+          <div className="flex w-16 items-center justify-center gap-2">
             <CopyButton text={account.address} />
             <DisconnectButton />
           </div>
@@ -124,6 +124,7 @@ export const WalletWidget = () => {
           </Button>
         </div>
       )}
+
       {open && (
         <div className="absolute top-9 z-50 w-32 border border-m-purple/10 bg-m-light-purple md:w-44">
           {availableProviders.sort().map((prov) => (

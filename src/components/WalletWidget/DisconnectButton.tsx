@@ -16,10 +16,7 @@ export const DisconnectButton = () => {
   };
 
   return (
-    <div
-      onClick={disconnectWallet}
-      className="rounded-full p-2 hover:bg-m-disabled/10"
-    >
+    <div onClick={disconnectWallet}>
       <abbr title="Disconnect Wallet">
         <Image
           src={DisconnectIcon as string}

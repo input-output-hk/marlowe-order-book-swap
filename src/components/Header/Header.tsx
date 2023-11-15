@@ -31,9 +31,9 @@ export const Header = ({
 
   return (
     <header
-      className={`px-4 py-5 md:px-12 lg:px-24 xl:px-32 ${customClassName}`}
+      className={`flex justify-between px-4 py-5 md:px-12 lg:px-24 xl:px-32 ${customClassName}`}
     >
-      <div className="relative flex flex-wrap items-center justify-between gap-5">
+      <div className="relative flex w-full flex-wrap justify-between gap-4 lg:flex-col">
         <Link href={homeLink} className="flex items-center gap-2">
           <Image
             src={MarloweIcon as string}
@@ -50,7 +50,7 @@ export const Header = ({
           <h1 className="text-lg md:text-2xl xl:text-3xl">{title}</h1>
         </Link>
 
-        <div className="hidden gap-8 lg:flex lg:items-center">
+        <div className="hidden gap-10 lg:flex lg:items-center">
           <ul className="flex gap-6 font-normal xl:text-lg">
             {links.map((link) => (
               <Link
@@ -64,10 +64,9 @@ export const Header = ({
               </Link>
             ))}
           </ul>
-          {children}
         </div>
 
-        <div className="relative z-40 flex cursor-pointer gap-4 lg:hidden">
+        <div className="relative z-40 flex cursor-pointer items-center gap-4 lg:hidden">
           {children}
           <Image
             src={MenuIcon as string}
@@ -91,6 +90,10 @@ export const Header = ({
             </ul>
           )}
         </div>
+      </div>
+
+      <div className="hidden h-fit items-center justify-end py-1 lg:flex">
+        {children}
       </div>
     </header>
   );

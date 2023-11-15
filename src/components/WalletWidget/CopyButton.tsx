@@ -25,7 +25,7 @@ export const CopyButton = ({ text }: CopyButtonProps) => {
   };
 
   return (
-    <>
+    <div>
       {copied ? (
         <div className="animate-bounce">
           <abbr title="Copied!">
@@ -38,10 +38,7 @@ export const CopyButton = ({ text }: CopyButtonProps) => {
           </abbr>
         </div>
       ) : (
-        <div
-          onClick={copyToClipboard}
-          className="rounded-full p-2 hover:bg-m-disabled/10"
-        >
+        <div onClick={copyToClipboard}>
           <abbr title="Copy Address">
             <Image
               src={CopyIcon as string}
@@ -52,6 +49,6 @@ export const CopyButton = ({ text }: CopyButtonProps) => {
           </abbr>
         </div>
       )}
-    </>
+    </div>
   );
 };
