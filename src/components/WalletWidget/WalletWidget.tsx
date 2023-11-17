@@ -1,26 +1,29 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import CheckIcon from "public/check.svg";
-import CopyIcon from "public/copy.svg";
-import DisconnectIcon from "public/disconnect.svg";
+import ConnectIcon from "public/connect.svg";
 import { useEffect, useState } from "react";
-import { useCardano } from "use-cardano";
-import { ICON_SIZES, getBalance, type IWalletInStorage } from "~/utils";
+import { useCardano, type WalletProvider } from "use-cardano";
+import { COLORS, ICON_SIZES, PAGES, type IWalletInStorage } from "~/utils";
+import { Button, SIZE } from "../Button/Button";
+import { Loading } from "../Loading/Loading";
+import { Balance } from "./Balance";
+import { CopyButton } from "./CopyButton";
+import { DisconnectButton } from "./DisconnectButton";
 
 export const WalletWidget = () => {
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [balance, setBalance] = useState(BigInt(0));
+  const [loading, setLoading] = useState(true);
 
-  const router = useRouter();
   const {
     account,
+    accountLoaded,
     walletProvider,
     availableProviders,
     setWalletProvider,
+    setAccountLoaded,
     setAccount,
-    lucid,
   } = useCardano();
+  const router = useRouter();
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
@@ -34,19 +37,40 @@ export const WalletWidget = () => {
       });
       setWalletProvider(walletInfoParsed.walletProvider);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setAccount, setWalletProvider]);
 
   useEffect(() => {
-    const walletBalance = async () => {
-      if (lucid) {
-        const balance = await getBalance(lucid);
-        setBalance(balance.lovelace!);
-      }
-    };
+    setAccountLoaded(account.address !== undefined);
+    setLoading(!accountLoaded && walletProvider !== undefined);
 
-    void walletBalance();
-  }, [lucid]);
+    if (account.address) {
+      window.localStorage.setItem(
+        "walletInfo",
+        JSON.stringify({
+          address: account.address,
+          rewardAddress: account.rewardAddress,
+          walletProvider: walletProvider,
+        }),
+      );
+      setOpen(false);
+    }
+  }, [
+    account.address,
+    account.rewardAddress,
+    walletProvider,
+    accountLoaded,
+    setAccountLoaded,
+  ]);
+
+  const toggleOpenConnect = () => {
+    if (!availableProviders.length) {
+      void router.push(PAGES.HOME);
+    } else {
+      setOpen(!open);
+    }
+  };
 
   const getWalletIcon = () => {
     const prov = availableProviders.find((prov) => {
@@ -58,44 +82,29 @@ export const WalletWidget = () => {
     return prov ? prov.icon : "";
   };
 
-  const changeOpen = () => {
-    setOpen(!open);
+  const connectWallet = (provider: string) => () => {
+    setWalletProvider(provider.toLowerCase() as WalletProvider);
   };
 
-  const disconnectWallet = () => {
-    window.localStorage.setItem("walletInfo", "");
-    setWalletProvider(undefined);
-    setAccount({ address: undefined, rewardAddress: undefined });
-    router.reload();
-  };
+  if (loading) {
+    return (
+      <div className="flex flex-grow items-center justify-center py-1">
+        <Loading sizeDesktop={ICON_SIZES.S} sizeMobile={ICON_SIZES.XS} />
+      </div>
+    );
+  }
 
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(account.address!).then(() => {
-        setCopied(true);
-        setTimeout(() => {
-          setCopied(false);
-        }, 3000);
-      });
-    } catch (err) {
-      console.error("Failed to copy address: ", err);
-    }
-  };
-
-  const balanceInt = Math.floor(Number(balance) / 1e6);
-
-  const balanceDecimals = ((Number(balance) / 1e6) % 1)
-    .toFixed(6)
-    .toString()
-    .slice(2);
+  if (router.pathname === PAGES.HOME) {
+    return null;
+  }
 
   return (
-    <div className="flex h-8 items-end">
-      {account.address && (
-        <div className="flex cursor-pointer items-center gap-3">
+    <div className="relative flex h-8 items-center">
+      {account.address ? (
+        <div className="flex cursor-pointer items-center gap-1">
           <div
-            onClick={changeOpen}
-            className="flex cursor-pointer items-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-2 py-1"
+            onClick={toggleOpenConnect}
+            className="flex items-center justify-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-6 py-1"
           >
             {getWalletIcon() && (
               <Image
@@ -106,53 +115,45 @@ export const WalletWidget = () => {
                 priority
               />
             )}
-            <div className="hidden sm:block">
-              {balanceInt}.<span className="text-xs">{balanceDecimals}</span>
-              &nbsp;
-              <b>t₳</b>
-            </div>
+            <Balance />
           </div>
-          {copied ? (
-            <div className="animate-bounce">
-              <abbr title="Copied!">
-                <Image
-                  src={CheckIcon as string}
-                  alt="✓"
-                  width={ICON_SIZES.M}
-                  height={ICON_SIZES.M}
-                />
-              </abbr>
-            </div>
-          ) : (
-            <div onClick={copyToClipboard}>
-              <abbr title="Copy Address">
-                <Image
-                  src={CopyIcon as string}
-                  alt={"Copy"}
-                  width={ICON_SIZES.M}
-                  height={ICON_SIZES.M}
-                />
-              </abbr>
-            </div>
-          )}
+
+          <div className="flex w-16 items-center justify-center gap-2">
+            <CopyButton text={account.address} />
+            <DisconnectButton />
+          </div>
+        </div>
+      ) : (
+        <div className="relative w-32 md:w-44">
+          <Button
+            color={COLORS.BLACK}
+            size={SIZE.XSMALL}
+            className="flex items-center justify-center gap-1"
+            onClick={toggleOpenConnect}
+          >
+            Connect <span className="hidden md:block">Wallet</span>
+            <Image src={ConnectIcon as string} alt="" height={ICON_SIZES.S} />
+          </Button>
         </div>
       )}
+
       {open && (
-        <div
-          className="fixed inset-0 z-50 flex h-full items-center bg-gray-600 bg-opacity-50"
-          onClick={changeOpen}
-        >
-          <div
-            className="absolute right-5 top-5 flex cursor-pointer items-center gap-2 rounded-md border bg-white p-2 sm:right-10 sm:top-8 sm:px-4 md:right-11 md:gap-4 md:px-6 lg:right-32 "
-            onClick={disconnectWallet}
-          >
-            Disconnect Wallet
-            <Image
-              src={DisconnectIcon as string}
-              alt=""
-              height={ICON_SIZES.L}
-            />
-          </div>
+        <div className="absolute top-9 z-50 w-32 border border-m-purple/10 bg-m-light-purple md:w-44">
+          {availableProviders.sort().map((prov) => (
+            <div
+              key={prov.key}
+              className="flex cursor-pointer items-center justify-center gap-1 px-3 py-2 hover:bg-m-purple/10"
+              onClick={connectWallet(prov.key)}
+            >
+              <Image
+                src={prov.icon}
+                alt={prov.name}
+                width={ICON_SIZES.M}
+                height={ICON_SIZES.M}
+              />
+              <p className="text-sm capitalize md:text-base">{prov.name}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>
