@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCardano } from "use-cardano";
 import { Table } from "~/components/Table/Table";
-import { env } from "~/env.mjs";
 import {
   SortOrder,
   filterTableData,
@@ -19,18 +18,18 @@ interface ListingPageProps {
 }
 
 export const ListingPage = ({ listingData }: ListingPageProps) => {
+  const { account } = useCardano();
+
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<IFilters>({
     filterOwnListings: false,
     searchQuery: "",
-    owner: env.NEXT_PUBLIC_OWN_ADDRESS,
+    owner: account.address ?? "",
   });
   const [sort, setSort] = useState<ISort>({
     sortBy: "expiryDate",
     sortOrder: SortOrder.ASC,
   });
-
-  const { account } = useCardano();
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");

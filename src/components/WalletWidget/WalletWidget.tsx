@@ -1,8 +1,9 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import ConnectIcon from "public/connect.svg";
 import { useEffect, useState } from "react";
 import { useCardano, type WalletProvider } from "use-cardano";
-import { COLORS, ICON_SIZES, type IWalletInStorage } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES, type IWalletInStorage } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { Loading } from "../Loading/Loading";
 import { Balance } from "./Balance";
@@ -22,6 +23,7 @@ export const WalletWidget = () => {
     setAccountLoaded,
     setAccount,
   } = useCardano();
+  const router = useRouter();
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
@@ -62,7 +64,13 @@ export const WalletWidget = () => {
     setAccountLoaded,
   ]);
 
-  const toggleOpenConnect = () => setOpen(!open);
+  const toggleOpenConnect = () => {
+    if (!availableProviders.length) {
+      void router.push(PAGES.HOME);
+    } else {
+      setOpen(!open);
+    }
+  };
 
   const getWalletIcon = () => {
     const prov = availableProviders.find((prov) => {
@@ -84,6 +92,10 @@ export const WalletWidget = () => {
         <Loading sizeDesktop={ICON_SIZES.S} sizeMobile={ICON_SIZES.XS} />
       </div>
     );
+  }
+
+  if (router.pathname === PAGES.HOME) {
+    return null;
   }
 
   return (
