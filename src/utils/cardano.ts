@@ -70,13 +70,22 @@ export const getSwapContract = ({
   selectedDesired,
   address,
 }: ISwapRequest) => {
+  const parsedValueOffered =
+    selectedOffered.option === ADA
+      ? BigInt(valueOffered) * BigInt(1e6)
+      : BigInt(valueOffered);
+  const parsedValueDesired =
+    selectedDesired.option === ADA
+      ? BigInt(valueDesired) * BigInt(1e6)
+      : BigInt(valueDesired);
+
   const swapRequest: SwapRequest = {
     provider: {
       roleName: address,
       // TODO: ask about this parameter
-      depositTimeout: BigInt(1000000),
+      depositTimeout: BigInt(100000000),
       value: {
-        amount: BigInt(valueOffered),
+        amount: parsedValueOffered,
         token: {
           currency_symbol:
             tokensData[selectedOffered.option as TOKENS].currency_symbol,
@@ -86,9 +95,9 @@ export const getSwapContract = ({
     },
     swapper: {
       roleName: "swapper",
-      depositTimeout: BigInt(1000000),
+      depositTimeout: BigInt(100000000),
       value: {
-        amount: BigInt(valueDesired),
+        amount: parsedValueDesired,
         token: {
           currency_symbol:
             tokensData[selectedDesired.option as TOKENS].currency_symbol,
