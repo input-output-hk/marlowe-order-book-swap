@@ -3,9 +3,9 @@ import {
   mkSwapContract,
   type SwapRequest,
 } from "node_modules/@marlowe.io/language-examples/dist/esm/swaps/swap-token-token";
-import { IOptions, type ITokenAmount } from "./interfaces";
+import { type IOptions, type ITokenAmount } from "./interfaces";
 import { hexaToText } from "./string";
-import { TOKENS, tokensData } from "./tokens";
+import { tokensData, type TOKENS } from "./tokens";
 
 export const POLICY_LENGTH = 56;
 export const ADA = "ADA";
@@ -60,6 +60,7 @@ interface ISwapRequest {
   valueDesired: string;
   selectedOffered: IOptions;
   selectedDesired: IOptions;
+  address: string;
 }
 
 export const getSwapContract = ({
@@ -67,10 +68,11 @@ export const getSwapContract = ({
   valueDesired,
   selectedOffered,
   selectedDesired,
+  address,
 }: ISwapRequest) => {
   const swapRequest: SwapRequest = {
     provider: {
-      roleName: "provider",
+      roleName: address,
       // TODO: ask about this parameter
       depositTimeout: BigInt(1000000),
       value: {
