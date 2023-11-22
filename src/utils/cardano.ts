@@ -1,6 +1,11 @@
 import { type Assets, type Lucid } from "lucid-cardano";
-import { type ITokenAmount } from "./interfaces";
+import {
+  mkSwapContract,
+  type SwapRequest,
+} from "node_modules/@marlowe.io/language-examples/dist/esm/swaps/swap-token-token";
+import { IOptions, type ITokenAmount } from "./interfaces";
 import { hexaToText } from "./string";
+import { TOKENS, tokensData } from "./tokens";
 
 export const POLICY_LENGTH = 56;
 export const ADA = "ADA";
@@ -48,4 +53,47 @@ export const isEnoughBalance = (
     myTokens.includes(tokenLowercase) &&
     Number(balance[tokenLowercase]!) >= tokenToCompare.amount
   );
+};
+
+interface ISwapRequest {
+  valueOffered: string;
+  valueDesired: string;
+  selectedOffered: IOptions;
+  selectedDesired: IOptions;
+}
+
+export const getSwapContract = ({
+  valueOffered,
+  valueDesired,
+  selectedOffered,
+  selectedDesired,
+}: ISwapRequest) => {
+  const swapRequest: SwapRequest = {
+    provider: {
+      roleName: "provider",
+      // TODO: ask about this parameter
+      depositTimeout: BigInt(1000000),
+      value: {
+        amount: BigInt(valueOffered),
+        token: {
+          currency_symbol:
+            tokensData[selectedOffered.option as TOKENS].currency_symbol,
+          token_name: tokensData[selectedOffered.option as TOKENS].token_name,
+        },
+      },
+    },
+    swapper: {
+      roleName: "swapper",
+      depositTimeout: BigInt(1000000),
+      value: {
+        amount: BigInt(valueDesired),
+        token: {
+          currency_symbol:
+            tokensData[selectedDesired.option as TOKENS].currency_symbol,
+          token_name: tokensData[selectedDesired.option as TOKENS].token_name,
+        },
+      },
+    },
+  };
+  return mkSwapContract(swapRequest);
 };
