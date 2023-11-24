@@ -1,37 +1,24 @@
-import {
-  type Action,
-  type Contract,
-  type Deposit,
-  type Party,
-  type Role,
-  type When,
-} from "@marlowe.io/language-core-v1";
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { type Tags } from "@marlowe.io/runtime-core";
 import { mkRestClient } from "@marlowe.io/runtime-rest-client";
+import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import Head from "next/head";
-import Image from "next/image";
-import MarloweIcon from "public/marlowe.svg";
 import { useEffect, useState } from "react";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
+import {
+  defaultListing,
+  getCreatedDate,
+  getDesired,
+  getOffered,
+} from "~/components/ListingPage/utils";
 import { env } from "~/env.mjs";
-import { ICON_SIZES, type ITableData } from "~/utils";
+import { isWhen, type ITableData } from "~/utils";
 
 export default function Listing() {
   const [example, setExample] = useState<ITableData[]>([]);
 
   const client = mkRestClient(env.NEXT_PUBLIC_RUNTIME_URL);
-
-  const isWhen = (contract: Contract): contract is When => {
-    if (typeof contract === "string") return false;
-    return "when" in contract;
-  };
-
-  const isDeposit = (action: Action): action is Deposit => {
-    return "deposit" in action;
-  };
-
-  const isParty = (party: Party): party is Role => {
-    return "role_token" in party;
-  };
 
   useEffect(() => {
     const healthCheck = async () => {
@@ -48,91 +35,40 @@ export default function Listing() {
           const contractsListPromise = res.headers.map((contract) => {
             return client.getContractById(contract.contractId);
           });
-          const contractList = await Promise.all(contractsListPromise);
-          const formattedList: ITableData[] = contractList.map(
+          const contractList = (await Promise.all(
+            contractsListPromise,
+          )) as (ContractDetails & { tags: Tags })[];
+          const filteredContractList = contractList.filter((contract) => {
+            const startDate: string =
+              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].startDate;
+            const endDate: string =
+              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].expiryDate;
+            return (
+              new Date(startDate) > new Date() &&
+              new Date(endDate) > new Date() &&
+              contract.status === "confirmed"
+            );
+          });
+
+          const formattedList: ITableData[] = filteredContractList.map(
             ({ contractId, initialContract }) => {
-              if (isWhen(initialContract) && initialContract !== undefined) {
+              if (isWhen(initialContract) && initialContract) {
                 const contractDetails = initialContract.when[0]?.case;
                 const contractDesired =
-                  initialContract.when[0]?.then !== undefined &&
-                  isWhen(initialContract.when[0]?.then) &&
-                  initialContract.when[0]?.then.when[0]?.case;
+                  initialContract.when[0]?.then &&
+                  isWhen(initialContract.when[0]?.then)
+                    ? initialContract.when[0]?.then.when[0]?.case
+                    : undefined;
                 return {
                   id: Number(contractId),
-                  createdBy:
-                    contractDetails !== undefined &&
-                    isDeposit(contractDetails) &&
-                    isParty(contractDetails?.into_account)
-                      ? contractDetails?.into_account?.role_token
-                      : "",
-                  offered:
-                    contractDetails !== undefined && isDeposit(contractDetails)
-                      ? {
-                          token: contractDetails?.of_token.token_name,
-                          amount:
-                            contractDetails !== undefined &&
-                            isDeposit(contractDetails)
-                              ? Number(contractDetails?.deposits)
-                              : 0,
-                          icon: (
-                            <Image
-                              src={MarloweIcon as string}
-                              alt="M"
-                              height={ICON_SIZES.XS}
-                            />
-                          ),
-                        }
-                      : { token: "", amount: 0, icon: <></> },
-                  desired:
-                    contractDesired !== undefined &&
-                    contractDesired !== false &&
-                    isDeposit(contractDesired)
-                      ? {
-                          token: contractDesired?.of_token.token_name,
-                          amount:
-                            initialContract.when[0]?.then !== undefined &&
-                            isWhen(initialContract.when[0]?.then)
-                              ? Number(contractDesired.deposits)
-                              : 0,
-                          icon: (
-                            <Image
-                              src={MarloweIcon as string}
-                              alt="M"
-                              height={ICON_SIZES.XS}
-                            />
-                          ),
-                        }
-                      : { token: "", amount: 0, icon: <></> },
+                  createdBy: getCreatedDate(contractDetails),
+                  offered: getOffered(contractDetails),
+                  desired: getDesired(contractDesired, initialContract),
+
                   expiry: new Date(Number(initialContract.timeout)).toString(),
                 };
               } else {
-                return {
-                  id: 1,
-                  createdBy: "test_123",
-                  offered: {
-                    token: "Marlons",
-                    amount: 999.0123778979214,
-                    icon: (
-                      <Image
-                        src={MarloweIcon as string}
-                        alt="M"
-                        height={ICON_SIZES.XS}
-                      />
-                    ),
-                  },
-                  desired: {
-                    token: "ADA",
-                    amount: 278071203701,
-                    icon: (
-                      <Image
-                        src={MarloweIcon as string}
-                        alt="M"
-                        height={ICON_SIZES.XS}
-                      />
-                    ),
-                  },
-                  expiry: "12/30/2023 11:35",
-                };
+                return defaultListing;
               }
             },
           );
@@ -142,6 +78,7 @@ export default function Listing() {
 
     void healthCheck();
     void getContracts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

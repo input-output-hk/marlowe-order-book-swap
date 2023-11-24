@@ -54,8 +54,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     autoReconnect: false,
   };
 
-  console.log(runtimeLifecycle);
-
   return (
     <>
       <style jsx global>
