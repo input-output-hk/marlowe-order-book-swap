@@ -3,9 +3,10 @@ import {
   mkRuntimeLifecycle,
   type BrowserRuntimeLifecycleOptions,
 } from "@marlowe.io/runtime-lifecycle/browser";
+import { type SupportedWalletName } from "@marlowe.io/wallet/browser";
 import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CardanoProvider,
   type UseCardanoNodeOptions,
@@ -23,6 +24,7 @@ import {
   footerLinks,
   headerLinks,
   socialMediaLinks,
+  type IWalletInStorage,
 } from "~/utils";
 import { api } from "~/utils/api";
 
@@ -38,9 +40,26 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   >(undefined);
 
   const setRuntime = async (options: BrowserRuntimeLifecycleOptions) => {
-    const runtime = await mkRuntimeLifecycle(options);
-    setRuntimeLifecycle(runtime);
+    try {
+      const runtime = await mkRuntimeLifecycle(options);
+      setRuntimeLifecycle(runtime);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  useEffect(() => {
+    // TODO: runtime can't be setted with nami
+    const walletInfo = window.localStorage.getItem("walletInfo");
+    if (walletInfo) {
+      const { walletProvider } = JSON.parse(walletInfo) as IWalletInStorage;
+
+      void setRuntime({
+        runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
+        walletName: walletProvider as SupportedWalletName,
+      });
+    }
+  }, []);
 
   const useCardanoNodeOptions: UseCardanoNodeOptions = {
     provider: "blockfrost",

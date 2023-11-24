@@ -7,6 +7,7 @@ import {
   isDeposit,
   isParty,
   isWhen,
+  lovelaceToAda,
   type ITableData,
 } from "~/utils";
 
@@ -36,7 +37,7 @@ export const getOffered = (contractDetails: Action | undefined) => {
   const tokenAmount =
     contractDetails !== undefined && isDeposit(contractDetails)
       ? tokenName === ADA
-        ? Number(contractDetails?.deposits) / 1e6
+        ? lovelaceToAda(Number(contractDetails?.deposits)) as number
         : Number(contractDetails?.deposits)
       : 0;
   return {
@@ -70,7 +71,7 @@ export const getDesired = (
     contractDesired &&
     isDeposit(contractDesired)
       ? contractDesired?.of_token.token_name === ""
-        ? Number(contractDesired.deposits) / 1e6
+        ? lovelaceToAda(Number(contractDesired?.deposits)) as number
         : Number(contractDesired.deposits)
       : 0;
   return {

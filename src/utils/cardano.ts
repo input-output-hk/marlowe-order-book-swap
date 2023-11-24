@@ -3,6 +3,7 @@ import {
   mkSwapContract,
   type SwapRequest,
 } from "node_modules/@marlowe.io/language-examples/dist/esm/swaps/swap-token-token";
+import { adaToLovelace } from ".";
 import { type IOptions, type ITokenAmount } from "./interfaces";
 import { hexaToText } from "./string";
 import { tokensData, type TOKENS } from "./tokens";
@@ -60,6 +61,8 @@ interface ISwapRequest {
   valueDesired: string;
   selectedOffered: IOptions;
   selectedDesired: IOptions;
+  expiryDate: string;
+  address: string;
 }
 
 export const getSwapContract = ({
@@ -67,14 +70,25 @@ export const getSwapContract = ({
   valueDesired,
   selectedOffered,
   selectedDesired,
+  expiryDate,
+  address,
 }: ISwapRequest) => {
+  const parsedValueOffered =
+    selectedOffered.option === ADA
+      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
+      : BigInt(valueOffered);
+  const parsedValueDesired =
+    selectedDesired.option === ADA
+      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
+      : BigInt(valueDesired);
+  const parsedExpiryDate = BigInt(new Date(expiryDate).getTime());
+
   const swapRequest: SwapRequest = {
     provider: {
-      roleName: "provider",
-      // TODO: ask about this parameter
-      depositTimeout: BigInt(1000000),
+      roleName: address,
+      depositTimeout: parsedExpiryDate,
       value: {
-        amount: BigInt(valueOffered),
+        amount: parsedValueOffered,
         token: {
           currency_symbol:
             tokensData[selectedOffered.option as TOKENS].currency_symbol,
@@ -84,9 +98,9 @@ export const getSwapContract = ({
     },
     swapper: {
       roleName: "swapper",
-      depositTimeout: BigInt(1000000),
+      depositTimeout: parsedExpiryDate,
       value: {
-        amount: BigInt(valueDesired),
+        amount: parsedValueDesired,
         token: {
           currency_symbol:
             tokensData[selectedDesired.option as TOKENS].currency_symbol,
