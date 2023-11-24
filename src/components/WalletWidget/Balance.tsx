@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCardano } from "use-cardano";
-import { getBalance } from "~/utils";
+import { getBalance, lovelaceToAda } from "~/utils";
 
 export const Balance = () => {
   const [balance, setBalance] = useState(BigInt(0));
@@ -17,9 +17,9 @@ export const Balance = () => {
     void walletBalance();
   }, [lucid]);
 
-  const balanceInt = Math.floor(Number(balance) / 1e6);
+  const balanceInt = Math.floor(Number(lovelaceToAda(balance)));
 
-  const balanceDecimals = ((Number(balance) / 1e6) % 1)
+  const balanceDecimals = (Number(lovelaceToAda(balance)) % 1)
     .toFixed(6)
     .toString()
     .slice(2);

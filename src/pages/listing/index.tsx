@@ -1,71 +1,79 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { type Tags } from "@marlowe.io/runtime-core";
+import { mkRestClient } from "@marlowe.io/runtime-rest-client";
+import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import Head from "next/head";
-import Image from "next/image";
-import MarloweIcon from "public/marlowe.svg";
-import { useCardano } from "use-cardano";
+import { useEffect, useState } from "react";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
-import { ICON_SIZES, type ITableData } from "~/utils";
+import {
+  defaultListing,
+  getCreatedDate,
+  getDesired,
+  getOffered,
+} from "~/components/ListingPage/utils";
+import { env } from "~/env.mjs";
+import { isWhen, type ITableData } from "~/utils";
 
 export default function Listing() {
-  const { account } = useCardano();
-  const example: ITableData[] = [
-    {
-      id: 1,
-      createdBy: account.address ?? "test_123",
-      offered: {
-        token: "Marlons",
-        amount: 999.0123778979214,
-        icon: (
-          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
-        ),
-      },
-      desired: {
-        token: "ADA",
-        amount: 278071203701,
-        icon: (
-          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
-        ),
-      },
-      expiry: "12/30/2023 11:35",
-    },
-    {
-      id: 2,
-      createdBy: "test_123",
-      offered: {
-        token: "Merlons",
-        amount: 20000001,
-        icon: (
-          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
-        ),
-      },
-      desired: {
-        token: "ADA",
-        amount: 0.00123116,
-        icon: (
-          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
-        ),
-      },
-      expiry: "12/26/2023 16:35",
-    },
-    {
-      id: 3,
-      createdBy: account.address ?? "test_123",
-      offered: {
-        token: "Merluns",
-        amount: 0.00001,
-        icon: (
-          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
-        ),
-      },
-      desired: {
-        token: "ADA",
-        amount: 10.0010023116,
-        icon: (
-          <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />
-        ),
-      },
-      expiry: "11/29/2023 16:38",
-    },
-  ];
+  const [data, setData] = useState<ITableData[] | null>(null);
+
+  const client = mkRestClient(env.NEXT_PUBLIC_RUNTIME_URL);
+
+  useEffect(() => {
+    const getContracts = async () => {
+      await client
+        .getContracts({
+          tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
+        })
+        .then(async (res) => {
+          const contractsListPromise = res.headers.map((contract) => {
+            return client.getContractById(contract.contractId);
+          });
+          const contractList = (await Promise.all(
+            contractsListPromise,
+          )) as (ContractDetails & { tags: Tags })[];
+          const filteredContractList = contractList.filter((contract) => {
+            const startDate: string =
+              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].startDate;
+            const endDate: string =
+              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].expiryDate;
+            return (
+              new Date(startDate) < new Date() &&
+              new Date(endDate) > new Date() &&
+              contract.status === "confirmed"
+            );
+          });
+
+          const formattedList: ITableData[] = filteredContractList.map(
+            ({ contractId, initialContract }) => {
+              if (isWhen(initialContract) && initialContract) {
+                const contractDetails = initialContract.when[0]?.case;
+                const contractDesired =
+                  initialContract.when[0]?.then &&
+                  isWhen(initialContract.when[0]?.then)
+                    ? initialContract.when[0]?.then.when[0]?.case
+                    : undefined;
+                return {
+                  id: Number(contractId),
+                  createdBy: getCreatedDate(contractDetails),
+                  offered: getOffered(contractDetails),
+                  desired: getDesired(contractDesired, initialContract),
+
+                  expiry: new Date(Number(initialContract.timeout)).toString(),
+                };
+              } else {
+                return defaultListing;
+              }
+            },
+          );
+          setData(formattedList);
+        });
+    };
+
+    void getContracts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -75,7 +83,7 @@ export default function Listing() {
         <link rel="icon" href="/marlowe.svg" />
       </Head>
 
-      <ListingPage listingData={example} />
+      <ListingPage listingData={data} />
     </>
   );
 }

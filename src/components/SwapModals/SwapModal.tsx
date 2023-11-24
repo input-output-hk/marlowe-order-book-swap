@@ -119,8 +119,8 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
                 </div>
               </div>
             </div>
-            <div className="flex w-full flex-col justify-end gap-5 pt-5 text-sm sm:flex-row">
-              <div>
+            <div className="flex w-full flex-col justify-between gap-5 pt-5 text-sm sm:flex-row">
+              <div className="w-full">
                 <Button
                   size={SIZE.SMALL}
                   color={COLORS.BLACK}
@@ -129,15 +129,17 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
                   Cancel
                 </Button>
               </div>
-              <Link href={PAGES.COMPLETE}>
-                <Button
-                  size={SIZE.SMALL}
-                  disabled={!isEnoughBalance(balance, desired)}
-                  filled
-                >
-                  Confirm Swap
-                </Button>
-              </Link>
+              <div className="w-full">
+                <Link href={PAGES.COMPLETE}>
+                  <Button
+                    size={SIZE.SMALL}
+                    disabled={!isEnoughBalance(balance, desired)}
+                    filled
+                  >
+                    Confirm Swap
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
