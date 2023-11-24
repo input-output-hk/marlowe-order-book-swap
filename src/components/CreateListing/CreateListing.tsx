@@ -90,6 +90,7 @@ export const CreateListing = () => {
           valueDesired,
           selectedOffered,
           selectedDesired,
+          expiryDate,
           address: account.address!,
         });
 
@@ -97,7 +98,7 @@ export const CreateListing = () => {
           contract: swapContract,
           tags: {
             [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
-              title: "TestSwap",
+              startDate,
             },
           },
         });
