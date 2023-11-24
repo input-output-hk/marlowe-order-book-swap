@@ -40,8 +40,12 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   >(undefined);
 
   const setRuntime = async (options: BrowserRuntimeLifecycleOptions) => {
-    const runtime = await mkRuntimeLifecycle(options);
-    setRuntimeLifecycle(runtime);
+    try {
+      const runtime = await mkRuntimeLifecycle(options);
+      setRuntimeLifecycle(runtime);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

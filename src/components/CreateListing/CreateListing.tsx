@@ -77,14 +77,23 @@ export const CreateListing = () => {
       startDate,
     });
 
-    if (isEveryFieldValid(errors)) {
-      if (!setRuntime || !runtimeLifecycle) throw new Error("No runtime");
-      setCreateLoading((prev) => ({
-        ...prev,
-        contract: true,
-      }));
-
+    if (
+      isEveryFieldValid({
+        valueOffered,
+        valueDesired,
+        selectedOffered,
+        selectedDesired,
+        expiryDate,
+        startDate,
+      })
+    ) {
       try {
+        if (!setRuntime || !runtimeLifecycle) throw new Error("No runtime");
+        setCreateLoading((prev) => ({
+          ...prev,
+          contract: true,
+        }));
+
         const swapContract = getSwapContract({
           valueOffered,
           valueDesired,
@@ -118,9 +127,11 @@ export const CreateListing = () => {
         void router.push(PAGES.LISTING);
       } catch (err) {
         console.log(err);
-        setErrors({
-          ...errors,
-          transactionError: "There was an error creating the transaction",
+        setErrors((prev) => {
+          return {
+            ...prev,
+            transactionError: "There was an error creating the transaction",
+          };
         });
         setCreateLoading((prev) => ({
           ...prev,
