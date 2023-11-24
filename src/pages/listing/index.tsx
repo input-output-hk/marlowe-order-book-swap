@@ -16,16 +16,11 @@ import { env } from "~/env.mjs";
 import { isWhen, type ITableData } from "~/utils";
 
 export default function Listing() {
-  const [example, setExample] = useState<ITableData[]>([]);
+  const [data, setData] = useState<ITableData[] | null>(null);
 
   const client = mkRestClient(env.NEXT_PUBLIC_RUNTIME_URL);
 
   useEffect(() => {
-    const healthCheck = async () => {
-      const hasValidRuntime = await client.healthcheck();
-      if (!hasValidRuntime) throw new Error("Invalid Marlowe Runtime instance");
-    };
-
     const getContracts = async () => {
       await client
         .getContracts({
@@ -72,11 +67,10 @@ export default function Listing() {
               }
             },
           );
-          setExample(formattedList);
+          setData(formattedList);
         });
     };
 
-    void healthCheck();
     void getContracts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,7 +83,7 @@ export default function Listing() {
         <link rel="icon" href="/marlowe.svg" />
       </Head>
 
-      <ListingPage listingData={example} />
+      <ListingPage listingData={data} />
     </>
   );
 }

@@ -14,7 +14,7 @@ import { UtilityDesktop } from "./UtilityDesktop";
 import { UtilityMobile } from "./UtilityMobile";
 
 interface ListingPageProps {
-  listingData: Array<ITableData>;
+  listingData: Array<ITableData> | null;
 }
 
 export const ListingPage = ({ listingData }: ListingPageProps) => {
@@ -38,16 +38,16 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
     }
   }, [account.address]);
 
-  const sortedData = sortTableData(listingData, sort);
-  const data = filterTableData(sortedData, filters);
-
-  if (loading) {
+  if (loading || !listingData) {
     return (
       <div className="flex flex-grow items-center justify-center">
         <Loading />
       </div>
     );
   }
+
+  const sortedData = sortTableData(listingData, sort);
+  const data = filterTableData(sortedData, filters);
 
   return (
     <main className="flex h-fit w-full flex-grow flex-col gap-4">
