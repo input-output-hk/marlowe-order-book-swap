@@ -3,6 +3,7 @@ import {
   mkSwapContract,
   type SwapRequest,
 } from "node_modules/@marlowe.io/language-examples/dist/esm/swaps/swap-token-token";
+import { adaToLovelace } from ".";
 import { type IOptions, type ITokenAmount } from "./interfaces";
 import { hexaToText } from "./string";
 import { tokensData, type TOKENS } from "./tokens";
@@ -74,11 +75,11 @@ export const getSwapContract = ({
 }: ISwapRequest) => {
   const parsedValueOffered =
     selectedOffered.option === ADA
-      ? BigInt(valueOffered) * BigInt(1e6)
+      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
       : BigInt(valueOffered);
   const parsedValueDesired =
     selectedDesired.option === ADA
-      ? BigInt(valueDesired) * BigInt(1e6)
+      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
       : BigInt(valueDesired);
   const parsedExpiryDate = BigInt(new Date(expiryDate).getTime());
 

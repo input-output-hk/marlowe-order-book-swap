@@ -77,8 +77,8 @@ export const CreateListing = () => {
       startDate,
     });
 
-    if (!setRuntime || !runtimeLifecycle) return;
     if (isEveryFieldValid(errors)) {
+      if (!setRuntime || !runtimeLifecycle) throw new Error("No runtime");
       setCreateLoading((prev) => ({
         ...prev,
         contract: true,
