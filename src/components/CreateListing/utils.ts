@@ -43,6 +43,7 @@ export const checkValidity = ({
 }: ICheckErrors) => {
   const startDateObj = startDate === "" ? new Date() : new Date(startDate);
   const expiryDateObj = new Date(expiryDate);
+  const today = new Date();
 
   setErrors((prev) => {
     return {
@@ -71,11 +72,11 @@ export const checkValidity = ({
           ? "Start date must be before expiry date"
           : undefined,
       beforeTodayStartError:
-        startDateObj < new Date()
+        startDateObj < today
           ? "Start date must be after today's date"
           : undefined,
       beforeTodayExpiryError:
-        expiryDateObj < new Date()
+        expiryDateObj < today
           ? "Expiry date must be after today's date"
           : undefined,
     };
