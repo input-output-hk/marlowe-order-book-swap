@@ -2,28 +2,41 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import DownIcon from "public/down_arrow.svg";
-import { useEffect, useState, type FormEvent } from "react";
+import { useContext, useEffect, useState, type FormEvent } from "react";
 import { useCardano } from "use-cardano";
 import { Button, SIZE } from "~/components/Button/Button";
+import { RuntimeContext } from "~/contexts/runtime.context";
+import { env } from "~/env.mjs";
 import type { IOptions } from "~/utils";
-import { COLORS, ICON_SIZES, PAGES } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES, getSwapContract } from "~/utils";
 import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
-
-interface ICreateErrors {
-  valueOffered: string | undefined;
-  valueDesired: string | undefined;
-  dropOffered: string | undefined;
-  dropDesired: string | undefined;
-  expiryDate: string | undefined;
-  startDate: string | undefined;
-  beforeTodayStartError: string | undefined;
-  beforeTodayExpiryError: string | undefined;
-}
+import {
+  checkValidity,
+  isEveryFieldValid,
+  type ICreateErrors,
+  type ICreateLoading,
+} from "./utils";
 
 export const CreateListing = () => {
-  const [loading, setLoading] = useState(true);
+  const [createLoading, setCreateLoading] = useState<ICreateLoading>({
+    loading: true,
+    contract: false,
+    confirmation: false,
+  });
+  const [errors, setErrors] = useState<ICreateErrors>({
+    valueOffered: undefined,
+    valueDesired: undefined,
+    dropOffered: undefined,
+    dropDesired: undefined,
+    expiryDate: undefined,
+    startDate: undefined,
+    beforeTodayStartError: undefined,
+    beforeTodayExpiryError: undefined,
+    transactionError: undefined,
+  });
+
   const [valueOffered, setValueOffered] = useState<string>("");
   const [selectedOffered, setSelectedOffered] = useState<IOptions>({
     option: "Token Select",
@@ -36,79 +49,100 @@ export const CreateListing = () => {
     icon: <></>,
   });
   const [expiryDate, setExpiryDate] = useState<string>("");
-  const [errors, setErrors] = useState<ICreateErrors>({
-    valueOffered: undefined,
-    valueDesired: undefined,
-    dropOffered: undefined,
-    dropDesired: undefined,
-    expiryDate: undefined,
-    startDate: undefined,
-    beforeTodayStartError: undefined,
-    beforeTodayExpiryError: undefined,
-  });
 
   const router = useRouter();
-  const { account } = useCardano();
+  const { account, walletProvider } = useCardano();
+  const { runtimeLifecycle, setRuntime } = useContext(RuntimeContext);
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (!account.address || walletInfo) {
-      setLoading(false);
+      setCreateLoading((prev) => ({
+        ...prev,
+        loading: false,
+      }));
     }
   }, [account.address]);
 
-  const submitForm = (e: FormEvent<HTMLFormElement>) => {
+  const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const startDateObj = startDate === "" ? new Date() : new Date(startDate);
-    const expiryDateObj = new Date(expiryDate);
-
-    setErrors({
-      valueOffered:
-        Number(valueOffered) <= 0 || valueOffered === ""
-          ? "Value must be greater than 0"
-          : undefined,
-      valueDesired:
-        Number(valueDesired) <= 0 || valueDesired === ""
-          ? "Value must be greater than 0"
-          : undefined,
-      dropOffered:
-        selectedOffered.option === "Token Select"
-          ? "You must select an offered token"
-          : undefined,
-      dropDesired:
-        selectedDesired.option === "Token Select"
-          ? "You must select a desired token"
-          : undefined,
-      expiryDate:
-        expiryDate === "" ? "You must select an expiry date" : undefined,
-      startDate:
-        startDate !== "" && startDateObj > expiryDateObj
-          ? "Start date must be before expiry date"
-          : undefined,
-      beforeTodayStartError:
-        startDateObj < new Date()
-          ? "Start date must be after today's date"
-          : undefined,
-      beforeTodayExpiryError:
-        expiryDateObj < new Date()
-          ? "Expiry date must be after today's date"
-          : undefined,
+    checkValidity({
+      setErrors,
+      valueOffered,
+      valueDesired,
+      selectedOffered,
+      selectedDesired,
+      expiryDate,
+      startDate,
     });
 
     if (
-      Number(valueOffered) > 0 &&
-      Number(valueDesired) > 0 &&
-      selectedOffered.option !== "Token Select" &&
-      selectedDesired.option !== "Token Select" &&
-      expiryDate !== "" &&
-      startDateObj < expiryDateObj
+      isEveryFieldValid({
+        valueOffered,
+        valueDesired,
+        selectedOffered,
+        selectedDesired,
+        expiryDate,
+        startDate,
+      })
     ) {
-      void router.push(PAGES.LISTING);
+      try {
+        if (!setRuntime || !runtimeLifecycle) throw new Error("No runtime");
+        setCreateLoading((prev) => ({
+          ...prev,
+          contract: true,
+        }));
+
+        const swapContract = getSwapContract({
+          valueOffered,
+          valueDesired,
+          selectedOffered,
+          selectedDesired,
+          expiryDate,
+          address: account.address!,
+        });
+
+        const contract = await runtimeLifecycle.contracts.createContract({
+          contract: swapContract,
+          tags: {
+            [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
+              startDate:
+                startDate !== "" ? startDate : new Date().toISOString(),
+              expiryDate,
+            },
+          },
+        });
+
+        setCreateLoading((prev) => ({
+          ...prev,
+          contract: false,
+          confirmation: true,
+        }));
+        await runtimeLifecycle.wallet.waitConfirmation(contract[1]);
+        setCreateLoading((prev) => ({
+          ...prev,
+          confirmation: false,
+        }));
+
+        void router.push(PAGES.LISTING);
+      } catch (err) {
+        console.log(err);
+        setErrors((prev) => {
+          return {
+            ...prev,
+            transactionError: "There was an error creating the transaction",
+          };
+        });
+        setCreateLoading((prev) => ({
+          ...prev,
+          contract: false,
+        }));
+      }
     }
   };
 
-  if (loading) {
+  if (createLoading.loading) {
     return (
       <div className="flex flex-grow items-center justify-center">
         <Loading />
@@ -175,10 +209,32 @@ export const CreateListing = () => {
             the offer.
           </span>
         </div>
-        <div className="flex w-full justify-end pt-5 text-sm">
-          <div className="flex w-2/3 items-center justify-end gap-6">
+        <div className="flex w-full flex-col gap-10 pt-5 text-sm md:gap-6 lg:flex-row lg:justify-end">
+          {createLoading.contract && (
+            <b className="w-full text-base text-m-green">
+              Please wait. Creating transaction...
+            </b>
+          )}
+          {createLoading.confirmation && (
+            <div className="flex w-full items-center gap-4">
+              <Loading sizeDesktop={ICON_SIZES.XS} sizeMobile={ICON_SIZES.XS} />
+              <b className="text-base text-m-purple">
+                Don&apos;t leave the page. Waiting confirmation...
+              </b>
+            </div>
+          )}
+          {errors.transactionError && (
+            <b className="w-full text-base text-m-red">
+              {errors.transactionError}
+            </b>
+          )}
+          <div className="flex justify-end gap-6">
             <Link href={PAGES.LISTING}>
-              <Button size={SIZE.SMALL} color={COLORS.BLACK}>
+              <Button
+                size={SIZE.SMALL}
+                color={COLORS.BLACK}
+                disabled={createLoading.contract || createLoading.confirmation}
+              >
                 Cancel
               </Button>
             </Link>
@@ -187,7 +243,12 @@ export const CreateListing = () => {
                 size={SIZE.SMALL}
                 filled
                 type="submit"
-                disabled={!account.address}
+                disabled={
+                  !account.address ||
+                  !walletProvider ||
+                  createLoading.contract ||
+                  createLoading.confirmation
+                }
               >
                 Accept
               </Button>
