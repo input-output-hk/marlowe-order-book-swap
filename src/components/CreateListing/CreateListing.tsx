@@ -107,7 +107,8 @@ export const CreateListing = () => {
           contract: swapContract,
           tags: {
             [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
-              startDate,
+              startDate:
+                startDate !== "" ? startDate : new Date().toISOString(),
               expiryDate,
             },
           },
