@@ -39,7 +39,7 @@ export default function Listing() {
             const endDate: string =
               contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].expiryDate;
             return (
-              new Date(startDate) > new Date() &&
+              new Date(startDate) < new Date() &&
               new Date(endDate) > new Date() &&
               contract.status === "confirmed"
             );
