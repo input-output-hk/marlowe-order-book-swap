@@ -99,6 +99,7 @@ export const CreateListing = () => {
           tags: {
             [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
               startDate,
+              expiryDate,
             },
           },
         });
