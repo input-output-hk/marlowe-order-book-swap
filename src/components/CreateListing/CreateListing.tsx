@@ -57,12 +57,10 @@ export const CreateListing = () => {
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (!account.address || walletInfo) {
-      setCreateLoading((prev) => {
-        return {
-          ...prev,
-          loading: false,
-        };
-      });
+      setCreateLoading((prev) => ({
+        ...prev,
+        loading: false,
+      }));
     }
   }, [account.address]);
 
@@ -197,23 +195,26 @@ export const CreateListing = () => {
             the offer.
           </span>
         </div>
-        <div className="flex w-full justify-end pt-5 text-sm">
+        <div className="flex w-full flex-col gap-10 pt-5 text-sm md:gap-6 lg:flex-row lg:justify-end">
           {createLoading.contract && (
-            <p className="w-1/3 text-lg text-m-green">
+            <b className="w-full text-base text-m-green">
               Please wait. Creating transaction...
-            </p>
+            </b>
           )}
           {createLoading.confirmation && (
-            <p className="w-1/3 text-lg text-m-purple">
-              Don&apos;t leave the page. Waiting confirmation...
-            </p>
+            <div className="flex w-full items-center gap-4">
+              <Loading sizeDesktop={ICON_SIZES.XS} sizeMobile={ICON_SIZES.XS} />
+              <b className="text-base text-m-purple">
+                Don&apos;t leave the page. Waiting confirmation...
+              </b>
+            </div>
           )}
           {errors.transactionError && (
-            <p className="w-1/3 text-lg text-m-red">
+            <b className="w-full text-base text-m-red">
               {errors.transactionError}
-            </p>
+            </b>
           )}
-          <div className="flex w-2/3 items-center justify-end gap-6">
+          <div className="flex justify-end gap-6">
             <Link href={PAGES.LISTING}>
               <Button
                 size={SIZE.SMALL}

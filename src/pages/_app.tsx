@@ -45,6 +45,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   };
 
   useEffect(() => {
+    // TODO: runtime can't be setted with nami
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (walletInfo) {
       const { walletProvider } = JSON.parse(walletInfo) as IWalletInStorage;
