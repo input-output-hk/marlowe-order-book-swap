@@ -10,7 +10,7 @@ export interface ITokenAmount extends IToken {
 }
 
 export interface ITableData {
-  id: number;
+  id: string;
   createdBy: string;
   offered: ITokenAmount;
   desired: ITokenAmount;
