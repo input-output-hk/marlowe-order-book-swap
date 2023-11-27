@@ -12,7 +12,7 @@ import {
 } from "~/utils";
 
 export const defaultListing: ITableData = {
-  id: 1,
+  id: "1",
   createdBy: "",
   offered: { token: "", amount: 0, icon: <></> },
   desired: { token: "", amount: 0, icon: <></> },
@@ -37,7 +37,7 @@ export const getOffered = (contractDetails: Action | undefined) => {
   const tokenAmount =
     contractDetails !== undefined && isDeposit(contractDetails)
       ? tokenName === ADA
-        ? lovelaceToAda(Number(contractDetails?.deposits)) as number
+        ? (lovelaceToAda(Number(contractDetails?.deposits)) as number)
         : Number(contractDetails?.deposits)
       : 0;
   return {
@@ -71,7 +71,7 @@ export const getDesired = (
     contractDesired &&
     isDeposit(contractDesired)
       ? contractDesired?.of_token.token_name === ""
-        ? lovelaceToAda(Number(contractDesired?.deposits)) as number
+        ? (lovelaceToAda(Number(contractDesired?.deposits)) as number)
         : Number(contractDesired.deposits)
       : 0;
   return {
