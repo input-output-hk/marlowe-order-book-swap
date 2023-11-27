@@ -1,6 +1,6 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
-import type { IOptions } from "~/utils";
-import { exampleTokens } from "~/utils/tokens";
+import { ADA, type IOptions } from "~/utils";
+import { tokensData } from "~/utils/tokens";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
 
@@ -21,9 +21,9 @@ export const TokenInputs = ({
   setValueOffered,
   errors = [],
 }: TokenInputsProps) => {
-  const dropDownOptions = exampleTokens.map((token) => {
+  const dropDownOptions = Object.entries(tokensData).map(([_, token]) => {
     return {
-      option: token.token,
+      option: token.token_name === "" ? ADA : token.token_name,
       icon: token.icon,
     };
   });
