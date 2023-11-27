@@ -27,25 +27,27 @@ export default function Listing() {
           tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
         })
         .then(async (res) => {
-          const contractsListPromise = res.headers.map((contract) => {
+          const validContracts = res.headers.filter((contract) => {
+            const startDate: string =
+              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].startDate;
+            const expiryDate: string =
+              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].expiryDate;
+
+            return (
+              new Date(startDate) < new Date() &&
+              new Date(expiryDate) > new Date() &&
+              contract.status === "confirmed"
+            );
+          });
+
+          const contractsListPromise = validContracts.map((contract) => {
             return client.getContractById(contract.contractId);
           });
           const contractList = (await Promise.all(
             contractsListPromise,
           )) as (ContractDetails & { tags: Tags })[];
-          const filteredContractList = contractList.filter((contract) => {
-            const startDate: string =
-              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].startDate;
-            const endDate: string =
-              contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`].expiryDate;
-            return (
-              new Date(startDate) < new Date() &&
-              new Date(endDate) > new Date() &&
-              contract.status === "confirmed"
-            );
-          });
 
-          const formattedList: ITableData[] = filteredContractList.map(
+          const formattedList: ITableData[] = contractList.map(
             ({ contractId, initialContract }) => {
               if (isWhen(initialContract) && initialContract) {
                 const contractDetails = initialContract.when[0]?.case;
@@ -55,7 +57,7 @@ export default function Listing() {
                     ? initialContract.when[0]?.then.when[0]?.case
                     : undefined;
                 return {
-                  id: Number(contractId),
+                  id: contractId as unknown as string,
                   createdBy: getCreatedDate(contractDetails),
                   offered: getOffered(contractDetails),
                   desired: getDesired(contractDesired, initialContract),
@@ -63,6 +65,7 @@ export default function Listing() {
                   expiry: new Date(Number(initialContract.timeout)).toString(),
                 };
               } else {
+                // TODO: validate to avoid this
                 return defaultListing;
               }
             },
