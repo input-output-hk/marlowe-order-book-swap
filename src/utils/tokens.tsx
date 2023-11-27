@@ -5,9 +5,10 @@ import { ICON_SIZES } from "./iconSizes";
 export const TOKENS = {
   ADA: "ADA",
   TGENS: "tGENS",
+  AGIX: "AGIX",
+  TDRIP: "tDRIP",
+  DTU: "DTU",
   TWRT: "tWRT",
-  TWMT: "tWMT",
-  TMIN: "tMIN",
 } as const;
 
 export type TOKENS = (typeof TOKENS)[keyof typeof TOKENS];
@@ -26,19 +27,24 @@ export const tokensData: Record<
     token_name: "tGENS",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
   },
+  [TOKENS.AGIX]: {
+    currency_symbol: "6f1a1f0c7ccf632cc9ff4b79687ed13ffe5b624cce288b364ebdce50",
+    token_name: "AGIX",
+    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
+  },
+  [TOKENS.TDRIP]: {
+    currency_symbol: "698a6ea0ca99f315034072af31eaac6ec11fe8558d3f48e9775aab9d",
+    token_name: "tDRIP",
+    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
+  },
+  [TOKENS.DTU]: {
+    currency_symbol: "9772ff715b691c0444f333ba1db93b055c0864bec48fff92d1f2a7fe",
+    token_name: "DTU",
+    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
+  },
   [TOKENS.TWRT]: {
-    currency_symbol: "f6f49b186751e61f1fb8c64e7504e771f968cea9f4d11f5222b169e3",
+    currency_symbol: "659ab0b5658687c2e74cd10dba8244015b713bf503b90557769d77a7",
     token_name: "tWRT",
-    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
-  },
-  [TOKENS.TWMT]: {
-    currency_symbol: "f6f49b186751e61f1fb8c64e7504e771f968cea9f4d11f5222b169e3",
-    token_name: "tWMT",
-    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
-  },
-  [TOKENS.TMIN]: {
-    currency_symbol: "f6f49b186751e61f1fb8c64e7504e771f968cea9f4d11f5222b169e3",
-    token_name: "tMIN",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.S} alt="C" />,
   },
 };
