@@ -55,7 +55,7 @@ export default function Listing() {
                     ? initialContract.when[0]?.then.when[0]?.case
                     : undefined;
                 return {
-                  id: Number(contractId),
+                  id: contractId as unknown as string,
                   createdBy: getCreatedDate(contractDetails),
                   offered: getOffered(contractDetails),
                   desired: getDesired(contractDesired, initialContract),

@@ -24,7 +24,7 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
   const [filters, setFilters] = useState<IFilters>({
     filterOwnListings: false,
     searchQuery: "",
-    owner: account.address ?? "",
+    owner: "",
   });
   const [sort, setSort] = useState<ISort>({
     sortBy: "expiryDate",
@@ -35,6 +35,11 @@ export const ListingPage = ({ listingData }: ListingPageProps) => {
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (!account.address || walletInfo) {
       setLoading(false);
+    }
+    if (account.address) {
+      setFilters((prev) => {
+        return { ...prev, owner: account.address! };
+      });
     }
   }, [account.address]);
 
