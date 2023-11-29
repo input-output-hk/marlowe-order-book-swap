@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { type Tags } from "@marlowe.io/runtime-core";
+import { unContractId, type Tags } from "@marlowe.io/runtime-core";
 import { mkRestClient } from "@marlowe.io/runtime-rest-client";
 import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import Head from "next/head";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import {
   defaultListing,
-  getCreatedDate,
+  getCreatedBy,
   getDesired,
   getOffered,
 } from "~/components/ListingPage/utils";
@@ -55,8 +55,8 @@ export default function Listing() {
                     ? initialContract.when[0]?.then.when[0]?.case
                     : undefined;
                 return {
-                  id: contractId as unknown as string,
-                  createdBy: getCreatedDate(contractDetails),
+                  id: unContractId(contractId),
+                  createdBy: getCreatedBy(contractDetails),
                   offered: getOffered(contractDetails),
                   desired: getDesired(contractDesired, initialContract),
 

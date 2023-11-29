@@ -1,3 +1,5 @@
+import { addressBech32, unContractId } from "@marlowe.io/runtime-core";
+import { type RolesConfig } from "@marlowe.io/runtime-rest-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -100,11 +102,16 @@ export const CreateListing = () => {
           selectedOffered,
           selectedDesired,
           expiryDate,
-          address: account.address!,
         });
+
+        const roles: RolesConfig = {
+          provider: addressBech32(account.address!),
+          swapper: addressBech32(account.address!),
+        };
 
         const contract = await runtimeLifecycle.contracts.createContract({
           contract: swapContract,
+          roles,
           tags: {
             [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
               startDate:
@@ -125,7 +132,14 @@ export const CreateListing = () => {
           confirmation: false,
         }));
 
-        void router.push(PAGES.LISTING);
+        void router.push({
+          pathname: PAGES.DEPOSIT,
+          query: {
+            id: unContractId(contract[0]),
+            tokenName: selectedOffered.option,
+            amount: valueOffered,
+          },
+        });
       } catch (err) {
         console.log(err);
         setErrors((prev) => {

@@ -62,7 +62,6 @@ interface ISwapRequest {
   selectedOffered: IOptions;
   selectedDesired: IOptions;
   expiryDate: string;
-  address: string;
 }
 
 export const getSwapContract = ({
@@ -71,7 +70,6 @@ export const getSwapContract = ({
   selectedOffered,
   selectedDesired,
   expiryDate,
-  address,
 }: ISwapRequest) => {
   const parsedValueOffered =
     selectedOffered.option === ADA
@@ -85,7 +83,7 @@ export const getSwapContract = ({
 
   const swapRequest: SwapRequest = {
     provider: {
-      roleName: address,
+      roleName: "provider",
       depositTimeout: parsedExpiryDate,
       value: {
         amount: parsedValueOffered,

@@ -24,11 +24,13 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
     token: "",
     icon: <></>,
     amount: 0,
+    currency: "",
   });
   const [offered, setOffered] = useState<ITokenAmount>({
     token: "",
     icon: <></>,
     amount: 0,
+    currency: "",
   });
 
   const handleOpenRetract = (row: ITableData) => () => {
