@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCardano } from "use-cardano";
-import { getBalance, lovelaceToAda } from "~/utils";
+import { adaToLovelace, getBalance, lovelaceToAda } from "~/utils";
 
 export const Balance = () => {
   const [balance, setBalance] = useState(BigInt(0));
@@ -19,10 +19,9 @@ export const Balance = () => {
 
   const balanceInt = Math.floor(Number(lovelaceToAda(balance)));
 
-  const balanceDecimals = (Number(lovelaceToAda(balance)) % 1)
-    .toFixed(6)
-    .toString()
-    .slice(2);
+  const balanceDecimals = Number(
+    balance - (adaToLovelace(BigInt(balanceInt)) as bigint),
+  );
 
   return (
     <div className="hidden md:block">
