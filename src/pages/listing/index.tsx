@@ -1,20 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import Head from "next/head";
 import { useContext, useEffect, useState } from "react";
+import { ErrorMessage } from "~/components/ErrorMessage/ErrorMessage";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
-import { defaultListing } from "~/components/ListingPage/utils";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { getContracts, type ITableData } from "~/utils";
 
 export default function Listing() {
   const [data, setData] = useState<ITableData[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { client } = useContext(TSSDKContext);
 
   useEffect(() => {
     if (client) {
-      void getContracts(client, setData);
-      setData([defaultListing]);
+      void getContracts(client, setData, setError);
     }
   }, [client]);
 
@@ -26,7 +24,11 @@ export default function Listing() {
         <link rel="icon" href="/marlowe.svg" />
       </Head>
 
-      <ListingPage listingData={data} />
+      {error ? (
+        <ErrorMessage message={error} />
+      ) : (
+        <ListingPage listingData={data} />
+      )}
     </>
   );
 }

@@ -5,6 +5,7 @@ import { iso } from "newtype-ts";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
+import { env } from "~/env.mjs";
 import {
   contractDetailsSchema,
   contractSchema,
@@ -12,7 +13,6 @@ import {
   type OfferedType,
 } from ".";
 import { ADA, ICON_SIZES, lovelaceToAda, type ITableData } from "..";
-import { env } from "process";
 
 const getOffered = (data: OfferedType) => {
   const token =
@@ -49,6 +49,7 @@ const getDesired = (data: DesiredType) => {
 export const getContracts = async (
   client: RestAPI,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
+  setError: Dispatch<SetStateAction<string | null>>,
 ) => {
   try {
     const isoContract = iso<ContractsRange>();
@@ -95,6 +96,6 @@ export const getContracts = async (
 
     setData(parsedContractsList);
   } catch (err) {
-    console.error(err);
+    setError("Something went wrong. Please reload and try later.");
   }
 };
