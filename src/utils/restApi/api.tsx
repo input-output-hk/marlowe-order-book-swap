@@ -53,7 +53,7 @@ export const getContracts = async (
 ) => {
   try {
     const isoContract = iso<ContractsRange>();
-    const range = isoContract.wrap(`contractId;limit 5;offset 0;order desc`);
+    const range = isoContract.wrap(`contractId;limit 10;offset 0;order desc`);
 
     const allContracts = await client.getContracts({
       tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
@@ -66,11 +66,29 @@ export const getContracts = async (
       throw new Error(parsedContracts.error.message);
     }
 
-    const contractsListPromise = parsedContracts.data.headers.map(
-      (contract) => {
-        return client.getContractById(contract.contractId);
-      },
-    );
+    const validContracts = parsedContracts.data.headers.filter((contract) => {
+      if (
+        env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
+        contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+      ) {
+        const startDate =
+          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]?.startDate;
+        const expiryDate =
+          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]?.expiryDate;
+
+        return (
+          startDate &&
+          expiryDate &&
+          new Date(startDate) < new Date() &&
+          new Date(expiryDate) > new Date() &&
+          contract.status === "confirmed"
+        );
+      }
+    });
+
+    const contractsListPromise = validContracts.map((contract) => {
+      return client.getContractById(contract.contractId);
+    });
     const contractsList = await Promise.all(contractsListPromise);
 
     const parsedContractsList = contractsList
@@ -96,6 +114,7 @@ export const getContracts = async (
 
     setData(parsedContractsList);
   } catch (err) {
+    console.log(err);
     setError("Something went wrong. Please reload and try later.");
   }
 };

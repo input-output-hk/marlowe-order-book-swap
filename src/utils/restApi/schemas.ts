@@ -7,7 +7,13 @@ export const contractHeaderSchema = z.object({
     .string()
     .min(64)
     .transform((x: string) => contractId(x)),
-  tags: z.record(z.literal(env.NEXT_PUBLIC_DAPP_ID), z.any()),
+  tags: z.record(
+    z.literal(env.NEXT_PUBLIC_DAPP_ID),
+    z.object({
+      startDate: z.string().optional(),
+      expiryDate: z.string().optional(),
+    }),
+  ),
   status: z.union([
     z.literal("unsigned"),
     z.literal("submitted"),
