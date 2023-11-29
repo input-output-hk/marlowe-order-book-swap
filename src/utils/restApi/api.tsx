@@ -1,7 +1,6 @@
 import { unContractId } from "@marlowe.io/runtime-core";
 import { type RestAPI } from "@marlowe.io/runtime-rest-client";
-import { type ContractsRange } from "@marlowe.io/runtime-rest-client/contract/index";
-import { iso } from "newtype-ts";
+import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
@@ -52,8 +51,7 @@ export const getContracts = async (
   setError: Dispatch<SetStateAction<string | null>>,
 ) => {
   try {
-    const isoContract = iso<ContractsRange>();
-    const range = isoContract.wrap(`contractId;limit 10;offset 0;order desc`);
+    const range = contractsRange(`contractId;limit 10;offset 0;order desc`);
 
     const allContracts = await client.getContracts({
       tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
