@@ -52,8 +52,10 @@ To get the DApp up and running on your local machine, follow these steps:
       Locate the line `NEXT_PUBLIC_BLOCKFROST_PROJECT_ID="<Your-Project-ID>"`. Replace `<Your-Project-ID>` with your Project ID from Blockfrost.
 
       **Currently only preprod projects are supported.**
-
       NEXT_PUBLIC_BLOCKFROST_PROJECT_ID=preprod123test321
+
+   3. **Set the Marlowe runtime URL**
+      Locate the line `NEXT_PUBLIC_DAPP_ID="<Your-Runtime-URL>"`. Replace `<Your-Runtime-URL>` with your Marlowe runtime URL.
 
 4. **Rename the .env.example file**
 
