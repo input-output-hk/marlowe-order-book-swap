@@ -5,7 +5,7 @@ export * from "./iconSizes";
 export * from "./interfaces";
 export * from "./numbers";
 export * from "./pages";
-export * from "./restClient";
+export * from "./restApi";
 export * from "./sort";
 export * from "./string";
 export * from "./time";
