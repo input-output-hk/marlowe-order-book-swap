@@ -3,6 +3,7 @@ import {
   mkRuntimeLifecycle,
   type BrowserRuntimeLifecycleOptions,
 } from "@marlowe.io/runtime-lifecycle/browser";
+import { mkRestClient, type RestAPI } from "@marlowe.io/runtime-rest-client";
 import { type SupportedWalletName } from "@marlowe.io/wallet/browser";
 import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
@@ -15,7 +16,7 @@ import {
 import { Footer } from "~/components/Footer/Footer";
 import { Header } from "~/components/Header/Header";
 import { WalletWidget } from "~/components/WalletWidget/WalletWidget";
-import { RuntimeContext } from "~/contexts/runtime.context";
+import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
 import "~/styles/globals.css";
 import {
@@ -38,6 +39,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [runtimeLifecycle, setRuntimeLifecycle] = useState<
     RuntimeLifecycle | undefined
   >(undefined);
+  const [client, setClient] = useState<RestAPI | undefined>(undefined);
 
   const setRuntime = async (options: BrowserRuntimeLifecycleOptions) => {
     try {
@@ -46,6 +48,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const setRestClient = () => {
+    const newClient = mkRestClient(env.NEXT_PUBLIC_RUNTIME_URL);
+    setClient(newClient);
   };
 
   useEffect(() => {
@@ -59,6 +66,8 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         walletName: walletProvider as SupportedWalletName,
       });
     }
+
+    setRestClient();
   }, []);
 
   const useCardanoNodeOptions: UseCardanoNodeOptions = {
@@ -82,10 +91,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           }
         `}
       </style>
-      <RuntimeContext.Provider
+      <TSSDKContext.Provider
         value={{
           runtimeLifecycle,
           setRuntime,
+          client,
         }}
       >
         <CardanoProvider options={options}>
@@ -102,7 +112,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             socialMediaLinks={socialMediaLinks}
           />
         </CardanoProvider>
-      </RuntimeContext.Provider>
+      </TSSDKContext.Provider>
     </>
   );
 };
