@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ICON_SIZES, type ITableData, type ITokenAmount } from "~/utils";
 import { RetractModal } from "../SwapModals/RetractModal";
 import { SwapModal } from "../SwapModals/SwapModal";
+import { TableFooterDesktop } from "./TableFooterDesktop";
 import { TableHead } from "./TableHead";
 import type { TablePropsWithSort } from "./table.interface";
 
@@ -18,6 +19,7 @@ const TableBodyDesktop = dynamic(
 );
 
 export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
   const [desired, setDesired] = useState<ITokenAmount>({
@@ -67,10 +69,16 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
           handleOpenAccept={handleOpenAccept}
         />
       </div>
+      <TableFooterDesktop
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
       <TableBodyMobile
         data={data}
         handleOpenRetract={handleOpenRetract}
         handleOpenAccept={handleOpenAccept}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
       />
       <RetractModal
         open={openRetract}

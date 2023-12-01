@@ -9,12 +9,15 @@ import {
   truncateString,
 } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
+import { TableFooterMobile } from "./TableFooterMobile";
 import type { TableProps } from "./table.interface";
 
 export const TableBodyMobile = ({
   data,
   handleOpenAccept,
   handleOpenRetract,
+  currentPage,
+  setCurrentPage,
 }: TableProps) => {
   const { account } = useCardano();
 
@@ -55,8 +58,7 @@ export const TableBodyMobile = ({
               <div className="flex items-center justify-between px-4 pt-2">
                 <div>Expires in {getExpiration(row.expiry)}</div>
                 <div className="w-1/3">
-                  {/* TODO: change when we implement wallets */}
-                  {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
+                  {row.createdBy === account.address ? (
                     <Button
                       size={SIZE.XSMALL}
                       color={COLORS.RED}
@@ -79,6 +81,14 @@ export const TableBodyMobile = ({
             </div>
           );
         })}
+      </div>
+      <div className="bg-m-light-purple px-24">
+        {currentPage && setCurrentPage && (
+          <TableFooterMobile
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </div>
       <div className="h-16 w-full rounded-b-lg bg-m-light-purple md:hidden" />
     </>
