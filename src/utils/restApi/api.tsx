@@ -94,11 +94,10 @@ export const getContracts = async (
         const parsedContract = contractDetailsSchema.safeParse(contract);
 
         if (parsedContract.success) {
-          const { contractId, initialContract } = parsedContract.data;
-
+          const { contractId, initialContract, state } = parsedContract.data;
           return {
             id: unContractId(contractId),
-            createdBy: initialContract.when[0].case.into_account.role_token,
+            createdBy: state.value.accounts[0][0][0].address,
             offered: getOffered(initialContract.when[0].case),
             desired: getDesired(initialContract.when[0].then),
             expiry: new Date(Number(initialContract.timeout)).toString(),

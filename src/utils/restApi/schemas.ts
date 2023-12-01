@@ -12,6 +12,7 @@ export const contractHeaderSchema = z.object({
     z.object({
       startDate: z.string().optional(),
       expiryDate: z.string().optional(),
+      createdBy: z.string().optional(),
     }),
   ),
   status: z.union([
@@ -70,6 +71,17 @@ export const whenSchema = z.object({
   then: thenSchema,
 });
 
+export const addressSchema = z.tuple([
+  z.tuple([
+    z.object({ address: z.string() }),
+    z.object({
+      token_name: z.string(),
+      currency_symbol: z.string(),
+    }),
+  ]),
+  z.bigint(),
+]);
+
 export const contractDetailsSchema = z.object({
   contractId: z
     .string()
@@ -78,6 +90,28 @@ export const contractDetailsSchema = z.object({
   initialContract: z.object({
     when: z.array(whenSchema).nonempty(),
     timeout: z.bigint(),
+  }),
+  state: z.object({
+    value: z.object({
+      accounts: z
+        .array(addressSchema)
+        .nonempty()
+        .or(
+          z.tuple([
+            addressSchema,
+            z.tuple([
+              z.tuple([
+                z.object({ role_token: z.string() }),
+                z.object({
+                  token_name: z.string(),
+                  currency_symbol: z.string(),
+                }),
+              ]),
+              z.bigint(),
+            ]),
+          ]),
+        ),
+    }),
   }),
 });
 

@@ -8,7 +8,13 @@ import { useContext, useState } from "react";
 import { Button } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
-import { ADA, ICON_SIZES, PAGES, adaToLovelace } from "~/utils";
+import {
+  ADA,
+  ICON_SIZES,
+  PAGES,
+  adaToLovelace,
+  dateTimeOptions,
+} from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
 import { Loading } from "../Loading/Loading";
 
@@ -73,13 +79,13 @@ export const Deposit = () => {
   }
 
   return (
-    <div className="m-auto flex w-1/3 flex-col gap-4 shadow-container">
+    <div className="m-auto flex w-1/2 flex-col gap-4 shadow-container">
       <div className="flex gap-3 rounded-lg rounded-b-none border border-b-0 bg-m-light-purple p-5 text-center text-2xl">
         <Image src={SwapCircleIcon as string} alt="" height={ICON_SIZES.L} />
         Swap Details
       </div>
       <div className="flex flex-col  items-center gap-4 p-5">
-        <div className="flex justify-center gap-5">
+        <div className="flex flex-col items-center justify-center gap-5 md:flex-row md:items-start">
           <div className="flex gap-3 text-xl font-semibold">
             {tokensData[offeredToken as TOKENS]?.icon}
             {offeredAmount}&nbsp;&nbsp;{offeredToken}
@@ -88,21 +94,26 @@ export const Deposit = () => {
             src={SwapIcon as string}
             alt="↑↓"
             height={ICON_SIZES.L}
-            className="rotate-90"
+            className="md:rotate-90"
           />
-
           <div className="flex gap-3 text-xl font-semibold">
             {tokensData[desiredToken as TOKENS]?.icon}
             {desiredAmount}&nbsp;&nbsp;{desiredToken}
           </div>
         </div>
-        <div className="flex gap-4">
-          <div className="text-lg font-semibold">Swap expiry date:</div>
-          <div className="text-xl">{expiryDate}</div>
+        <hr className="w-full" />
+        <div className="flex flex-col gap-1 text-center md:flex-row md:gap-4">
+          <div className="text-lg md:font-semibold">Swap expiry date:</div>
+          <div className="text-xl font-semibold md:font-normal">
+            {new Date(expiryDate).toLocaleDateString(
+              undefined,
+              dateTimeOptions,
+            )}
+          </div>
         </div>
-        <div className="flex gap-4">
-          <div className="text-lg font-semibold">You will deposit:</div>
-          <div className="text-xl">
+        <div className="flex flex-col gap-1 text-center md:flex-row md:gap-4">
+          <div className="text-lg md:font-semibold ">You will deposit:</div>
+          <div className="text-xl font-semibold md:font-normal">
             {offeredAmount} &nbsp;
             {offeredToken} + Fee
           </div>

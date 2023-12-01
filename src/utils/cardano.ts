@@ -73,7 +73,7 @@ export const getSwapContract = ({
 }: ISwapRequest) => {
   const parsedValueOffered =
     selectedOffered.option === ADA
-      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
+      ? (adaToLovelace(BigInt(valueOffered)) as bigint)
       : BigInt(valueOffered);
   const parsedValueDesired =
     selectedDesired.option === ADA
