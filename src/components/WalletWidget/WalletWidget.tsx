@@ -138,7 +138,7 @@ export const WalletWidget = () => {
       )}
 
       {open && (
-        <div className="absolute top-9 z-50 w-32 border border-m-purple/10 bg-m-light-purple md:w-44">
+        <div className="absolute top-9 z-10 w-32 border border-m-purple/10 bg-m-light-purple md:w-44">
           {availableProviders.sort().map((prov) => (
             <div
               key={prov.key}

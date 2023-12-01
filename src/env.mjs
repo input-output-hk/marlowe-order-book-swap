@@ -28,7 +28,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_OWN_ADDRESS: z.string().default("addr_test123456789"),
     NEXT_PUBLIC_BLOCKFROST_PROJECT_ID: z.string(),
-    NEXT_PUBLIC_DAPP_ID: z.string(),
+    NEXT_PUBLIC_DAPP_ID: z.string().default("marlowe.examples.swap.prototype"),
     NEXT_PUBLIC_RUNTIME_URL: z.string(),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },

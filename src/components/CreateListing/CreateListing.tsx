@@ -5,7 +5,7 @@ import DownIcon from "public/down_arrow.svg";
 import { useContext, useEffect, useState, type FormEvent } from "react";
 import { useCardano } from "use-cardano";
 import { Button, SIZE } from "~/components/Button/Button";
-import { RuntimeContext } from "~/contexts/runtime.context";
+import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
 import type { IOptions } from "~/utils";
 import { COLORS, ICON_SIZES, PAGES, getSwapContract } from "~/utils";
@@ -52,7 +52,7 @@ export const CreateListing = () => {
 
   const router = useRouter();
   const { account, walletProvider } = useCardano();
-  const { runtimeLifecycle, setRuntime } = useContext(RuntimeContext);
+  const { runtimeLifecycle, setRuntime } = useContext(TSSDKContext);
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");

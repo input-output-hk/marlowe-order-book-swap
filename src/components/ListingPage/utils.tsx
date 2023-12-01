@@ -12,7 +12,7 @@ import {
 } from "~/utils";
 
 export const defaultListing: ITableData = {
-  id: "",
+  id: "1",
   createdBy: "",
   offered: { token: "", amount: 0, icon: <></> },
   desired: { token: "", amount: 0, icon: <></> },
