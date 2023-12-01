@@ -136,8 +136,11 @@ export const CreateListing = () => {
           pathname: PAGES.DEPOSIT,
           query: {
             id: unContractId(contract[0]),
-            tokenName: selectedOffered.option,
-            amount: valueOffered,
+            offeredToken: selectedOffered.option,
+            offeredAmount: valueOffered,
+            desiredToken: selectedDesired.option,
+            desiredAmount: valueDesired,
+            expiryDate: expiryDate,
           },
         });
       } catch (err) {
