@@ -18,7 +18,13 @@ const TableBodyDesktop = dynamic(
   { ssr: false },
 );
 
-export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
+export const Table = ({
+  data,
+  sort,
+  setSort,
+  pagination,
+  setPagination,
+}: TablePropsWithSort) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
@@ -72,6 +78,8 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
       <TableFooterDesktop
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        pagination={pagination}
+        setPagination={setPagination}
       />
       <TableBodyMobile
         data={data}

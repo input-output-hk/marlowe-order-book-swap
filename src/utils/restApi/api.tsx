@@ -11,7 +11,13 @@ import {
   type DesiredType,
   type OfferedType,
 } from ".";
-import { ADA, ICON_SIZES, lovelaceToAda, type ITableData } from "..";
+import {
+  ADA,
+  ICON_SIZES,
+  lovelaceToAda,
+  type IPagination,
+  type ITableData,
+} from "..";
 
 const getOffered = (data: OfferedType) => {
   const token =
@@ -45,13 +51,18 @@ const getDesired = (data: DesiredType) => {
   };
 };
 
+export const PAGINATION_LIMIT = 10;
 export const getContracts = async (
   client: RestAPI,
+  pagination: IPagination,
+  setPagination: Dispatch<SetStateAction<IPagination>>,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
   setError: Dispatch<SetStateAction<string | null>>,
 ) => {
   try {
-    const range = contractsRange(`contractId;limit 10;offset 0;order desc`);
+    const range = contractsRange(
+      `contractId;limit ${PAGINATION_LIMIT};offset ${pagination.offset};order desc`,
+    );
 
     const allContracts = await client.getContracts({
       tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
@@ -111,6 +122,11 @@ export const getContracts = async (
       .filter((x) => x !== null) as ITableData[];
 
     setData(parsedContractsList);
+
+    setPagination((prev) => ({
+      ...prev,
+      fetchMore: parsedContracts.data.nextRange._tag === "Some",
+    }));
   } catch (err) {
     console.log(err);
     setError("Something went wrong. Please reload and try later.");

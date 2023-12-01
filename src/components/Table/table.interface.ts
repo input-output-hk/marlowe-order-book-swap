@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { ISort, ITableData } from "~/utils";
+import type { IPagination, ISort, ITableData } from "~/utils";
 
 export interface TableProps {
   data: Array<ITableData>;
@@ -11,6 +11,8 @@ export interface TableProps {
 
 export interface TablePropsWithSort {
   data: Array<ITableData>;
+  pagination: IPagination;
+  setPagination: Dispatch<SetStateAction<IPagination>>;
   sort: ISort;
   setSort: Dispatch<SetStateAction<ISort>>;
 }
@@ -18,4 +20,6 @@ export interface TablePropsWithSort {
 export interface ITableFooter {
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
+  pagination: IPagination;
+  setPagination: Dispatch<SetStateAction<IPagination>>;
 }

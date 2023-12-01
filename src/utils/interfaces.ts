@@ -49,3 +49,8 @@ export interface ILink {
   displayText: string;
   href: string;
 }
+
+export interface IPagination {
+  offset: number;
+  fetchMore: boolean;
+}
