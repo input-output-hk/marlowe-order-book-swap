@@ -1,9 +1,9 @@
-import { contractId } from "@marlowe.io/runtime-core";
+import { contractId, type ContractId } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import SwapCircleIcon from "public/swap_circle.svg";
 import SwapIcon from "public/swap_vert.svg";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
@@ -17,8 +17,9 @@ import { tokensData, type TOKENS } from "~/utils/tokens";
 import { Loading } from "../Loading/Loading";
 
 export const Deposit = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const [showError, setShowError] = useState(false);
   const router = useRouter();
   const { runtimeLifecycle, client } = useContext(TSSDKContext);
 
@@ -36,6 +37,29 @@ export const Deposit = () => {
     desiredAmount: string;
     id: string;
     expiryDate: string;
+  };
+
+  useEffect(() => {
+    if (finished) {
+      void router.push(PAGES.LISTING);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finished]);
+
+  const waitTxConfirmation = (contractId: ContractId, txId: string) => {
+    if (!client) return;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    const pollingInterval = setInterval(async () => {
+      const pollingTx = await client.getContractTransactionById(
+        contractId,
+        txId,
+      );
+      if (pollingTx.status === "confirmed") {
+        clearInterval(pollingInterval);
+        setFinished(true);
+        return;
+      }
+    }, 3000);
   };
 
   async function handleApplyInput() {
@@ -63,9 +87,7 @@ export const Deposit = () => {
           },
         );
 
-        await runtimeLifecycle?.wallet.waitConfirmation(txId).then(() => {
-          void router.push(PAGES.LISTING);
-        });
+        waitTxConfirmation(contractId(id), txId);
       }
     } catch (e) {
       setLoading(false);

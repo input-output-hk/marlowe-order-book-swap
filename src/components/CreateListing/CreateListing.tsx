@@ -1,4 +1,8 @@
-import { addressBech32, unContractId } from "@marlowe.io/runtime-core";
+import {
+  addressBech32,
+  unContractId,
+  type ContractId,
+} from "@marlowe.io/runtime-core";
 import { type RolesConfig } from "@marlowe.io/runtime-rest-client";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +30,7 @@ export const CreateListing = () => {
     loading: true,
     contract: false,
     confirmation: false,
+    contractConfirmed: "",
   });
   const [errors, setErrors] = useState<ICreateErrors>({
     valueOffered: undefined,
@@ -54,7 +59,7 @@ export const CreateListing = () => {
 
   const router = useRouter();
   const { account, walletProvider } = useCardano();
-  const { runtimeLifecycle, setRuntime } = useContext(TSSDKContext);
+  const { runtimeLifecycle, setRuntime, client } = useContext(TSSDKContext);
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
@@ -65,6 +70,40 @@ export const CreateListing = () => {
       }));
     }
   }, [account.address]);
+
+  useEffect(() => {
+    if (createLoading.contractConfirmed !== "") {
+      void router.push({
+        pathname: PAGES.DEPOSIT,
+        query: {
+          id: createLoading.contractConfirmed,
+          offeredToken: selectedOffered.option,
+          offeredAmount: valueOffered,
+          desiredToken: selectedDesired.option,
+          desiredAmount: valueDesired,
+          expiryDate: expiryDate,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createLoading.contractConfirmed]);
+
+  const waitConfirmation = (contractId: ContractId) => {
+    if (!client) return;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    const pollingInterval = setInterval(async () => {
+      const pollingContract = await client.getContractById(contractId);
+      if (pollingContract.status === "confirmed") {
+        clearInterval(pollingInterval);
+        setCreateLoading((prev) => ({
+          ...prev,
+          confirmation: false,
+          contractConfirmed: unContractId(contractId),
+        }));
+        return;
+      }
+    }, 3000);
+  };
 
   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -126,23 +165,8 @@ export const CreateListing = () => {
           contract: false,
           confirmation: true,
         }));
-        await runtimeLifecycle.wallet.waitConfirmation(contract[1]);
-        setCreateLoading((prev) => ({
-          ...prev,
-          confirmation: false,
-        }));
 
-        void router.push({
-          pathname: PAGES.DEPOSIT,
-          query: {
-            id: unContractId(contract[0]),
-            offeredToken: selectedOffered.option,
-            offeredAmount: valueOffered,
-            desiredToken: selectedDesired.option,
-            desiredAmount: valueDesired,
-            expiryDate: expiryDate,
-          },
-        });
+        waitConfirmation(contract[0]);
       } catch (err) {
         console.log(err);
         setErrors((prev) => {
