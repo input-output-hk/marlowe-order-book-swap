@@ -1,5 +1,4 @@
 import { contractId } from "@marlowe.io/runtime-core";
-import { mkRestClient } from "@marlowe.io/runtime-rest-client";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import SwapCircleIcon from "public/swap_circle.svg";
@@ -7,7 +6,6 @@ import SwapIcon from "public/swap_vert.svg";
 import { useContext, useState } from "react";
 import { Button } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { env } from "~/env.mjs";
 import {
   ADA,
   ICON_SIZES,
@@ -22,8 +20,7 @@ export const Deposit = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const router = useRouter();
-  const client = mkRestClient(env.NEXT_PUBLIC_RUNTIME_URL);
-  const { runtimeLifecycle } = useContext(TSSDKContext);
+  const { runtimeLifecycle, client } = useContext(TSSDKContext);
 
   const {
     id,
@@ -44,10 +41,9 @@ export const Deposit = () => {
   async function handleApplyInput() {
     try {
       setLoading(true);
-      if (id && runtimeLifecycle) {
-        const contract = await client.getContractById(contractId(id));
+      if (client && runtimeLifecycle) {
         const txId = await runtimeLifecycle.contracts.applyInputs(
-          contract.contractId,
+          contractId(id),
           {
             inputs: [
               {
