@@ -3,18 +3,23 @@ import { useContext, useEffect, useState } from "react";
 import { ErrorMessage } from "~/components/ErrorMessage/ErrorMessage";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { getContracts, type ITableData } from "~/utils";
+import { getContracts, type IFilters, type ITableData } from "~/utils";
 
 export default function Listing() {
   const [data, setData] = useState<ITableData[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<IFilters>({
+    filterOwnListings: false,
+    searchQuery: "",
+    owner: "",
+  });
   const { client } = useContext(TSSDKContext);
 
   useEffect(() => {
     if (client) {
-      void getContracts(client, setData, setError);
+      void getContracts(client, setData, setError, filters.searchQuery);
     }
-  }, [client]);
+  }, [client, filters.searchQuery]);
 
   return (
     <>
@@ -27,7 +32,11 @@ export default function Listing() {
       {error ? (
         <ErrorMessage message={error} />
       ) : (
-        <ListingPage listingData={data} />
+        <ListingPage
+          listingData={data}
+          filters={filters}
+          setFilters={setFilters}
+        />
       )}
     </>
   );

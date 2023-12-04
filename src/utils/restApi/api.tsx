@@ -8,6 +8,7 @@ import { env } from "~/env.mjs";
 import {
   contractDetailsSchema,
   contractSchema,
+  swapPrefix,
   type DesiredType,
   type OfferedType,
 } from ".";
@@ -49,14 +50,17 @@ export const getContracts = async (
   client: RestClient,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
   setError: Dispatch<SetStateAction<string | null>>,
+  searchQuery: string,
 ) => {
   try {
     const range = contractsRange(`contractId;limit 10;offset 0;order desc`);
 
-    const allContracts = await client.getContracts({
-      tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
-      range,
-    });
+    const tags =
+      searchQuery !== ""
+        ? [swapPrefix + searchQuery]
+        : [env.NEXT_PUBLIC_DAPP_ID];
+
+    const allContracts = await client.getContracts({ tags, range });
 
     const parsedContracts = contractSchema.safeParse(allContracts);
 
@@ -104,7 +108,6 @@ export const getContracts = async (
             expiry: new Date(Number(initialContract.timeout)).toString(),
           };
         } else {
-          console.log(parsedContract.error.message);
           return null;
         }
       })

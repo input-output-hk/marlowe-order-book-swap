@@ -2,6 +2,8 @@ import { contractId } from "@marlowe.io/runtime-core";
 import { z } from "zod";
 import { env } from "~/env.mjs";
 
+export const swapPrefix = "swap-";
+
 export const contractHeaderSchema = z.object({
   contractId: z
     .string()
@@ -17,7 +19,7 @@ export const contractHeaderSchema = z.object({
         }),
       })
       .required(),
-    z.record(z.string().startsWith("swap-"), z.string()),
+    z.record(z.string().startsWith(swapPrefix), z.string()),
   ]),
   status: z.union([
     z.literal("unsigned"),
