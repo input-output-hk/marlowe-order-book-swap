@@ -10,16 +10,17 @@ import {
   lovelaceToAda,
   type ITableData,
 } from "~/utils";
+import { tokensData, type TOKENS } from "~/utils/tokens";
 
 export const defaultListing: ITableData = {
-  id: "1",
+  id: "",
   createdBy: "",
-  offered: { token: "", amount: 0, icon: <></> },
-  desired: { token: "", amount: 0, icon: <></> },
+  offered: { token: "", amount: 0, icon: <></>, currency: "" },
+  desired: { token: "", amount: 0, icon: <></>, currency: "" },
   expiry: "",
 };
 
-export const getCreatedDate = (contractDetails: Action | undefined) => {
+export const getCreatedBy = (contractDetails: Action | undefined) => {
   return contractDetails !== undefined &&
     isDeposit(contractDetails) &&
     isParty(contractDetails?.into_account)
@@ -30,9 +31,7 @@ export const getCreatedDate = (contractDetails: Action | undefined) => {
 export const getOffered = (contractDetails: Action | undefined) => {
   const tokenName =
     contractDetails && isDeposit(contractDetails)
-      ? contractDetails?.of_token.token_name === ""
-        ? ADA
-        : contractDetails?.of_token.token_name
+      ? contractDetails?.of_token.token_name
       : "";
   const tokenAmount =
     contractDetails !== undefined && isDeposit(contractDetails)
@@ -43,6 +42,10 @@ export const getOffered = (contractDetails: Action | undefined) => {
   return {
     token: tokenName,
     amount: tokenAmount,
+    currency:
+      tokenName === ADA
+        ? ""
+        : tokensData[tokenName as TOKENS]?.currency_symbol || "",
     // TODO: Add icon
     icon:
       tokenName !== "" ? (
@@ -77,6 +80,8 @@ export const getDesired = (
   return {
     token: tokenName,
     amount: tokenAmount,
+    currency:
+      tokenName === ADA ? "" : tokensData[tokenName as TOKENS].currency_symbol,
     // TODO: Add icon
     icon: <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />,
   };
