@@ -1,5 +1,5 @@
 import { unContractId } from "@marlowe.io/runtime-core";
-import { type RestAPI } from "@marlowe.io/runtime-rest-client";
+import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
@@ -46,7 +46,7 @@ const getDesired = (data: DesiredType) => {
 };
 
 export const getContracts = async (
-  client: RestAPI,
+  client: RestClient,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
   setError: Dispatch<SetStateAction<string | null>>,
 ) => {
@@ -69,10 +69,11 @@ export const getContracts = async (
         env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
         contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
       ) {
+        const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
         const startDate =
-          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]?.startDate;
+          typeof tag === "object" && tag !== null ? tag.startDate : undefined;
         const expiryDate =
-          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]?.expiryDate;
+          typeof tag === "object" && tag !== null ? tag.expiryDate : undefined;
 
         return (
           startDate &&

@@ -3,7 +3,7 @@ import {
   mkRuntimeLifecycle,
   type BrowserRuntimeLifecycleOptions,
 } from "@marlowe.io/runtime-lifecycle/browser";
-import { mkRestClient, type RestAPI } from "@marlowe.io/runtime-rest-client";
+import { mkRestClient, type RestClient } from "@marlowe.io/runtime-rest-client";
 import { type SupportedWalletName } from "@marlowe.io/wallet/browser";
 import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
@@ -39,7 +39,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [runtimeLifecycle, setRuntimeLifecycle] = useState<
     RuntimeLifecycle | undefined
   >(undefined);
-  const [client, setClient] = useState<RestAPI | undefined>(undefined);
+  const [client, setClient] = useState<RestClient | undefined>(undefined);
 
   const setRuntime = async (options: BrowserRuntimeLifecycleOptions) => {
     try {
