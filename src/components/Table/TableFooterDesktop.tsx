@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import ArrowIcon from "public/open_input_black.svg";
 import { ICON_SIZES } from "~/utils";
 import type { ITableFooter } from "./table.interface";
@@ -8,15 +9,17 @@ export const TableFooterDesktop = ({
   currentPage,
   setCurrentPage,
   pagination,
-  setPagination,
 }: ITableFooter) => {
-  const handlePrevious = () =>
-    previousPage(currentPage, setCurrentPage, setPagination);
+  const router = useRouter();
 
-  const handleNext = () => nextPage(setCurrentPage, pagination, setPagination);
+  const handlePrevious = () =>
+    previousPage(setCurrentPage, currentPage, router);
+
+  const handleNext = () =>
+    nextPage(setCurrentPage, currentPage, pagination, router);
 
   const handleSelectPage = (page: number) => () =>
-    selectAnyPage(setCurrentPage, page);
+    selectAnyPage(setCurrentPage, page, router);
 
   return (
     <div className="hidden w-full items-center justify-center gap-4 rounded-lg py-4 md:flex">
@@ -59,7 +62,7 @@ export const TableFooterDesktop = ({
       <button
         className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
         onClick={handleNext}
-        disabled={pagination.fetchMore}
+        disabled={!pagination.fetchMore}
       >
         <p>Next</p>
         <Image

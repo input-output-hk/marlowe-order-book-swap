@@ -54,20 +54,23 @@ const getDesired = (data: DesiredType) => {
 export const PAGINATION_LIMIT = 10;
 export const getContracts = async (
   client: RestAPI,
-  pagination: IPagination,
+  page: number,
   setPagination: Dispatch<SetStateAction<IPagination>>,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
   setError: Dispatch<SetStateAction<string | null>>,
 ) => {
   try {
     const range = contractsRange(
-      `contractId;limit ${PAGINATION_LIMIT};offset ${pagination.offset};order desc`,
+      `contractId;limit ${PAGINATION_LIMIT};offset ${
+        (page - 1) * PAGINATION_LIMIT
+      };order desc`,
     );
 
     const allContracts = await client.getContracts({
       tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
       range,
     });
+    console.log(allContracts);
 
     const parsedContracts = contractSchema.safeParse(allContracts);
 

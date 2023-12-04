@@ -51,6 +51,5 @@ export interface ILink {
 }
 
 export interface IPagination {
-  offset: number;
   fetchMore: boolean;
 }

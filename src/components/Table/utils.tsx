@@ -1,28 +1,32 @@
+import type { NextRouter } from "next/router";
 import type { Dispatch, SetStateAction } from "react";
-import { PAGINATION_LIMIT, type IPagination } from "~/utils";
+import { PAGES, type IPagination } from "~/utils";
 
 export const previousPage = (
-  currentPage: number,
   setCurrentPage: Dispatch<SetStateAction<number>>,
-  setPagination: Dispatch<SetStateAction<IPagination>>,
+  currentPage: number,
+  router: NextRouter,
 ) => {
   if (currentPage > 1) {
     setCurrentPage((prev) => prev - 1);
-    setPagination((prev) => {
-      return { ...prev, offset: prev.offset - PAGINATION_LIMIT };
+    void router.push({
+      pathname: PAGES.LISTING,
+      query: { page: String(currentPage - 1) },
     });
   }
 };
 
 export const nextPage = (
   setCurrentPage: Dispatch<SetStateAction<number>>,
+  currentPage: number,
   pagination: IPagination,
-  setPagination: Dispatch<SetStateAction<IPagination>>,
+  router: NextRouter,
 ) => {
   if (pagination.fetchMore) {
     setCurrentPage((prev) => prev + 1);
-    setPagination((prev) => {
-      return { ...prev, offset: prev.offset + PAGINATION_LIMIT };
+    void router.push({
+      pathname: PAGES.LISTING,
+      query: { page: String(currentPage + 1) },
     });
   }
 };
@@ -30,4 +34,11 @@ export const nextPage = (
 export const selectAnyPage = (
   setCurrentPage: Dispatch<SetStateAction<number>>,
   page: number,
-) => setCurrentPage(page);
+  router: NextRouter,
+) => {
+  setCurrentPage(page);
+  void router.push({
+    pathname: PAGES.LISTING,
+    query: { page: String(page) },
+  });
+};

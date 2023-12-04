@@ -18,16 +18,19 @@ interface ListingPageProps {
   listingData: Array<ITableData> | null;
   pagination: IPagination;
   setPagination: Dispatch<SetStateAction<IPagination>>;
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ListingPage = ({
   listingData,
   pagination,
   setPagination,
+  loading,
+  setLoading,
 }: ListingPageProps) => {
   const { account } = useCardano();
 
-  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<IFilters>({
     filterOwnListings: false,
     searchQuery: "",
@@ -48,8 +51,10 @@ export const ListingPage = ({
         return { ...prev, owner: account.address! };
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account.address]);
 
+  console.log(loading);
   if (loading || !listingData) {
     return (
       <div className="flex flex-grow items-center justify-center">
