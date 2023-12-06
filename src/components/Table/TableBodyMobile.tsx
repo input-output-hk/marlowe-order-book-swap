@@ -48,15 +48,14 @@ export const TableBodyMobile = ({
                   {row.desired.icon}
                   <p className="font-bold">
                     {humanReadable(row.desired.amount, 2)}&nbsp;
-                    {truncateString(row.offered.token, 7)}
+                    {truncateString(row.desired.token, 7)}
                   </p>
                 </div>
               </div>
               <div className="flex items-center justify-between px-4 pt-2">
                 <div>Expires in {getExpiration(row.expiry)}</div>
                 <div className="w-1/3">
-                  {/* TODO: change when we implement wallets */}
-                  {row.createdBy === process.env.NEXT_PUBLIC_OWN_ADDRESS ? (
+                  {row.createdBy === account.address ? (
                     <Button
                       size={SIZE.XSMALL}
                       color={COLORS.RED}
