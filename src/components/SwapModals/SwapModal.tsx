@@ -10,12 +10,12 @@ import { useCardano } from "use-cardano";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ADA,
-  adaToLovelace,
   COLORS,
-  getBalance,
   ICON_SIZES,
-  isEnoughBalance,
   PAGES,
+  adaToLovelace,
+  getBalance,
+  isEnoughBalance,
   waitTxConfirmation,
 } from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
@@ -91,6 +91,7 @@ export const SwapModal = ({
         );
 
         waitTxConfirmation(contractId(id), txId, client, setFinished);
+        void router.push(PAGES.COMPLETE);
       }
     } catch (e) {
       setLoading(false);
@@ -188,7 +189,6 @@ export const SwapModal = ({
                 </Button>
               </div>
               <div className="w-full">
-                {/* <Link href={PAGES.COMPLETE}> */}
                 <Button
                   size={SIZE.SMALL}
                   disabled={!isEnoughBalance(balance, desired)}
@@ -197,7 +197,6 @@ export const SwapModal = ({
                 >
                   Confirm Swap
                 </Button>
-                {/* </Link> */}
               </div>
             </div>
             {showError && (

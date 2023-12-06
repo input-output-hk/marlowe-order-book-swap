@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import SearchIcon from "public/search.svg";
-import type { ChangeEvent } from "react";
+import { type ChangeEvent } from "react";
 import { ICON_SIZES, PAGES } from "~/utils";
 import { Button } from "../Button/Button";
 import { Input } from "../Input/Input";
