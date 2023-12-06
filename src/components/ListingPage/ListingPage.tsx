@@ -64,8 +64,8 @@ export const ListingPage = ({
 
       <div className="mx-4 mb-4 rounded-lg shadow-container md:mx-12 lg:mx-24 lg:p-4 xl:mx-32 xl:p-10">
         {loading || !listingData ? (
-          <div className="flex flex-grow items-center justify-center py-24">
-            <Loading sizeDesktop={ICON_SIZES.XXXL} />
+          <div className="flex flex-grow items-center justify-center py-36 md:py-28">
+            <Loading sizeDesktop={ICON_SIZES.XXXL} sizeMobile={ICON_SIZES.XL} />
           </div>
         ) : (
           <Table data={data} sort={sort} setSort={setSort} />
