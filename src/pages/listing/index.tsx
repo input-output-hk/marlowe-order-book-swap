@@ -30,7 +30,7 @@ export default function Listing() {
       void asyncGetContracts();
     },
     dependencies: [client, filters.searchQuery],
-    delay: 500,
+    delay: 1000,
   });
 
   return (

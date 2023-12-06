@@ -1,4 +1,4 @@
-import { unContractId } from "@marlowe.io/runtime-core";
+import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import Image from "next/image";
@@ -7,8 +7,9 @@ import type { Dispatch, SetStateAction } from "react";
 import { env } from "~/env.mjs";
 import {
   contractDetailsSchema,
+  contractHeaderSchema,
   contractSchema,
-  swapPrefix,
+  swapTag,
   type DesiredType,
   type OfferedType,
 } from ".";
@@ -57,63 +58,73 @@ export const getContracts = async (
 
     const tags =
       searchQuery !== ""
-        ? [swapPrefix + searchQuery]
+        ? [env.NEXT_PUBLIC_DAPP_ID + swapTag + searchQuery]
         : [env.NEXT_PUBLIC_DAPP_ID];
 
     const allContracts = await client.getContracts({ tags, range });
 
-    const parsedContracts = contractSchema.safeParse(allContracts);
-
-    if (!parsedContracts.success) {
-      throw new Error(parsedContracts.error.message);
-    }
-
-    const validContracts = parsedContracts.data.headers.filter((contract) => {
-      if (
-        env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
-        contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
-      ) {
-        const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
-        const startDate =
-          typeof tag === "object" && tag !== null ? tag.startDate : undefined;
-        const expiryDate =
-          typeof tag === "object" && tag !== null ? tag.expiryDate : undefined;
-
-        return (
-          startDate &&
-          expiryDate &&
-          new Date(startDate) < new Date() &&
-          new Date(expiryDate) > new Date() &&
-          contract.status === "confirmed"
-        );
-      }
+    const succededContracts: ContractId[] = [];
+    allContracts.headers.map((header) => {
+      const parsedHeader = contractHeaderSchema.safeParse(header);
+      if (parsedHeader.success) succededContracts.push(header.contractId);
     });
 
-    const contractsListPromise = validContracts.map((contract) => {
-      return client.getContractById(contract.contractId);
+    const filteredContracts = allContracts.headers.filter((contract) => {
+      return succededContracts.includes(contract.contractId);
     });
-    const contractsList = await Promise.all(contractsListPromise);
 
-    const parsedContractsList = contractsList
-      .map((contract) => {
-        const parsedContract = contractDetailsSchema.safeParse(contract);
+    const parsedContracts = contractSchema.safeParse(filteredContracts);
 
-        if (parsedContract.success) {
-          const { contractId, initialContract, state } = parsedContract.data;
-          return {
-            id: unContractId(contractId),
-            createdBy: state.value.accounts[0][0][0].address,
-            offered: getOffered(initialContract.when[0].case),
-            desired: getDesired(initialContract.when[0].then),
-            expiry: new Date(Number(initialContract.timeout)).toString(),
-          };
-        } else {
-          return null;
+    if (parsedContracts.success) {
+      const validContracts = parsedContracts.data.filter((contract) => {
+        if (
+          env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
+          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+        ) {
+          const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
+          const startDate =
+            typeof tag === "object" && tag !== null ? tag.startDate : undefined;
+          const expiryDate =
+            typeof tag === "object" && tag !== null
+              ? tag.expiryDate
+              : undefined;
+
+          return (
+            startDate &&
+            expiryDate &&
+            new Date(startDate) < new Date() &&
+            new Date(expiryDate) > new Date() &&
+            contract.status === "confirmed"
+          );
         }
-      })
-      .filter((x) => x !== null) as ITableData[];
+      });
 
-    setData(parsedContractsList);
+      const contractsListPromise = validContracts.map((contract) => {
+        return client.getContractById(contract.contractId);
+      });
+      const contractsList = await Promise.all(contractsListPromise);
+
+      const parsedContractsList = contractsList
+        .map((contract) => {
+          const parsedContract = contractDetailsSchema.safeParse(contract);
+
+          if (parsedContract.success) {
+            const { contractId, initialContract, state } = parsedContract.data;
+            return {
+              id: unContractId(contractId),
+              createdBy: state.value.accounts[0][0][0].address,
+              offered: getOffered(initialContract.when[0].case),
+              desired: getDesired(initialContract.when[0].then),
+              expiry: new Date(Number(initialContract.timeout)).toString(),
+            };
+          } else {
+            return null;
+          }
+        })
+        .filter((x) => x !== null) as ITableData[];
+
+      setData(parsedContractsList);
+    }
   } catch (err) {
     console.log(err);
     setError("Something went wrong. Please reload and try later.");

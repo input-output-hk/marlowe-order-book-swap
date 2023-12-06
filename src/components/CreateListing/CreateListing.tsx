@@ -14,13 +14,7 @@ import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
 import type { IOptions } from "~/utils";
-import {
-  COLORS,
-  ICON_SIZES,
-  PAGES,
-  getSwapContract,
-  swapPrefix,
-} from "~/utils";
+import { COLORS, ICON_SIZES, PAGES, getSwapContract, swapTag } from "~/utils";
 import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
@@ -154,24 +148,23 @@ export const CreateListing = () => {
           swapper: addressBech32(account.address!),
         };
 
-        const tokensTags = {
-          [swapPrefix + selectedOffered.option.toLowerCase()]:
-            selectedOffered.option,
-          [swapPrefix + selectedDesired.option.toLowerCase()]:
-            selectedDesired.option,
+        const tags = {
+          [env.NEXT_PUBLIC_DAPP_ID]: {
+            startDate: startDate !== "" ? startDate : new Date().toISOString(),
+            expiryDate,
+          },
+          [env.NEXT_PUBLIC_DAPP_ID +
+          swapTag +
+          selectedOffered.option.toLowerCase()]: "",
+          [env.NEXT_PUBLIC_DAPP_ID +
+          swapTag +
+          selectedDesired.option.toLowerCase()]: "",
         };
 
         const contract = await runtimeLifecycle.contracts.createContract({
           contract: swapContract,
           roles,
-          tags: {
-            [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
-              startDate:
-                startDate !== "" ? startDate : new Date().toISOString(),
-              expiryDate,
-            },
-            ...tokensTags,
-          },
+          tags,
         });
 
         setCreateLoading((prev) => ({

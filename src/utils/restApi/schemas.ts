@@ -2,7 +2,7 @@ import { contractId } from "@marlowe.io/runtime-core";
 import { z } from "zod";
 import { env } from "~/env.mjs";
 
-export const swapPrefix = "swap-";
+export const swapTag = "-swap-";
 
 export const contractHeaderSchema = z.object({
   contractId: z
@@ -19,7 +19,10 @@ export const contractHeaderSchema = z.object({
         }),
       })
       .required(),
-    z.record(z.string().startsWith(swapPrefix), z.string()),
+    z.record(
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + swapTag),
+      z.string(),
+    ),
   ]),
   status: z.union([
     z.literal("unsigned"),
@@ -28,15 +31,7 @@ export const contractHeaderSchema = z.object({
   ]),
 });
 
-export const contractSchema = z.object({
-  headers: z.array(contractHeaderSchema),
-  previousRange: z.object({
-    _tag: z.union([z.literal("Some"), z.literal("None")]),
-  }),
-  nextRange: z.object({
-    _tag: z.union([z.literal("Some"), z.literal("None")]),
-  }),
-});
+export const contractSchema = z.array(contractHeaderSchema);
 
 export const caseSchema = z.object({
   deposits: z.bigint(),
