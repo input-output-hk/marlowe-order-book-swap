@@ -2,8 +2,9 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useCardano } from "use-cardano";
 import { Table } from "~/components/Table/Table";
 import {
+  ICON_SIZES,
   SortOrder,
-  sortTableData,
+  filterTableData,
   type IFilters,
   type ISort,
   type ITableData,
@@ -16,16 +17,18 @@ interface ListingPageProps {
   listingData: Array<ITableData> | null;
   filters: IFilters;
   setFilters: Dispatch<SetStateAction<IFilters>>;
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ListingPage = ({
   listingData,
   filters,
   setFilters,
+  loading,
+  setLoading,
 }: ListingPageProps) => {
   const { account } = useCardano();
-
-  const [loading, setLoading] = useState(true);
 
   const [sort, setSort] = useState<ISort>({
     sortBy: "expiryDate",
@@ -45,15 +48,9 @@ export const ListingPage = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account.address]);
 
-  if (loading || !listingData) {
-    return (
-      <div className="flex flex-grow items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
-
-  const sortedData = sortTableData(listingData, sort);
+  // Sortinf is disabled for now, we need to find a way to search contracts by expiryDate
+  // const sortedData = sortTableData(listingData, sort);
+  const data = filterTableData(listingData ?? [], filters);
 
   return (
     <main className="flex h-fit w-full flex-grow flex-col gap-4">
@@ -66,7 +63,13 @@ export const ListingPage = ({
       <UtilityDesktop filters={filters} setFilters={setFilters} />
 
       <div className="mx-4 mb-4 rounded-lg shadow-container md:mx-12 lg:mx-24 lg:p-4 xl:mx-32 xl:p-10">
-        <Table data={sortedData} sort={sort} setSort={setSort} />
+        {loading || !listingData ? (
+          <div className="flex flex-grow items-center justify-center py-24">
+            <Loading sizeDesktop={ICON_SIZES.XXXL} />
+          </div>
+        ) : (
+          <Table data={data} sort={sort} setSort={setSort} />
+        )}
       </div>
     </main>
   );

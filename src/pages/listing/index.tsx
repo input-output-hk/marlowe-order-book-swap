@@ -1,13 +1,15 @@
 import Head from "next/head";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ErrorMessage } from "~/components/ErrorMessage/ErrorMessage";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { TSSDKContext } from "~/contexts/tssdk.context";
+import useDebounce from "~/hooks/useDebounce";
 import { getContracts, type IFilters, type ITableData } from "~/utils";
 
 export default function Listing() {
   const [data, setData] = useState<ITableData[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<IFilters>({
     filterOwnListings: false,
     searchQuery: "",
@@ -15,11 +17,21 @@ export default function Listing() {
   });
   const { client } = useContext(TSSDKContext);
 
-  useEffect(() => {
+  const asyncGetContracts = async () => {
     if (client) {
-      void getContracts(client, setData, setError, filters.searchQuery);
+      setLoading(true);
+      await getContracts(client, setData, setError, filters.searchQuery);
+      setLoading(false);
     }
-  }, [client, filters.searchQuery]);
+  };
+
+  useDebounce({
+    effect: () => {
+      void asyncGetContracts();
+    },
+    dependencies: [client, filters.searchQuery],
+    delay: 500,
+  });
 
   return (
     <>
@@ -36,6 +48,8 @@ export default function Listing() {
           listingData={data}
           filters={filters}
           setFilters={setFilters}
+          loading={loading}
+          setLoading={setLoading}
         />
       )}
     </>
