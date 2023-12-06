@@ -48,7 +48,7 @@ export const ListingPage = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account.address]);
 
-  // Sortinf is disabled for now, we need to find a way to search contracts by expiryDate
+  // Sorting is disabled for now, we need to find a way to search contracts by expiryDate
   // const sortedData = sortTableData(listingData, sort);
   const data = filterTableData(listingData ?? [], filters);
 
