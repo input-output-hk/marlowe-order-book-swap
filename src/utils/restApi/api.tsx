@@ -1,13 +1,12 @@
 import { unContractId } from "@marlowe.io/runtime-core";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
-import { ContractHeader } from "@marlowe.io/runtime-rest-client/contract/header";
+import { type ContractHeader } from "@marlowe.io/runtime-rest-client/contract/header";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
 import { env } from "~/env.mjs";
 import {
-  SWAP_TAG,
   contractDetailsSchema,
   contractHeaderSchema,
   contractSchema,
@@ -48,6 +47,11 @@ const getDesired = (data: DesiredType) => {
   };
 };
 
+export const SWAP_TAG = "swap";
+export const tokenToTag = (token: string) => {
+  return env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-` + token.toLocaleLowerCase();
+};
+
 export const getContracts = async (
   client: RestClient,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
@@ -59,7 +63,7 @@ export const getContracts = async (
 
     const tags =
       searchQuery !== ""
-        ? [env.NEXT_PUBLIC_DAPP_ID + SWAP_TAG + searchQuery.toLocaleLowerCase()]
+        ? [tokenToTag(searchQuery)]
         : [env.NEXT_PUBLIC_DAPP_ID];
 
     const allContracts = await client.getContracts({ tags, range });
