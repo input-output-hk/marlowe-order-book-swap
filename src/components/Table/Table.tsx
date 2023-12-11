@@ -84,6 +84,8 @@ export const Table = ({
         data={data}
         handleOpenRetract={handleOpenRetract}
         handleOpenAccept={handleOpenAccept}
+        pagination={pagination}
+        setPagination={setPagination}
       />
       <RetractModal
         open={openRetract}

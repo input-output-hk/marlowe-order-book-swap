@@ -6,8 +6,8 @@ export interface TableProps {
   data: Array<ITableData>;
   handleOpenRetract: (row: ITableData) => () => void;
   handleOpenAccept: (row: ITableData) => () => void;
-  currentPage?: number;
-  setCurrentPage?: Dispatch<SetStateAction<number>>;
+  pagination?: IPagination;
+  setPagination?: Dispatch<SetStateAction<IPagination>>;
 }
 
 export interface TablePropsWithSort {

@@ -16,8 +16,8 @@ export const TableBodyMobile = ({
   data,
   handleOpenAccept,
   handleOpenRetract,
-  currentPage,
-  setCurrentPage,
+  pagination,
+  setPagination,
 }: TableProps) => {
   const { account } = useCardano();
 
@@ -83,10 +83,10 @@ export const TableBodyMobile = ({
         })}
       </div>
       <div className="bg-m-light-purple px-24">
-        {currentPage && setCurrentPage && (
+        {pagination && setPagination && (
           <TableFooterMobile
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
+            pagination={pagination}
+            setPagination={setPagination}
           />
         )}
       </div>
