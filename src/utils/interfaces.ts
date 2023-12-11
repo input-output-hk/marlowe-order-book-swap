@@ -3,6 +3,7 @@ import { type WalletProvider } from "use-cardano";
 export interface IToken {
   token: string;
   icon: JSX.Element;
+  currency: string;
 }
 
 export interface ITokenAmount extends IToken {
@@ -48,8 +49,4 @@ export interface IWalletInStorage {
 export interface ILink {
   displayText: string;
   href: string;
-}
-
-export interface IPagination {
-  fetchMore: boolean;
 }

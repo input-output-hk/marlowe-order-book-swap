@@ -1,3 +1,9 @@
+import {
+  addressBech32,
+  unContractId,
+  type ContractId,
+} from "@marlowe.io/runtime-core";
+import { type RolesConfig } from "@marlowe.io/runtime-rest-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -8,7 +14,7 @@ import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
 import type { IOptions } from "~/utils";
-import { COLORS, ICON_SIZES, PAGES, getSwapContract } from "~/utils";
+import { COLORS, ICON_SIZES, PAGES, getSwapContract, swapTag } from "~/utils";
 import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
@@ -24,6 +30,7 @@ export const CreateListing = () => {
     loading: true,
     contract: false,
     confirmation: false,
+    contractConfirmed: "",
   });
   const [errors, setErrors] = useState<ICreateErrors>({
     valueOffered: undefined,
@@ -52,7 +59,7 @@ export const CreateListing = () => {
 
   const router = useRouter();
   const { account, walletProvider } = useCardano();
-  const { runtimeLifecycle, setRuntime } = useContext(TSSDKContext);
+  const { runtimeLifecycle, setRuntime, client } = useContext(TSSDKContext);
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
@@ -63,6 +70,40 @@ export const CreateListing = () => {
       }));
     }
   }, [account.address]);
+
+  useEffect(() => {
+    if (createLoading.contractConfirmed !== "") {
+      void router.push({
+        pathname: PAGES.DEPOSIT,
+        query: {
+          id: createLoading.contractConfirmed,
+          offeredToken: selectedOffered.option,
+          offeredAmount: valueOffered,
+          desiredToken: selectedDesired.option,
+          desiredAmount: valueDesired,
+          expiryDate: expiryDate,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createLoading.contractConfirmed]);
+
+  const waitConfirmation = (contractId: ContractId) => {
+    if (!client) return;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    const pollingInterval = setInterval(async () => {
+      const pollingContract = await client.getContractById(contractId);
+      if (pollingContract.status === "confirmed") {
+        clearInterval(pollingInterval);
+        setCreateLoading((prev) => ({
+          ...prev,
+          confirmation: false,
+          contractConfirmed: unContractId(contractId),
+        }));
+        return;
+      }
+    }, 3000);
+  };
 
   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -100,18 +141,30 @@ export const CreateListing = () => {
           selectedOffered,
           selectedDesired,
           expiryDate,
-          address: account.address!,
         });
+
+        const roles: RolesConfig = {
+          provider: addressBech32(account.address!),
+          swapper: addressBech32(account.address!),
+        };
+
+        const tags = {
+          [env.NEXT_PUBLIC_DAPP_ID]: {
+            startDate: startDate !== "" ? startDate : new Date().toISOString(),
+            expiryDate,
+          },
+          [env.NEXT_PUBLIC_DAPP_ID +
+          swapTag +
+          selectedOffered.option.toLowerCase()]: "",
+          [env.NEXT_PUBLIC_DAPP_ID +
+          swapTag +
+          selectedDesired.option.toLowerCase()]: "",
+        };
 
         const contract = await runtimeLifecycle.contracts.createContract({
           contract: swapContract,
-          tags: {
-            [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
-              startDate:
-                startDate !== "" ? startDate : new Date().toISOString(),
-              expiryDate,
-            },
-          },
+          roles,
+          tags,
         });
 
         setCreateLoading((prev) => ({
@@ -119,13 +172,8 @@ export const CreateListing = () => {
           contract: false,
           confirmation: true,
         }));
-        await runtimeLifecycle.wallet.waitConfirmation(contract[1]);
-        setCreateLoading((prev) => ({
-          ...prev,
-          confirmation: false,
-        }));
 
-        void router.push(PAGES.LISTING);
+        waitConfirmation(contract[0]);
       } catch (err) {
         console.log(err);
         setErrors((prev) => {

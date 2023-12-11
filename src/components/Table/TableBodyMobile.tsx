@@ -51,7 +51,7 @@ export const TableBodyMobile = ({
                   {row.desired.icon}
                   <p className="font-bold">
                     {humanReadable(row.desired.amount, 2)}&nbsp;
-                    {truncateString(row.offered.token, 7)}
+                    {truncateString(row.desired.token, 7)}
                   </p>
                 </div>
               </div>

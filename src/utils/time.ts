@@ -12,3 +12,12 @@ export const getExpiration = (expiry: string) => {
     ? `${hours} hours ${minutes}m`
     : `${minutes} minutes`;
 };
+
+export const dateTimeOptions: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "short",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+};

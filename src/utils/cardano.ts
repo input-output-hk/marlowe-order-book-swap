@@ -62,7 +62,6 @@ interface ISwapRequest {
   selectedOffered: IOptions;
   selectedDesired: IOptions;
   expiryDate: string;
-  address: string;
 }
 
 export const getSwapContract = ({
@@ -71,11 +70,10 @@ export const getSwapContract = ({
   selectedOffered,
   selectedDesired,
   expiryDate,
-  address,
 }: ISwapRequest) => {
   const parsedValueOffered =
     selectedOffered.option === ADA
-      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
+      ? (adaToLovelace(BigInt(valueOffered)) as bigint)
       : BigInt(valueOffered);
   const parsedValueDesired =
     selectedDesired.option === ADA
@@ -85,7 +83,7 @@ export const getSwapContract = ({
 
   const swapRequest: SwapRequest = {
     provider: {
-      roleName: address,
+      roleName: "provider",
       depositTimeout: parsedExpiryDate,
       value: {
         amount: parsedValueOffered,

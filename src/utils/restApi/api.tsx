@@ -1,23 +1,20 @@
-import { unContractId } from "@marlowe.io/runtime-core";
-import { type RestAPI } from "@marlowe.io/runtime-rest-client";
+import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
+import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
 import { env } from "~/env.mjs";
+import { IPagination } from "~/pages/listing";
 import {
   contractDetailsSchema,
+  contractHeaderSchema,
   contractSchema,
+  swapTag,
   type DesiredType,
   type OfferedType,
 } from ".";
-import {
-  ADA,
-  ICON_SIZES,
-  lovelaceToAda,
-  type IPagination,
-  type ITableData,
-} from "..";
+import { ADA, ICON_SIZES, lovelaceToAda, type ITableData } from "..";
 
 const getOffered = (data: OfferedType) => {
   const token =
@@ -53,11 +50,12 @@ const getDesired = (data: DesiredType) => {
 
 export const PAGINATION_LIMIT = 10;
 export const getContracts = async (
-  client: RestAPI,
-  page: number,
-  setPagination: Dispatch<SetStateAction<IPagination>>,
+  client: RestClient,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
+  setPagination: Dispatch<SetStateAction<IPagination>>,
   setError: Dispatch<SetStateAction<string | null>>,
+  searchQuery: string,
+  page: number,
 ) => {
   try {
     const range = contractsRange(
@@ -66,70 +64,76 @@ export const getContracts = async (
       };order desc`,
     );
 
-    const allContracts = await client.getContracts({
-      tags: [`${env.NEXT_PUBLIC_DAPP_ID}`],
-      range,
-    });
-    console.log(allContracts);
+    const tags =
+      searchQuery !== ""
+        ? [env.NEXT_PUBLIC_DAPP_ID + swapTag + searchQuery]
+        : [env.NEXT_PUBLIC_DAPP_ID];
 
-    const parsedContracts = contractSchema.safeParse(allContracts);
+    const allContracts = await client.getContracts({ tags, range });
 
-    if (!parsedContracts.success) {
-      throw new Error(parsedContracts.error.message);
-    }
-
-    const validContracts = parsedContracts.data.headers.filter((contract) => {
-      if (
-        env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
-        contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
-      ) {
-        const startDate =
-          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]?.startDate;
-        const expiryDate =
-          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]?.expiryDate;
-
-        return (
-          startDate &&
-          expiryDate &&
-          new Date(startDate) < new Date() &&
-          new Date(expiryDate) > new Date() &&
-          contract.status === "confirmed"
-        );
-      }
+    const succededContracts: ContractId[] = [];
+    allContracts.headers.map((header) => {
+      const parsedHeader = contractHeaderSchema.safeParse(header);
+      if (parsedHeader.success) succededContracts.push(header.contractId);
     });
 
-    const contractsListPromise = validContracts.map((contract) => {
-      return client.getContractById(contract.contractId);
+    const filteredContracts = allContracts.headers.filter((contract) => {
+      return succededContracts.includes(contract.contractId);
     });
-    const contractsList = await Promise.all(contractsListPromise);
 
-    const parsedContractsList = contractsList
-      .map((contract) => {
-        const parsedContract = contractDetailsSchema.safeParse(contract);
+    const parsedContracts = contractSchema.safeParse(filteredContracts);
 
-        if (parsedContract.success) {
-          const { contractId, initialContract } = parsedContract.data;
-
-          return {
-            id: unContractId(contractId),
-            createdBy: initialContract.when[0].case.into_account.role_token,
-            offered: getOffered(initialContract.when[0].case),
-            desired: getDesired(initialContract.when[0].then),
-            expiry: new Date(Number(initialContract.timeout)).toString(),
-          };
-        } else {
-          console.log(parsedContract.error.message);
-          return null;
+    if (parsedContracts.success) {
+      const validContracts = parsedContracts.data.filter((contract) => {
+        if (
+          env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
+          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+        ) {
+          const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
+          const startDate =
+            typeof tag === "object" && tag !== null ? tag.startDate : undefined;
+          const expiryDate =
+            typeof tag === "object" && tag !== null
+              ? tag.expiryDate
+              : undefined;
+          return (
+            startDate &&
+            expiryDate &&
+            new Date(startDate) < new Date() &&
+            new Date(expiryDate) > new Date() &&
+            contract.status === "confirmed"
+          );
         }
-      })
-      .filter((x) => x !== null) as ITableData[];
+      });
 
-    setData(parsedContractsList);
+      const contractsListPromise = validContracts.map((contract) => {
+        return client.getContractById(contract.contractId);
+      });
 
-    setPagination((prev) => ({
-      ...prev,
-      fetchMore: parsedContracts.data.nextRange._tag === "Some",
-    }));
+      const contractsList = await Promise.all(contractsListPromise);
+
+      const parsedContractsList = contractsList
+        .map((contract) => {
+          const parsedContract = contractDetailsSchema.safeParse(contract);
+          if (parsedContract.success) {
+            const { contractId, initialContract, state } = parsedContract.data;
+            return {
+              id: unContractId(contractId),
+              createdBy: state.value.accounts[0][0][0].address,
+              offered: getOffered(initialContract.when[0].case),
+              desired: getDesired(initialContract.when[0].then),
+              expiry: new Date(Number(initialContract.timeout)).toString(),
+            };
+          } else {
+            return null;
+          }
+        })
+        .filter((x) => x !== null) as ITableData[];
+
+      setData(parsedContractsList);
+      if (allContracts.nextRange._tag === "Some")
+        setPagination((prev) => ({ ...prev, fetchMore: true }));
+    }
   } catch (err) {
     console.log(err);
     setError("Something went wrong. Please reload and try later.");

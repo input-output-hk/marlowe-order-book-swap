@@ -25,18 +25,19 @@ export const Table = ({
   pagination,
   setPagination,
 }: TablePropsWithSort) => {
-  const [currentPage, setCurrentPage] = useState(1);
   const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
   const [desired, setDesired] = useState<ITokenAmount>({
     token: "",
     icon: <></>,
     amount: 0,
+    currency: "",
   });
   const [offered, setOffered] = useState<ITokenAmount>({
     token: "",
     icon: <></>,
     amount: 0,
+    currency: "",
   });
 
   const handleOpenRetract = (row: ITableData) => () => {
@@ -76,8 +77,6 @@ export const Table = ({
         />
       </div>
       <TableFooterDesktop
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
         pagination={pagination}
         setPagination={setPagination}
       />
@@ -85,8 +84,6 @@ export const Table = ({
         data={data}
         handleOpenRetract={handleOpenRetract}
         handleOpenAccept={handleOpenAccept}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
       />
       <RetractModal
         open={openRetract}

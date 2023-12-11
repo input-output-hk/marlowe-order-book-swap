@@ -1,12 +1,12 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useCardano } from "use-cardano";
 import { Table } from "~/components/Table/Table";
+import { IPagination } from "~/pages/listing";
 import {
+  ICON_SIZES,
   SortOrder,
   filterTableData,
-  sortTableData,
   type IFilters,
-  type IPagination,
   type ISort,
   type ITableData,
 } from "~/utils";
@@ -18,6 +18,8 @@ interface ListingPageProps {
   listingData: Array<ITableData> | null;
   pagination: IPagination;
   setPagination: Dispatch<SetStateAction<IPagination>>;
+  filters: IFilters;
+  setFilters: Dispatch<SetStateAction<IFilters>>;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
@@ -26,16 +28,13 @@ export const ListingPage = ({
   listingData,
   pagination,
   setPagination,
+  filters,
+  setFilters,
   loading,
   setLoading,
 }: ListingPageProps) => {
   const { account } = useCardano();
 
-  const [filters, setFilters] = useState<IFilters>({
-    filterOwnListings: false,
-    searchQuery: "",
-    owner: "",
-  });
   const [sort, setSort] = useState<ISort>({
     sortBy: "expiryDate",
     sortOrder: SortOrder.ASC,
@@ -54,17 +53,9 @@ export const ListingPage = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account.address]);
 
-  console.log(loading);
-  if (loading || !listingData) {
-    return (
-      <div className="flex flex-grow items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
-
-  const sortedData = sortTableData(listingData, sort);
-  const data = filterTableData(sortedData, filters);
+  // Sorting is disabled for now, we need to find a way to search contracts by expiryDate
+  // const sortedData = sortTableData(listingData, sort);
+  const data = filterTableData(listingData ?? [], filters);
 
   return (
     <main className="flex h-fit w-full flex-grow flex-col gap-4">
@@ -77,13 +68,19 @@ export const ListingPage = ({
       <UtilityDesktop filters={filters} setFilters={setFilters} />
 
       <div className="mx-4 mb-4 rounded-lg shadow-container md:mx-12 lg:mx-24 lg:p-4 xl:mx-32 xl:p-10">
-        <Table
-          data={data}
-          sort={sort}
-          setSort={setSort}
-          pagination={pagination}
-          setPagination={setPagination}
-        />
+        {loading || !listingData ? (
+          <div className="flex flex-grow items-center justify-center py-36 md:py-28">
+            <Loading sizeDesktop={ICON_SIZES.XXXL} sizeMobile={ICON_SIZES.XL} />
+          </div>
+        ) : (
+          <Table
+            data={data}
+            sort={sort}
+            setSort={setSort}
+            pagination={pagination}
+            setPagination={setPagination}
+          />
+        )}
       </div>
     </main>
   );

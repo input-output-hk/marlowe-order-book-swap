@@ -6,6 +6,7 @@ import YoutubeLogo from "public/youtube.svg";
 export const PAGES = {
   ABOUT: "/about",
   COMPLETE: "/listing/complete",
+  DEPOSIT: "/create/deposit",
   HOME: "/",
   LISTING: "/listing",
   CREATE: "/create",

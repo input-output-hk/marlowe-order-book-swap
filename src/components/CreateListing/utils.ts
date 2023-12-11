@@ -17,6 +17,7 @@ export interface ICreateLoading {
   loading: boolean;
   contract: boolean;
   confirmation: boolean;
+  contractConfirmed: string;
 }
 
 interface ICheckFields {

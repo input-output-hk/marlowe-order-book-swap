@@ -2,18 +2,28 @@ import { contractId } from "@marlowe.io/runtime-core";
 import { z } from "zod";
 import { env } from "~/env.mjs";
 
+export const swapTag = "-swap-";
+
 export const contractHeaderSchema = z.object({
   contractId: z
     .string()
     .min(64)
     .transform((x: string) => contractId(x)),
-  tags: z.record(
-    z.literal(env.NEXT_PUBLIC_DAPP_ID),
-    z.object({
-      startDate: z.string().optional(),
-      expiryDate: z.string().optional(),
-    }),
-  ),
+  tags: z.union([
+    z
+      .object({
+        [env.NEXT_PUBLIC_DAPP_ID]: z.object({
+          startDate: z.string().optional(),
+          expiryDate: z.string().optional(),
+          createdBy: z.string().optional(),
+        }),
+      })
+      .required(),
+    z.record(
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + swapTag),
+      z.string(),
+    ),
+  ]),
   status: z.union([
     z.literal("unsigned"),
     z.literal("submitted"),
@@ -21,15 +31,7 @@ export const contractHeaderSchema = z.object({
   ]),
 });
 
-export const contractSchema = z.object({
-  headers: z.array(contractHeaderSchema),
-  previousRange: z.object({
-    _tag: z.union([z.literal("Some"), z.literal("None")]),
-  }),
-  nextRange: z.object({
-    _tag: z.union([z.literal("Some"), z.literal("None")]),
-  }),
-});
+export const contractSchema = z.array(contractHeaderSchema);
 
 export const caseSchema = z.object({
   deposits: z.bigint(),
@@ -70,6 +72,17 @@ export const whenSchema = z.object({
   then: thenSchema,
 });
 
+export const addressSchema = z.tuple([
+  z.tuple([
+    z.object({ address: z.string() }),
+    z.object({
+      token_name: z.string(),
+      currency_symbol: z.string(),
+    }),
+  ]),
+  z.bigint(),
+]);
+
 export const contractDetailsSchema = z.object({
   contractId: z
     .string()
@@ -78,6 +91,28 @@ export const contractDetailsSchema = z.object({
   initialContract: z.object({
     when: z.array(whenSchema).nonempty(),
     timeout: z.bigint(),
+  }),
+  state: z.object({
+    value: z.object({
+      accounts: z
+        .array(addressSchema)
+        .nonempty()
+        .or(
+          z.tuple([
+            addressSchema,
+            z.tuple([
+              z.tuple([
+                z.object({ role_token: z.string() }),
+                z.object({
+                  token_name: z.string(),
+                  currency_symbol: z.string(),
+                }),
+              ]),
+              z.bigint(),
+            ]),
+          ]),
+        ),
+    }),
   }),
 });
 

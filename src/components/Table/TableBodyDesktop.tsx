@@ -1,5 +1,10 @@
 import { useCardano } from "use-cardano";
-import { COLORS, humanReadable, truncateString } from "~/utils";
+import {
+  COLORS,
+  dateTimeOptions,
+  humanReadable,
+  truncateString,
+} from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import type { TableProps } from "./table.interface";
 
@@ -9,15 +14,6 @@ export const TableBodyDesktop = ({
   handleOpenRetract,
 }: TableProps) => {
   const { account } = useCardano();
-
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  };
 
   return (
     <div className="hidden md:table-row-group">
@@ -47,7 +43,10 @@ export const TableBodyDesktop = ({
           </div>
           <div className="table-cell w-1/4 text-center">
             <div className="items-center justify-center px-2 py-6">
-              {new Date(row.expiry).toLocaleDateString(undefined, options)}
+              {new Date(row.expiry).toLocaleDateString(
+                undefined,
+                dateTimeOptions,
+              )}
             </div>
           </div>
           <div className="table-cell w-1/4">
