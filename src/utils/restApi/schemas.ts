@@ -2,7 +2,7 @@ import { contractId } from "@marlowe.io/runtime-core";
 import { z } from "zod";
 import { env } from "~/env.mjs";
 
-export const swapTag = "-swap-";
+export const SWAP_TAG = "-swap-";
 
 export const contractHeaderSchema = z.object({
   contractId: z
@@ -20,7 +20,7 @@ export const contractHeaderSchema = z.object({
       })
       .required(),
     z.record(
-      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + swapTag),
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + SWAP_TAG),
       z.string(),
     ),
   ]),

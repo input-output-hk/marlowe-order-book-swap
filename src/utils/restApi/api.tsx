@@ -1,15 +1,16 @@
-import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
+import { unContractId } from "@marlowe.io/runtime-core";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
+import { ContractHeader } from "@marlowe.io/runtime-rest-client/contract/header";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
 import { env } from "~/env.mjs";
 import {
+  SWAP_TAG,
   contractDetailsSchema,
   contractHeaderSchema,
   contractSchema,
-  swapTag,
   type DesiredType,
   type OfferedType,
 } from ".";
@@ -58,22 +59,18 @@ export const getContracts = async (
 
     const tags =
       searchQuery !== ""
-        ? [env.NEXT_PUBLIC_DAPP_ID + swapTag + searchQuery]
+        ? [env.NEXT_PUBLIC_DAPP_ID + SWAP_TAG + searchQuery]
         : [env.NEXT_PUBLIC_DAPP_ID];
 
     const allContracts = await client.getContracts({ tags, range });
 
-    const succededContracts: ContractId[] = [];
-    allContracts.headers.map((header) => {
+    const succededContracts: ContractHeader[] = [];
+    allContracts.headers.forEach((header) => {
       const parsedHeader = contractHeaderSchema.safeParse(header);
-      if (parsedHeader.success) succededContracts.push(header.contractId);
+      if (parsedHeader.success) succededContracts.push(header);
     });
 
-    const filteredContracts = allContracts.headers.filter((contract) => {
-      return succededContracts.includes(contract.contractId);
-    });
-
-    const parsedContracts = contractSchema.safeParse(filteredContracts);
+    const parsedContracts = contractSchema.safeParse(succededContracts);
 
     if (parsedContracts.success) {
       const validContracts = parsedContracts.data.filter((contract) => {
