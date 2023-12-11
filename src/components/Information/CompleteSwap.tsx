@@ -15,15 +15,7 @@ interface IQueryParams {
 export const CompleteSwap = () => {
   const { query }: { query: IQueryParams } = useRouter();
   const { id } = query;
-  const goToScanner = () => {
-    if (id) {
-      // TODO: Change when preprod is not used
-      window.open(
-        `https://preprod.marlowescan.com/contractView?tab=info&contractId=${id}%231`,
-        "_blank",
-      );
-    }
-  };
+  const contractId = id?.slice(0, -2) + "%231";
 
   return (
     <main className="flex h-full w-full flex-col items-center text-center">
@@ -37,21 +29,31 @@ export const CompleteSwap = () => {
           button below,
         </div>
         <div className="flex w-4/5 flex-col gap-7">
-          <Button size={SIZE.REGULAR} filled onClick={goToScanner}>
-            <div className="flex items-center justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
-              <div className="hidden sm:block">
-                <Image src={CubeIcon as string} height={ICON_SIZES.S} alt="" />
+          <a
+            target="_blank"
+            // TODO: Change when networks are changed
+            href={`https://preprod.marlowescan.com/contractView?tab=info&contractId=${contractId}`}
+          >
+            <Button size={SIZE.REGULAR} filled>
+              <div className="flex items-center justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
+                <div className="hidden sm:block">
+                  <Image
+                    src={CubeIcon as string}
+                    height={ICON_SIZES.S}
+                    alt=""
+                  />
+                </div>
+                View transaction
+                <div className="hidden sm:block">
+                  <Image
+                    src={SeeMoreIcon as string}
+                    height={ICON_SIZES.S}
+                    alt="→"
+                  />
+                </div>
               </div>
-              View transaction
-              <div className="hidden sm:block">
-                <Image
-                  src={SeeMoreIcon as string}
-                  height={ICON_SIZES.S}
-                  alt="→"
-                />
-              </div>
-            </div>
-          </Button>
+            </Button>
+          </a>
           <Link href={PAGES.LISTING}>
             <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
               <div className="flex justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
