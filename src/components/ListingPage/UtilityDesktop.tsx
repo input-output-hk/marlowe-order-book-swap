@@ -30,10 +30,10 @@ export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
             <Image
               src={SearchIcon as string}
               height={ICON_SIZES.S}
-              alt="Search"
+              alt="Search by Token Name"
             />
           }
-          placeholder="Search"
+          placeholder="Search by Token Name"
         />
       </div>
 
