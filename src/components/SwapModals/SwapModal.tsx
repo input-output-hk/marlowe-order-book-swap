@@ -91,7 +91,7 @@ export const SwapModal = ({
         );
 
         waitTxConfirmation(contractId(id), txId, client, setFinished);
-        void router.push(PAGES.COMPLETE);
+        void router.push(PAGES.COMPLETE + `/${id}`);
       }
     } catch (e) {
       setLoading(false);
