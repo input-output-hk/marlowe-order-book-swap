@@ -27,12 +27,12 @@ export const UtilityMobile = ({
           <Input
             value={filters.searchQuery}
             onChange={handleChange}
-            placeholder="Search"
+            placeholder="Search by Token Name"
             startContent={
               <Image
                 src={SearchIcon as string}
                 height={ICON_SIZES.S}
-                alt="Search"
+                alt="Search by Token Name"
               />
             }
           />

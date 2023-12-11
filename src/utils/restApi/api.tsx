@@ -59,7 +59,7 @@ export const getContracts = async (
 
     const tags =
       searchQuery !== ""
-        ? [env.NEXT_PUBLIC_DAPP_ID + SWAP_TAG + searchQuery]
+        ? [env.NEXT_PUBLIC_DAPP_ID + SWAP_TAG + searchQuery.toLocaleLowerCase()]
         : [env.NEXT_PUBLIC_DAPP_ID];
 
     const allContracts = await client.getContracts({ tags, range });
