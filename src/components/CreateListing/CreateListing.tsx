@@ -145,9 +145,7 @@ export const CreateListing = () => {
 
         const roles: RolesConfig = {
           provider: addressBech32(account.address!),
-          swapper: addressBech32(
-            "addr_test1qzhj2uvwthmpm3v4a75fyx4kvm4z2vcql98arjtmehgummq5uvdkus5s8yzrl6zr84gwjmtaad2xq2g4dy4h2ucq344s66yznh",
-          ),
+          swapper: addressBech32(account.address!),
         };
 
         const contract = await runtimeLifecycle.contracts.createContract({
