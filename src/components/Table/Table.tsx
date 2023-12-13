@@ -20,6 +20,7 @@ const TableBodyDesktop = dynamic(
 export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
   const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
+  const [contractId, setContractId] = useState<string>("");
   const [desired, setDesired] = useState<ITokenAmount>({
     token: "",
     icon: <></>,
@@ -37,11 +38,13 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
     setOffered(row.offered);
     setDesired(row.desired);
     setOpenRetract(true);
+    setContractId(row.id);
   };
   const handleOpenAccept = (row: ITableData) => () => {
     setOffered(row.offered);
     setDesired(row.desired);
     setOpenAccept(true);
+    setContractId(row.id);
   };
 
   if (!data.length) {
@@ -79,12 +82,14 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
         setOpen={setOpenRetract}
         offered={offered}
         desired={desired}
+        id={contractId}
       />
       <SwapModal
         open={openAccept}
         setOpen={setOpenAccept}
         offered={offered}
         desired={desired}
+        id={contractId}
       />
     </>
   );
