@@ -15,7 +15,7 @@ interface IQueryParams {
 export const CompleteSwap = () => {
   const { query }: { query: IQueryParams } = useRouter();
   const { id } = query;
-  const contractId = id?.slice(0, -2) + "%231";
+  const contractId = id + "%231";
 
   return (
     <main className="flex h-full w-full flex-col items-center text-center">

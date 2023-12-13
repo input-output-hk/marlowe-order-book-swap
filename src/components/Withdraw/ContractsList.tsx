@@ -5,10 +5,8 @@ import {
 } from "@marlowe.io/runtime-core";
 import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 
-import { useEffect, type Dispatch, type SetStateAction } from "react";
-import { COLORS, initialContractSchema, lovelaceToAda } from "~/utils";
+import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
-import { type MoreContractDetails } from "./WithdrawPage";
 
 interface ContractListProps {
   possibleWithdraws: (ContractDetails & {
@@ -26,44 +24,13 @@ interface ContractListProps {
     add: boolean;
   }) => () => Promise<void>;
   selectAll: () => Promise<void>;
-  setPossibleWithdraws: Dispatch<SetStateAction<MoreContractDetails[]>>;
 }
 
 export const ContractsList = ({
   possibleWithdraws,
-  setPossibleWithdraws,
   handleContract,
   selectAll,
 }: ContractListProps) => {
-  useEffect(() => {
-    setPossibleWithdraws((prev) =>
-      prev.map((contract) => {
-        const parsedPayout = initialContractSchema.safeParse(
-          contract.initialContract,
-        );
-        if (parsedPayout.success) {
-          const token =
-            parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
-          const amount =
-            token === ""
-              ? (lovelaceToAda(
-                  parsedPayout.data.when[0].then.when[0].case.deposits,
-                ) as bigint)
-              : parsedPayout.data.when[0].then.when[0].then.pay;
-          return {
-            ...contract,
-            amount: amount,
-          };
-        } else {
-          return {
-            ...contract,
-            error: "Error obtaining amount",
-          };
-        }
-      }),
-    );
-  }, [setPossibleWithdraws]);
-
   return (
     <div className="flex flex-col gap-3 ">
       <div className="flex justify-between rounded-md bg-m-light-purple p-5 text-center text-2xl font-semibold">
