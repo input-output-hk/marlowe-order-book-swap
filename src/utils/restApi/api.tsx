@@ -140,13 +140,21 @@ const getInitialContract = (contract: ContractDetails) => {
   const parsedPayout = initialContractSchema.safeParse(
     contract.initialContract,
   );
-  let amount = BigInt(0);
+  let swapperAmount = BigInt(0);
+  let providerAmount = BigInt(0);
   let error = "";
+  let token = "";
   if (parsedPayout.success) {
-    const token =
-      parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
-    amount =
-      token === ""
+    token =
+      parsedPayout.data.when[0].then.when[0].case.of_token.token_name === ""
+        ? ADA
+        : parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
+    providerAmount =
+      token === ADA
+        ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
+        : parsedPayout.data.when[0].case.deposits;
+    swapperAmount =
+      token === ADA
         ? (lovelaceToAda(
             parsedPayout.data.when[0].then.when[0].case.deposits,
           ) as bigint)
@@ -160,7 +168,8 @@ const getInitialContract = (contract: ContractDetails) => {
     adding: false,
     payoutId: null,
     error: error,
-    amount: amount,
+    amount: { swapper: swapperAmount, provider: providerAmount },
+    token: token,
   };
 };
 

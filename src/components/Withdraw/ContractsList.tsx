@@ -42,13 +42,21 @@ export const ContractsList = ({
             <div className="w-inherit flex flex-col gap-3" key={index}>
               <div className="flex items-center justify-between gap-4 p-3">
                 <div className="flex w-4/5 flex-col">
-                  <div className="flex flex-col break-all lg:flex-row">
-                    <b>Contract Id:</b>&nbsp;
+                  <div className="flex flex-col break-all 2xl:flex-row">
+                    <b>Contract Id:&nbsp;</b>
                     {unContractId(payout.contractId)}
                   </div>
-                  <div className="flex">
-                    <b>Withdraw amount:</b>&nbsp;
-                    {payout.error === "" ? Number(payout.amount) : payout.error}
+                  <div className="flex flex-col lg:flex-row">
+                    <b>Withdraw amount for provider:&nbsp;</b>
+                    {payout.error === ""
+                      ? Number(payout.amount.provider) + " " + payout.token
+                      : payout.error}
+                  </div>
+                  <div className="flex flex-col lg:flex-row">
+                    <b>Withdraw amount for swapper:&nbsp;</b>
+                    {payout.error === ""
+                      ? Number(payout.amount.swapper) + " " + payout.token
+                      : payout.error}
                   </div>
                 </div>
                 <div className="h-10 w-28">
@@ -71,7 +79,7 @@ export const ContractsList = ({
                         id: payout.contractId,
                         toAdd: !payout.added,
                       })}
-                      disabled={payout.error !== ""}
+                      disabled={payout.error !== "" || loadingWithdrawal}
                     >
                       {payout.added ? "✓" : "+"}
                     </Button>
