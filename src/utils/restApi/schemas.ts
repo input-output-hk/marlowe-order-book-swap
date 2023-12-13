@@ -1,20 +1,28 @@
 import { contractId } from "@marlowe.io/runtime-core";
 import { z } from "zod";
 import { env } from "~/env.mjs";
+import { SWAP_TAG } from ".";
 
 export const contractHeaderSchema = z.object({
   contractId: z
     .string()
     .min(64)
     .transform((x: string) => contractId(x)),
-  tags: z.record(
-    z.literal(env.NEXT_PUBLIC_DAPP_ID),
-    z.object({
-      startDate: z.string().optional(),
-      expiryDate: z.string().optional(),
-      createdBy: z.string().optional(),
-    }),
-  ),
+  tags: z.union([
+    z
+      .object({
+        [env.NEXT_PUBLIC_DAPP_ID]: z.object({
+          startDate: z.string().optional(),
+          expiryDate: z.string().optional(),
+          createdBy: z.string().optional(),
+        }),
+      })
+      .required(),
+    z.record(
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-`),
+      z.string(),
+    ),
+  ]),
   status: z.union([
     z.literal("unsigned"),
     z.literal("submitted"),
@@ -22,15 +30,7 @@ export const contractHeaderSchema = z.object({
   ]),
 });
 
-export const contractSchema = z.object({
-  headers: z.array(contractHeaderSchema),
-  previousRange: z.object({
-    _tag: z.union([z.literal("Some"), z.literal("None")]),
-  }),
-  nextRange: z.object({
-    _tag: z.union([z.literal("Some"), z.literal("None")]),
-  }),
-});
+export const contractSchema = z.array(contractHeaderSchema);
 
 export const caseSchema = z.object({
   deposits: z.bigint(),

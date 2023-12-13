@@ -14,7 +14,13 @@ import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
 import type { IOptions } from "~/utils";
-import { COLORS, ICON_SIZES, PAGES, getSwapContract } from "~/utils";
+import {
+  COLORS,
+  ICON_SIZES,
+  PAGES,
+  getSwapContract,
+  tokenToTag,
+} from "~/utils";
 import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
@@ -145,21 +151,22 @@ export const CreateListing = () => {
 
         const roles: RolesConfig = {
           provider: addressBech32(account.address!),
-          swapper: addressBech32(
-            "addr_test1qzhj2uvwthmpm3v4a75fyx4kvm4z2vcql98arjtmehgummq5uvdkus5s8yzrl6zr84gwjmtaad2xq2g4dy4h2ucq344s66yznh",
-          ),
+          swapper: addressBech32(account.address!),
+        };
+
+        const tags = {
+          [env.NEXT_PUBLIC_DAPP_ID]: {
+            startDate: startDate !== "" ? startDate : new Date().toISOString(),
+            expiryDate,
+          },
+          [tokenToTag(selectedOffered.option)]: "",
+          [tokenToTag(selectedDesired.option)]: "",
         };
 
         const contract = await runtimeLifecycle.contracts.createContract({
           contract: swapContract,
           roles,
-          tags: {
-            [`${env.NEXT_PUBLIC_DAPP_ID}`]: {
-              startDate:
-                startDate !== "" ? startDate : new Date().toISOString(),
-              expiryDate,
-            },
-          },
+          tags,
         });
 
         setCreateLoading((prev) => ({
