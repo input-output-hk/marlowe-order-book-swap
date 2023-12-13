@@ -1,5 +1,4 @@
 import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
-
 import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { type IMoreContractDetails } from "./WithdrawPage";
@@ -8,10 +7,10 @@ interface ContractListProps {
   possibleWithdraws: IMoreContractDetails[];
   handleContract: ({
     id,
-    add,
+    toAdd,
   }: {
     id: ContractId;
-    add: boolean;
+    toAdd: boolean;
   }) => () => Promise<void>;
   selectAll: () => Promise<void>;
 }
@@ -52,7 +51,7 @@ export const ContractsList = ({
                       size={SIZE.XSMALL}
                       onClick={handleContract({
                         id: payout.contractId,
-                        add: !payout.added,
+                        toAdd: !payout.added,
                       })}
                     >
                       <div className="animate-pulse">Adding</div>
@@ -63,7 +62,7 @@ export const ContractsList = ({
                       color={payout.added ? COLORS.GREEN : COLORS.PURPLE}
                       onClick={handleContract({
                         id: payout.contractId,
-                        add: !payout.added,
+                        toAdd: !payout.added,
                       })}
                       disabled={payout.error !== ""}
                     >

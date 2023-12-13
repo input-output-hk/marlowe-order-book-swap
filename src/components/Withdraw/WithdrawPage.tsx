@@ -1,17 +1,15 @@
 import { type ContractId, type PayoutId } from "@marlowe.io/runtime-core";
 import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
+import Image from "next/image";
 import { useRouter } from "next/router";
+import NoWithdrawalIcon from "public/no-withdrawal.svg";
 import { useContext, useEffect, useState } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import {
-  ICON_SIZES,
-  PAGES,
-  initialContractSchema,
-  lovelaceToAda,
-} from "~/utils";
+import { ICON_SIZES, PAGES, getPayouts } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { Loading } from "../Loading/Loading";
 import { ContractsList } from "./ContractsList";
+import { WithdrawFooter } from "./WithdrawFooter";
 
 export interface IMoreContractDetails extends ContractDetails {
   added: boolean;
@@ -33,49 +31,12 @@ export const WithdrawPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const getPayouts = async () => {
-      const availableWithdraws = await runtimeLifecycle?.payouts.available();
-      availableWithdraws?.map((payout) => payout.contractId);
-
-      if (availableWithdraws && client) {
-        const contractsListPromise = availableWithdraws.map((contract) => {
-          return client.getContractById(contract.contractId);
-        });
-        const contractsList = await Promise.all(contractsListPromise);
-        setPossibleWithdraws(
-          contractsList.map((contract) => {
-            const parsedPayout = initialContractSchema.safeParse(
-              contract.initialContract,
-            );
-            let amount = BigInt(0);
-            let error = "";
-            if (parsedPayout.success) {
-              const token =
-                parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
-              amount =
-                token === ""
-                  ? (lovelaceToAda(
-                      parsedPayout.data.when[0].then.when[0].case.deposits,
-                    ) as bigint)
-                  : parsedPayout.data.when[0].then.when[0].then.pay;
-            } else {
-              error = "Error obtaining amount";
-            }
-            return {
-              ...contract,
-              added: false,
-              adding: false,
-              payoutId: null,
-              error: error,
-              amount: amount,
-            };
-          }),
-        );
-
-        setLoadingContracts(false);
-      }
-    };
-    void getPayouts();
+    void getPayouts(
+      runtimeLifecycle,
+      client,
+      setPossibleWithdraws,
+      setLoadingContracts,
+    );
   }, [client, runtimeLifecycle]);
 
   const withdraw = async () => {
@@ -142,9 +103,9 @@ export const WithdrawPage = () => {
   };
 
   const handleContract =
-    ({ id, add }: { id: ContractId; add: boolean }) =>
+    ({ id, toAdd }: { id: ContractId; toAdd: boolean }) =>
     async () => {
-      if (add) {
+      if (toAdd) {
         setPossibleWithdraws((prev) =>
           prev.map((contract) => {
             if (contract.contractId === id) {
@@ -165,7 +126,7 @@ export const WithdrawPage = () => {
               if (contract.contractId === id) {
                 return {
                   ...contract,
-                  added: add,
+                  added: toAdd,
                   adding: false,
                   payoutId: payout,
                 };
@@ -180,7 +141,7 @@ export const WithdrawPage = () => {
             if (contract.contractId === id) {
               return {
                 ...contract,
-                added: add,
+                added: toAdd,
                 adding: false,
                 payoutId: null,
               };
@@ -206,7 +167,14 @@ export const WithdrawPage = () => {
   return (
     <div className="flex h-fit flex-grow flex-col items-center justify-between gap-3 text-m-disabled">
       {possibleWithdraws.length === 0 ? (
-        <div>No pending withdrawals</div>
+        <div className="m-auto flex flex-col items-center gap-3 rounded-md p-5 text-center text-3xl font-semibold">
+          <Image
+            src={NoWithdrawalIcon as string}
+            alt=""
+            height={ICON_SIZES.XXL}
+          />
+          No pending withdrawals
+        </div>
       ) : (
         <div className="w-2/3 rounded-md border p-7 py-10 shadow-container">
           <div className="flex flex-col gap-3 ">
@@ -217,28 +185,10 @@ export const WithdrawPage = () => {
             />
           </div>
           <div className="flex items-center justify-between gap-3 px-3 pt-10">
-            {!errorWithdrawal ? (
-              loadingWithdrawal ? (
-                <div className="flex w-full items-center gap-4">
-                  <Loading
-                    sizeDesktop={ICON_SIZES.XS}
-                    sizeMobile={ICON_SIZES.XS}
-                  />
-                  <b className="text-base text-m-purple">
-                    Don&apos;t leave the page. Waiting confirmation...
-                  </b>
-                </div>
-              ) : (
-                <b className="text-center text-m-blue">
-                  Once started a withdrawal, please don&apos;t close this page
-                  until the transaction is confirmed.
-                </b>
-              )
-            ) : (
-              <div className=" font-semibold text-m-red">
-                There was an error on retracting the swap offer
-              </div>
-            )}
+            <WithdrawFooter
+              errorWithdrawal={errorWithdrawal}
+              loadingWithdrawal={loadingWithdrawal}
+            />
             <div className="w-28">
               <Button
                 size={SIZE.XSMALL}

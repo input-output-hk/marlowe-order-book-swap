@@ -1,15 +1,19 @@
 import { unContractId } from "@marlowe.io/runtime-core";
+import { type RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
+import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import { type ContractHeader } from "@marlowe.io/runtime-rest-client/contract/header";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
+import { type IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
 import { env } from "~/env.mjs";
 import {
   contractDetailsSchema,
   contractHeaderSchema,
   contractSchema,
+  initialContractSchema,
   type DesiredType,
   type OfferedType,
 } from ".";
@@ -130,4 +134,53 @@ export const getContracts = async (
     console.log(err);
     setError("Something went wrong. Please reload and try later.");
   }
+};
+
+const getInitialContract = (contract: ContractDetails) => {
+  const parsedPayout = initialContractSchema.safeParse(
+    contract.initialContract,
+  );
+  let amount = BigInt(0);
+  let error = "";
+  if (parsedPayout.success) {
+    const token =
+      parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
+    amount =
+      token === ""
+        ? (lovelaceToAda(
+            parsedPayout.data.when[0].then.when[0].case.deposits,
+          ) as bigint)
+        : parsedPayout.data.when[0].then.when[0].then.pay;
+  } else {
+    error = "Error obtaining amount";
+  }
+  return {
+    ...contract,
+    added: false,
+    adding: false,
+    payoutId: null,
+    error: error,
+    amount: amount,
+  };
+};
+
+export const getPayouts = async (
+  runtimeLifecycle: RuntimeLifecycle | undefined,
+  client: RestClient | undefined,
+  setPossibleWithdraws: Dispatch<SetStateAction<IMoreContractDetails[]>>,
+  setLoadingContracts: Dispatch<SetStateAction<boolean>>,
+) => {
+  const availableWithdraws = await runtimeLifecycle?.payouts.available();
+  availableWithdraws?.map((payout) => payout.contractId);
+
+  if (availableWithdraws && client) {
+    const contractsListPromise = availableWithdraws.map((contract) => {
+      return client.getContractById(contract.contractId);
+    });
+    const contractsList = await Promise.all(contractsListPromise);
+    setPossibleWithdraws(
+      contractsList.map((contract) => getInitialContract(contract)),
+    );
+  }
+  setLoadingContracts(false);
 };
