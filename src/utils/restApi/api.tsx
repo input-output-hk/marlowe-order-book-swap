@@ -55,7 +55,7 @@ export const getContracts = async (
   searchQuery: string,
 ) => {
   try {
-    const range = contractsRange(`contractId;limit 10;offset 0;order desc`);
+    const range = contractsRange(`contractId;limit 6;offset 0;order desc`);
 
     const tags =
       searchQuery !== ""

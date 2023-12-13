@@ -4,7 +4,6 @@ import {
   type BrowserRuntimeLifecycleOptions,
 } from "@marlowe.io/runtime-lifecycle/browser";
 import { mkRestClient, type RestClient } from "@marlowe.io/runtime-rest-client";
-import { type SupportedWalletName } from "@marlowe.io/wallet/browser";
 import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
@@ -56,14 +55,15 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   };
 
   useEffect(() => {
-    // TODO: runtime can't be setted with nami
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (walletInfo) {
-      const { walletProvider } = JSON.parse(walletInfo) as IWalletInStorage;
+      const { walletProvider: walletProvider } = JSON.parse(
+        walletInfo,
+      ) as IWalletInStorage;
 
       void setRuntime({
         runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
-        walletName: walletProvider as SupportedWalletName,
+        walletName: walletProvider,
       });
     }
 
