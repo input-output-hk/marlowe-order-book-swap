@@ -13,19 +13,25 @@ interface ContractListProps {
     toAdd: boolean;
   }) => () => Promise<void>;
   selectAll: () => Promise<void>;
+  loadingWithdrawal: boolean;
 }
 
 export const ContractsList = ({
   possibleWithdraws,
   handleContract,
   selectAll,
+  loadingWithdrawal,
 }: ContractListProps) => {
   return (
     <div className="flex flex-col gap-3 ">
       <div className="flex justify-between rounded-md bg-m-light-purple p-5 text-center text-2xl font-semibold">
         Pending Withdrawals
         <div className="text-base">
-          <Button size={SIZE.XSMALL} onClick={selectAll}>
+          <Button
+            size={SIZE.XSMALL}
+            onClick={selectAll}
+            disabled={loadingWithdrawal}
+          >
             Select All
           </Button>
         </div>
@@ -53,6 +59,7 @@ export const ContractsList = ({
                         id: payout.contractId,
                         toAdd: !payout.added,
                       })}
+                      disabled={loadingWithdrawal}
                     >
                       <div className="animate-pulse">Adding</div>
                     </Button>

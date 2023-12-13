@@ -37,6 +37,7 @@ export const WithdrawPage = () => {
       setPossibleWithdraws,
       setLoadingContracts,
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client, runtimeLifecycle]);
 
   const withdraw = async () => {
@@ -182,6 +183,7 @@ export const WithdrawPage = () => {
               possibleWithdraws={possibleWithdraws}
               handleContract={handleContract}
               selectAll={selectAll}
+              loadingWithdrawal={loadingWithdrawal}
             />
           </div>
           <div className="flex items-center justify-between gap-3 px-3 pt-10">
