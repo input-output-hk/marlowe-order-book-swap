@@ -8,9 +8,9 @@ import {
   humanReadable,
   truncateString,
 } from "~/utils";
-import { Button, SIZE } from "../Button/Button";
-import { TableFooterMobile } from "./TableFooterMobile";
-import type { TableProps } from "./table.interface";
+import { Button, SIZE } from "../../Button/Button";
+import { TableFooterMobile } from "../Footer/TableFooterMobile";
+import type { TableProps } from "../table.interface";
 
 export const TableBodyMobile = ({
   data,
@@ -84,10 +84,7 @@ export const TableBodyMobile = ({
       </div>
       <div className="bg-m-light-purple px-24">
         {pagination && setPagination && (
-          <TableFooterMobile
-            pagination={pagination}
-            setPagination={setPagination}
-          />
+          <TableFooterMobile pagination={pagination} />
         )}
       </div>
       <div className="h-16 w-full rounded-b-lg bg-m-light-purple md:hidden" />

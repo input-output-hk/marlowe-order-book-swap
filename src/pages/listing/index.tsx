@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ErrorMessage } from "~/components/ErrorMessage/ErrorMessage";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { TSSDKContext } from "~/contexts/tssdk.context";
@@ -50,17 +50,22 @@ export default function Listing() {
 
   useDebounce({
     effect: () => {
-      setPagination((prev) => {
-        return {
-          ...prev,
-          page: query.page ? Number(query.page) : 1,
-        };
-      });
       void asyncGetContracts();
     },
-    dependencies: [client, filters.searchQuery, query.page],
+    dependencies: [client, filters.searchQuery],
     delay: 1000,
   });
+
+  useEffect(() => {
+    setPagination((prev) => {
+      return {
+        ...prev,
+        page: query.page ? Number(query.page) : 1,
+      };
+    });
+    void asyncGetContracts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.page]);
 
   return (
     <>

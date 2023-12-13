@@ -5,7 +5,7 @@ import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
 import { env } from "~/env.mjs";
-import { IPagination } from "~/pages/listing";
+import { type IPagination } from "~/pages/listing";
 import {
   contractDetailsSchema,
   contractHeaderSchema,
@@ -84,27 +84,29 @@ export const getContracts = async (
     const parsedContracts = contractSchema.safeParse(filteredContracts);
 
     if (parsedContracts.success) {
-      const validContracts = parsedContracts.data.filter((contract) => {
-        if (
-          env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
-          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
-        ) {
-          const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
-          const startDate =
-            typeof tag === "object" && tag !== null ? tag.startDate : undefined;
-          const expiryDate =
-            typeof tag === "object" && tag !== null
-              ? tag.expiryDate
-              : undefined;
-          return (
-            startDate &&
-            expiryDate &&
-            new Date(startDate) < new Date() &&
-            new Date(expiryDate) > new Date() &&
-            contract.status === "confirmed"
-          );
-        }
-      });
+      const validContracts = parsedContracts.data;
+      // It is disabled for the moment, until pagination is solved
+      // .filter((contract) => {
+      //   if (
+      //     env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
+      //     contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+      //   ) {
+      //     const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
+      //     const startDate =
+      //       typeof tag === "object" && tag !== null ? tag.startDate : undefined;
+      //     const expiryDate =
+      //       typeof tag === "object" && tag !== null
+      //         ? tag.expiryDate
+      //         : undefined;
+      //     return (
+      //       startDate &&
+      //       expiryDate &&
+      //       new Date(startDate) < new Date() &&
+      //       new Date(expiryDate) > new Date() &&
+      //       contract.status === "confirmed"
+      //     );
+      //   }
+      // });
 
       const contractsListPromise = validContracts.map((contract) => {
         return client.getContractById(contract.contractId);
@@ -131,8 +133,11 @@ export const getContracts = async (
         .filter((x) => x !== null) as ITableData[];
 
       setData(parsedContractsList);
-      if (allContracts.nextRange._tag === "Some")
+      if (allContracts.nextRange._tag === "Some") {
         setPagination((prev) => ({ ...prev, fetchMore: true }));
+      } else {
+        setPagination((prev) => ({ ...prev, fetchMore: false }));
+      }
     }
   } catch (err) {
     console.log(err);

@@ -20,5 +20,4 @@ export interface TablePropsWithSort {
 
 export interface ITableFooter {
   pagination: IPagination;
-  setPagination: Dispatch<SetStateAction<IPagination>>;
 }

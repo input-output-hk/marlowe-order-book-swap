@@ -5,16 +5,16 @@ import { useState } from "react";
 import { ICON_SIZES, type ITableData, type ITokenAmount } from "~/utils";
 import { RetractModal } from "../SwapModals/RetractModal";
 import { SwapModal } from "../SwapModals/SwapModal";
-import { TableFooterDesktop } from "./TableFooterDesktop";
+import { TableFooterDesktop } from "./Footer/TableFooterDesktop";
 import { TableHead } from "./TableHead";
 import type { TablePropsWithSort } from "./table.interface";
 
 const TableBodyMobile = dynamic(
-  () => import("./TableBodyMobile").then((mod) => mod.TableBodyMobile),
+  () => import("./Body/TableBodyMobile").then((mod) => mod.TableBodyMobile),
   { ssr: false },
 );
 const TableBodyDesktop = dynamic(
-  () => import("./TableBodyDesktop").then((mod) => mod.TableBodyDesktop),
+  () => import("./Body/TableBodyDesktop").then((mod) => mod.TableBodyDesktop),
   { ssr: false },
 );
 
@@ -76,10 +76,7 @@ export const Table = ({
           handleOpenAccept={handleOpenAccept}
         />
       </div>
-      <TableFooterDesktop
-        pagination={pagination}
-        setPagination={setPagination}
-      />
+      <TableFooterDesktop pagination={pagination} />
       <TableBodyMobile
         data={data}
         handleOpenRetract={handleOpenRetract}

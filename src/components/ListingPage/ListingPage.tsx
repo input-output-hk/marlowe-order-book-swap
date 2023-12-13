@@ -1,7 +1,7 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useCardano } from "use-cardano";
 import { Table } from "~/components/Table/Table";
-import { IPagination } from "~/pages/listing";
+import { type IPagination } from "~/pages/listing";
 import {
   ICON_SIZES,
   SortOrder,
