@@ -1,21 +1,11 @@
-import {
-  unContractId,
-  type ContractId,
-  type PayoutId,
-} from "@marlowe.io/runtime-core";
-import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
+import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
 
 import { COLORS } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
+import { type IMoreContractDetails } from "./WithdrawPage";
 
 interface ContractListProps {
-  possibleWithdraws: (ContractDetails & {
-    added: boolean;
-    adding: boolean;
-    payoutId: PayoutId[] | null;
-    error: string;
-    amount: bigint;
-  })[];
+  possibleWithdraws: IMoreContractDetails[];
   handleContract: ({
     id,
     add,

@@ -13,7 +13,7 @@ import { Button, SIZE } from "../Button/Button";
 import { Loading } from "../Loading/Loading";
 import { ContractsList } from "./ContractsList";
 
-export interface MoreContractDetails extends ContractDetails {
+export interface IMoreContractDetails extends ContractDetails {
   added: boolean;
   adding: boolean;
   payoutId: PayoutId[] | null;
@@ -27,7 +27,7 @@ export const WithdrawPage = () => {
   const [errorWithdrawal, setErrorWithdrawal] = useState(false);
 
   const [possibleWithdraws, setPossibleWithdraws] = useState<
-    MoreContractDetails[]
+    IMoreContractDetails[]
   >([]);
   const { runtimeLifecycle, client } = useContext(TSSDKContext);
   const router = useRouter();
