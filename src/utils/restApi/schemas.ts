@@ -90,6 +90,21 @@ export const initialContractSchema = z.object({
 });
 
 export const contractDetailsSchema = z.object({
+  tags: z.union([
+    z
+      .object({
+        [env.NEXT_PUBLIC_DAPP_ID]: z.object({
+          startDate: z.string().optional(),
+          expiryDate: z.string().optional(),
+          createdBy: z.string().optional(),
+        }),
+      })
+      .required(),
+    z.record(
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-`),
+      z.string(),
+    ),
+  ]),
   contractId: z
     .string()
     .min(64)

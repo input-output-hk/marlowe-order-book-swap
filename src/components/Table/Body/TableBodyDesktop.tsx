@@ -21,6 +21,9 @@ export const TableBodyDesktop = ({
         const hasExpired =
           new Date(row.expiry).toISOString() < new Date().toISOString();
         const hasFinished = row.createdBy === undefined;
+        const hasStarted =
+          new Date(row.start).toISOString() < new Date().toISOString();
+
         return (
           <div key={row.id} className="table-row">
             <div className="table-cell w-1/4">
@@ -61,9 +64,13 @@ export const TableBodyDesktop = ({
                       size={SIZE.SMALL}
                       color={COLORS.RED}
                       onClick={handleOpenRetract(row)}
-                      disabled={!account.address || hasExpired}
+                      disabled={!account.address || hasExpired || !hasStarted}
                     >
-                      {hasExpired ? "Offer ended" : "Retract offer"}
+                      {hasExpired
+                        ? "Offer ended"
+                        : !hasStarted
+                        ? "Not started"
+                        : "Retract offer"}
                     </Button>
                   </div>
                 ) : (
@@ -71,10 +78,17 @@ export const TableBodyDesktop = ({
                     <Button
                       size={SIZE.SMALL}
                       onClick={handleOpenAccept(row)}
-                      disabled={!account.address || hasExpired || hasFinished}
+                      disabled={
+                        !account.address ||
+                        hasExpired ||
+                        hasFinished ||
+                        !hasStarted
+                      }
                     >
                       {hasExpired || hasFinished
                         ? "Offer ended"
+                        : !hasStarted
+                        ? "Not started"
                         : "Accept Offer"}
                     </Button>
                   </div>

@@ -131,13 +131,27 @@ export const getContracts = async (
           const parsedContract = contractDetailsSchema.safeParse(contract);
 
           if (parsedContract.success) {
-            const { contractId, initialContract, state } = parsedContract.data;
+            const { tags, contractId, initialContract, state } =
+              parsedContract.data;
+            let startDate = new Date();
+            if (
+              env.NEXT_PUBLIC_DAPP_ID in tags &&
+              tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+            ) {
+              const tag = tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
+              startDate =
+                typeof tag === "object" && tag?.startDate
+                  ? new Date(tag.startDate)
+                  : new Date();
+            }
+
             return {
               id: unContractId(contractId),
               createdBy: state.value?.accounts[0][0][0].address,
               offered: getOffered(initialContract.when[0].case),
               desired: getDesired(initialContract.when[0].then),
               expiry: new Date(Number(initialContract.timeout)).toString(),
+              start: startDate.toString(),
             };
           } else {
             return null;
