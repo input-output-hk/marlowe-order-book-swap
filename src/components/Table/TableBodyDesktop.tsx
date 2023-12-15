@@ -1,4 +1,6 @@
-import { useCardano } from "use-cardano";
+import { unAddressBech32 } from "@marlowe.io/runtime-core";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   COLORS,
   dateTimeOptions,
@@ -13,7 +15,18 @@ export const TableBodyDesktop = ({
   handleOpenAccept,
   handleOpenRetract,
 }: TableProps) => {
-  const { account } = useCardano();
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
+  const { runtimeLifecycle } = useContext(TSSDKContext);
+
+  useEffect(() => {
+    void getAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getAddress = async () => {
+    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+    if (walletAddress) setMyAddress(unAddressBech32(walletAddress));
+  };
 
   return (
     <div className="hidden md:table-row-group">
@@ -51,13 +64,13 @@ export const TableBodyDesktop = ({
           </div>
           <div className="table-cell w-1/4">
             <div className="flex items-center justify-center">
-              {row.createdBy === account.address ? (
+              {row.createdBy === myAddress ? (
                 <div>
                   <Button
                     size={SIZE.SMALL}
                     color={COLORS.RED}
                     onClick={handleOpenRetract(row)}
-                    disabled={!account.address}
+                    disabled={!myAddress}
                   >
                     Retract offer
                   </Button>
@@ -67,7 +80,7 @@ export const TableBodyDesktop = ({
                   <Button
                     size={SIZE.SMALL}
                     onClick={handleOpenAccept(row)}
-                    disabled={!account.address}
+                    disabled={!myAddress}
                   >
                     Accept Offer
                   </Button>

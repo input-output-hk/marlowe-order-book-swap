@@ -7,11 +7,6 @@ import { mkRestClient, type RestClient } from "@marlowe.io/runtime-rest-client";
 import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
-import {
-  CardanoProvider,
-  type UseCardanoNodeOptions,
-  type UseCardanoOptions,
-} from "use-cardano";
 import { Footer } from "~/components/Footer/Footer";
 import { Header } from "~/components/Header/Header";
 import { WalletWidget } from "~/components/WalletWidget/WalletWidget";
@@ -70,18 +65,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     setRestClient();
   }, []);
 
-  const useCardanoNodeOptions: UseCardanoNodeOptions = {
-    provider: "blockfrost",
-    projectId: env.NEXT_PUBLIC_BLOCKFROST_PROJECT_ID,
-  };
-
-  const options: UseCardanoOptions = {
-    allowedNetworks: ["Mainnet", "Testnet"],
-    testnetNetwork: "Preprod",
-    node: useCardanoNodeOptions,
-    autoReconnect: false,
-  };
-
   return (
     <>
       <style jsx global>
@@ -98,20 +81,15 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           client,
         }}
       >
-        <CardanoProvider options={options}>
-          <Header
-            links={headerLinks}
-            title={HEADER_TITLE}
-            homeLink={PAGES.LISTING}
-          >
-            <WalletWidget />
-          </Header>
-          <Component {...pageProps} />
-          <Footer
-            footerLinks={footerLinks}
-            socialMediaLinks={socialMediaLinks}
-          />
-        </CardanoProvider>
+        <Header
+          links={headerLinks}
+          title={HEADER_TITLE}
+          homeLink={PAGES.LISTING}
+        >
+          <WalletWidget />
+        </Header>
+        <Component {...pageProps} />
+        <Footer footerLinks={footerLinks} socialMediaLinks={socialMediaLinks} />
       </TSSDKContext.Provider>
     </>
   );

@@ -23,9 +23,6 @@ export const WalletWidget = () => {
     BroswerWalletExtension | undefined
   >(undefined);
   const [address, setAddress] = useState<string | undefined>(undefined);
-  const [walletName, setWalletName] = useState<SupportedWalletName | undefined>(
-    undefined,
-  );
 
   const router = useRouter();
   const { setRuntime, runtimeLifecycle } = useContext(TSSDKContext);
@@ -61,7 +58,6 @@ export const WalletWidget = () => {
 
   const connectWallet = (walletName: SupportedWalletName) => async () => {
     if (setRuntime) {
-      setWalletName(walletName);
       await setRuntime({
         runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
         walletName: walletName,

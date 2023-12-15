@@ -1,5 +1,6 @@
 import {
   addressBech32,
+  unAddressBech32,
   unContractId,
   type ContractId,
 } from "@marlowe.io/runtime-core";
@@ -9,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import DownIcon from "public/down_arrow.svg";
 import { useContext, useEffect, useState, type FormEvent } from "react";
-import { useCardano } from "use-cardano";
 import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
@@ -27,7 +27,6 @@ import {
 
 export const CreateListing = () => {
   const [createLoading, setCreateLoading] = useState<ICreateLoading>({
-    loading: true,
     contract: false,
     confirmation: false,
     contractConfirmed: "",
@@ -56,20 +55,15 @@ export const CreateListing = () => {
     icon: <></>,
   });
   const [expiryDate, setExpiryDate] = useState<string>("");
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
 
   const router = useRouter();
-  const { account, walletProvider } = useCardano();
   const { runtimeLifecycle, setRuntime, client } = useContext(TSSDKContext);
 
   useEffect(() => {
-    const walletInfo = window.localStorage.getItem("walletInfo");
-    if (!account.address || walletInfo) {
-      setCreateLoading((prev) => ({
-        ...prev,
-        loading: false,
-      }));
-    }
-  }, [account.address]);
+    void getAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (createLoading.contractConfirmed !== "") {
@@ -87,6 +81,13 @@ export const CreateListing = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createLoading.contractConfirmed]);
+
+  const getAddress = async () => {
+    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+    if (walletAddress) {
+      setMyAddress(unAddressBech32(walletAddress));
+    }
+  };
 
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;
@@ -126,7 +127,8 @@ export const CreateListing = () => {
         selectedDesired,
         expiryDate,
         startDate,
-      })
+      }) &&
+      myAddress
     ) {
       try {
         if (!setRuntime || !runtimeLifecycle) throw new Error("No runtime");
@@ -144,8 +146,8 @@ export const CreateListing = () => {
         });
 
         const roles: RolesConfig = {
-          provider: addressBech32(account.address!),
-          swapper: addressBech32(account.address!),
+          provider: addressBech32(myAddress),
+          swapper: addressBech32(myAddress),
         };
 
         const tags = {
@@ -189,14 +191,6 @@ export const CreateListing = () => {
       }
     }
   };
-
-  if (createLoading.loading) {
-    return (
-      <div className="flex flex-grow items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
 
   return (
     <form
@@ -292,8 +286,7 @@ export const CreateListing = () => {
                 filled
                 type="submit"
                 disabled={
-                  !account.address ||
-                  !walletProvider ||
+                  !runtimeLifecycle ||
                   createLoading.contract ||
                   createLoading.confirmation
                 }

@@ -1,5 +1,6 @@
+import { unAddressBech32 } from "@marlowe.io/runtime-core";
 import Head from "next/head";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ErrorMessage } from "~/components/ErrorMessage/ErrorMessage";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { TSSDKContext } from "~/contexts/tssdk.context";
@@ -15,7 +16,7 @@ export default function Listing() {
     searchQuery: "",
     owner: "",
   });
-  const { client } = useContext(TSSDKContext);
+  const { client, runtimeLifecycle } = useContext(TSSDKContext);
 
   const asyncGetContracts = async () => {
     if (client) {
@@ -25,6 +26,11 @@ export default function Listing() {
     }
   };
 
+  useEffect(() => {
+    void getAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
+
   useDebounce({
     effect: () => {
       void asyncGetContracts();
@@ -32,6 +38,15 @@ export default function Listing() {
     dependencies: [client, filters.searchQuery],
     delay: 1000,
   });
+
+  const getAddress = async () => {
+    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+    if (walletAddress)
+      setFilters((prev) => ({
+        ...prev,
+        owner: unAddressBech32(walletAddress),
+      }));
+  };
 
   return (
     <>
@@ -49,7 +64,6 @@ export default function Listing() {
           filters={filters}
           setFilters={setFilters}
           loading={loading}
-          setLoading={setLoading}
         />
       )}
     </>

@@ -1,6 +1,8 @@
+import { unAddressBech32 } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import SwapIcon from "public/swap.svg";
-import { useCardano } from "use-cardano";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   COLORS,
   ICON_SIZES,
@@ -16,7 +18,18 @@ export const TableBodyMobile = ({
   handleOpenAccept,
   handleOpenRetract,
 }: TableProps) => {
-  const { account } = useCardano();
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
+  const { runtimeLifecycle } = useContext(TSSDKContext);
+
+  useEffect(() => {
+    void getAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getAddress = async () => {
+    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+    if (walletAddress) setMyAddress(unAddressBech32(walletAddress));
+  };
 
   return (
     <>
@@ -55,12 +68,12 @@ export const TableBodyMobile = ({
               <div className="flex items-center justify-between px-4 pt-2">
                 <div>Expires in {getExpiration(row.expiry)}</div>
                 <div className="w-1/3">
-                  {row.createdBy === account.address ? (
+                  {row.createdBy === myAddress ? (
                     <Button
                       size={SIZE.XSMALL}
                       color={COLORS.RED}
                       onClick={handleOpenRetract(row)}
-                      disabled={!account.address}
+                      disabled={!myAddress}
                     >
                       Retract
                     </Button>
@@ -68,7 +81,7 @@ export const TableBodyMobile = ({
                     <Button
                       size={SIZE.XSMALL}
                       onClick={handleOpenAccept(row)}
-                      disabled={!account.address}
+                      disabled={!myAddress}
                     >
                       Accept
                     </Button>
