@@ -6,7 +6,9 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 import ConnectIcon from "public/connect.svg";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
+import { env } from "~/env.mjs";
 import { COLORS, ICON_SIZES, PAGES, type IWalletInStorage } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { Loading } from "../Loading/Loading";
@@ -26,6 +28,7 @@ export const WalletWidget = () => {
   );
 
   const router = useRouter();
+  const { setRuntime, runtimeLifecycle } = useContext(TSSDKContext);
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
@@ -48,26 +51,6 @@ export const WalletWidget = () => {
     setLoading(false);
   }, []);
 
-  // useEffect(() => {
-  //   void getWalletAddress();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [runtimeLifecycle]);
-
-  // const getWalletAddress = async () => {
-  //   const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
-  //   if (walletAddress !== undefined) {
-  //     window.localStorage.setItem(
-  //       "walletInfo",
-  //       JSON.stringify({
-  //         address: walletAddress,
-  //         walletName: walletName,
-  //       }),
-  //     );
-
-  //     void router.push({ pathname: PAGES.LISTING, query: { page: 1 } });
-  //   }
-  // };
-
   const toggleOpenConnect = () => {
     if (!getInstalledWalletExtensions().length) {
       void router.push(PAGES.HOME);
@@ -76,15 +59,28 @@ export const WalletWidget = () => {
     }
   };
 
-  // const connectWallet = (walletName: SupportedWalletName) => async () => {
-  //   if (setRuntime) {
-  //     setWalletName(walletName);
-  //     await setRuntime({
-  //       runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
-  //       walletName: walletName,
-  //     });
-  //   }
-  // };
+  const connectWallet = (walletName: SupportedWalletName) => async () => {
+    if (setRuntime) {
+      setWalletName(walletName);
+      await setRuntime({
+        runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
+        walletName: walletName,
+      });
+
+      const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+      if (walletAddress !== undefined) {
+        window.localStorage.setItem(
+          "walletInfo",
+          JSON.stringify({
+            address: walletAddress,
+            walletProvider: walletName,
+          }),
+        );
+
+        void router.reload();
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -145,7 +141,7 @@ export const WalletWidget = () => {
               <div
                 key={wallet.name}
                 className="flex cursor-pointer items-center justify-center gap-1 px-3 py-2 hover:bg-m-purple/10"
-                // onClick={connectWallet(wallet.name as SupportedWalletName)}
+                onClick={connectWallet(wallet.name as SupportedWalletName)}
               >
                 <Image
                   src={wallet.icon}
