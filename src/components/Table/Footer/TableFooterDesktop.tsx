@@ -16,7 +16,7 @@ export const TableFooterDesktop = ({ pagination }: ITableFooter) => {
         }}
       >
         <button
-          className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
+          className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-not-allowed disabled:opacity-50 disabled:ring-0"
           disabled={page === 1}
         >
           <Image
@@ -65,7 +65,7 @@ export const TableFooterDesktop = ({ pagination }: ITableFooter) => {
         }}
       >
         <button
-          className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
+          className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-not-allowed disabled:opacity-50 disabled:ring-0"
           disabled={!pagination.fetchMore}
         >
           <p>Next</p>

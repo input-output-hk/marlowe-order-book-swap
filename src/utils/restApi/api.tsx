@@ -59,7 +59,7 @@ export const getContracts = async (
 ) => {
   try {
     const range = contractsRange(
-      `contractId;limit ${PAGINATION_LIMIT};offset ${
+      `contractId;limit ${PAGINATION_LIMIT + 1};offset ${
         (page - 1) * PAGINATION_LIMIT
       };order desc`,
     );
@@ -76,6 +76,10 @@ export const getContracts = async (
       const parsedHeader = contractHeaderSchema.safeParse(header);
       if (parsedHeader.success) succededContracts.push(header.contractId);
     });
+
+    if (succededContracts.length === PAGINATION_LIMIT + 1) {
+      succededContracts.pop();
+    }
 
     const filteredContracts = allContracts.headers.filter((contract) => {
       return succededContracts.includes(contract.contractId);
@@ -121,7 +125,7 @@ export const getContracts = async (
             const { contractId, initialContract, state } = parsedContract.data;
             return {
               id: unContractId(contractId),
-              createdBy: state.value.accounts[0][0][0].address,
+              createdBy: state.value?.accounts[0][0][0].address,
               offered: getOffered(initialContract.when[0].case),
               desired: getDesired(initialContract.when[0].then),
               expiry: new Date(Number(initialContract.timeout)).toString(),
@@ -133,10 +137,13 @@ export const getContracts = async (
         .filter((x) => x !== null) as ITableData[];
 
       setData(parsedContractsList);
-      if (allContracts.nextRange._tag === "Some") {
-        setPagination((prev) => ({ ...prev, fetchMore: true }));
-      } else {
+      if (
+        allContracts.nextRange._tag === "None" ||
+        allContracts.headers.length < PAGINATION_LIMIT
+      ) {
         setPagination((prev) => ({ ...prev, fetchMore: false }));
+      } else {
+        setPagination((prev) => ({ ...prev, fetchMore: true }));
       }
     }
   } catch (err) {

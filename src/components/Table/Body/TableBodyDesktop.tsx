@@ -20,6 +20,7 @@ export const TableBodyDesktop = ({
       {data.map((row) => {
         const hasExpired =
           new Date(row.expiry).toISOString() < new Date().toISOString();
+        const hasFinished = row.createdBy === undefined;
         return (
           <div key={row.id} className="table-row">
             <div className="table-cell w-1/4">
@@ -70,9 +71,11 @@ export const TableBodyDesktop = ({
                     <Button
                       size={SIZE.SMALL}
                       onClick={handleOpenAccept(row)}
-                      disabled={!account.address || hasExpired}
+                      disabled={!account.address || hasExpired || hasFinished}
                     >
-                      {hasExpired ? "Offer ended" : "Accept Offer"}
+                      {hasExpired || hasFinished
+                        ? "Offer ended"
+                        : "Accept Offer"}
                     </Button>
                   </div>
                 )}
