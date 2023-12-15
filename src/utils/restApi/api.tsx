@@ -1,16 +1,19 @@
 import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
+import { type RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
+import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
+import { type IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
 import { env } from "~/env.mjs";
 import { type IPagination } from "~/pages/listing";
 import {
   contractDetailsSchema,
   contractHeaderSchema,
   contractSchema,
-  swapTag,
+  initialContractSchema,
   type DesiredType,
   type OfferedType,
 } from ".";
@@ -49,6 +52,11 @@ const getDesired = (data: DesiredType) => {
 };
 
 export const PAGINATION_LIMIT = 10;
+export const SWAP_TAG = "swap";
+export const tokenToTag = (token: string) => {
+  return env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-` + token.toLocaleLowerCase();
+};
+
 export const getContracts = async (
   client: RestClient,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
@@ -66,7 +74,7 @@ export const getContracts = async (
 
     const tags =
       searchQuery !== ""
-        ? [env.NEXT_PUBLIC_DAPP_ID + swapTag + searchQuery]
+        ? [tokenToTag(searchQuery)]
         : [env.NEXT_PUBLIC_DAPP_ID];
 
     const allContracts = await client.getContracts({ tags, range });
@@ -121,6 +129,7 @@ export const getContracts = async (
       const parsedContractsList = contractsList
         .map((contract) => {
           const parsedContract = contractDetailsSchema.safeParse(contract);
+
           if (parsedContract.success) {
             const { contractId, initialContract, state } = parsedContract.data;
             return {
@@ -150,4 +159,62 @@ export const getContracts = async (
     console.log(err);
     setError("Something went wrong. Please reload and try later.");
   }
+};
+
+const getInitialContract = (contract: ContractDetails) => {
+  const parsedPayout = initialContractSchema.safeParse(
+    contract.initialContract,
+  );
+  let swapperAmount = BigInt(0);
+  let providerAmount = BigInt(0);
+  let error = "";
+  let token = "";
+  if (parsedPayout.success) {
+    token =
+      parsedPayout.data.when[0].then.when[0].case.of_token.token_name === ""
+        ? ADA
+        : parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
+    providerAmount =
+      token === ADA
+        ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
+        : parsedPayout.data.when[0].case.deposits;
+    swapperAmount =
+      token === ADA
+        ? (lovelaceToAda(
+            parsedPayout.data.when[0].then.when[0].case.deposits,
+          ) as bigint)
+        : parsedPayout.data.when[0].then.when[0].then.pay;
+  } else {
+    error = "Error obtaining amount";
+  }
+  return {
+    ...contract,
+    added: false,
+    adding: false,
+    payoutId: null,
+    error: error,
+    amount: { swapper: swapperAmount, provider: providerAmount },
+    token: token,
+  };
+};
+
+export const getPayouts = async (
+  runtimeLifecycle: RuntimeLifecycle | undefined,
+  client: RestClient | undefined,
+  setPossibleWithdraws: Dispatch<SetStateAction<IMoreContractDetails[]>>,
+  setLoadingContracts: Dispatch<SetStateAction<boolean>>,
+) => {
+  const availableWithdraws = await runtimeLifecycle?.payouts.available();
+  availableWithdraws?.map((payout) => payout.contractId);
+
+  if (availableWithdraws && client) {
+    const contractsListPromise = availableWithdraws.map((contract) => {
+      return client.getContractById(contract.contractId);
+    });
+    const contractsList = await Promise.all(contractsListPromise);
+    setPossibleWithdraws(
+      contractsList.map((contract) => getInitialContract(contract)),
+    );
+  }
+  setLoadingContracts(false);
 };

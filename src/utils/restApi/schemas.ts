@@ -1,6 +1,7 @@
 import { contractId } from "@marlowe.io/runtime-core";
 import { z } from "zod";
 import { env } from "~/env.mjs";
+import { SWAP_TAG } from ".";
 
 export const swapTag = "-swap-";
 
@@ -20,7 +21,7 @@ export const contractHeaderSchema = z.object({
       })
       .required(),
     z.record(
-      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + swapTag),
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-`),
       z.string(),
     ),
   ]),
@@ -83,15 +84,17 @@ export const addressSchema = z.tuple([
   z.bigint(),
 ]);
 
+export const initialContractSchema = z.object({
+  when: z.array(whenSchema).nonempty(),
+  timeout: z.bigint(),
+});
+
 export const contractDetailsSchema = z.object({
   contractId: z
     .string()
     .min(64)
     .transform((x: string) => contractId(x)),
-  initialContract: z.object({
-    when: z.array(whenSchema).nonempty(),
-    timeout: z.bigint(),
-  }),
+  initialContract: initialContractSchema,
   state: z.object({
     value: z
       .object({

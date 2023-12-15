@@ -1,4 +1,4 @@
-import { contractId, type ContractId } from "@marlowe.io/runtime-core";
+import { contractId } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import SwapCircleIcon from "public/swap_circle.svg";
@@ -8,10 +8,11 @@ import { Button } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ADA,
-  ICON_SIZES,
-  PAGES,
   adaToLovelace,
   dateTimeOptions,
+  ICON_SIZES,
+  PAGES,
+  waitTxConfirmation,
 } from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
 import { Loading } from "../Loading/Loading";
@@ -46,22 +47,6 @@ export const Deposit = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finished]);
 
-  const waitTxConfirmation = (contractId: ContractId, txId: string) => {
-    if (!client) return;
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const pollingInterval = setInterval(async () => {
-      const pollingTx = await client.getContractTransactionById(
-        contractId,
-        txId,
-      );
-      if (pollingTx.status === "confirmed") {
-        clearInterval(pollingInterval);
-        setFinished(true);
-        return;
-      }
-    }, 3000);
-  };
-
   async function handleApplyInput() {
     try {
       setLoading(true);
@@ -87,7 +72,7 @@ export const Deposit = () => {
           },
         );
 
-        waitTxConfirmation(contractId(id), txId);
+        waitTxConfirmation(contractId(id), txId, client, setFinished);
       }
     } catch (e) {
       setLoading(false);

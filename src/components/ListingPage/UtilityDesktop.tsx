@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import SearchIcon from "public/search.svg";
-import type { ChangeEvent } from "react";
+import { type ChangeEvent } from "react";
 import { ICON_SIZES, PAGES } from "~/utils";
 import { Button } from "../Button/Button";
 import { Input } from "../Input/Input";
@@ -30,10 +30,10 @@ export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
             <Image
               src={SearchIcon as string}
               height={ICON_SIZES.S}
-              alt="Search"
+              alt="Search by Token Name"
             />
           }
-          placeholder="Search"
+          placeholder="Search by Token Name"
         />
       </div>
 

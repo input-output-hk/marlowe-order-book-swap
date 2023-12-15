@@ -8,7 +8,7 @@ export default function About() {
         <meta name="description" content="About" />
         <link rel="icon" href="/marlowe.svg" />
       </Head>
-      <main className="flex h-fit w-full flex-grow flex-col gap-4 ">
+      <main className="flex h-fit w-full flex-grow flex-col gap-4 text-m-disabled">
         <div className="mx-4 mb-4 md:mx-12 lg:mx-24 lg:p-4 xl:mx-28 xl:p-5">
           <b className="text-2xl">Overview</b>
           <div>

@@ -1,8 +1,11 @@
+import { type ContractId } from "@marlowe.io/runtime-core";
+import { type RestClient } from "@marlowe.io/runtime-rest-client";
 import { type Assets, type Lucid } from "lucid-cardano";
 import {
   mkSwapContract,
   type SwapRequest,
 } from "node_modules/@marlowe.io/language-examples/dist/esm/swaps/swap-token-token";
+import { type Dispatch, type SetStateAction } from "react";
 import { adaToLovelace } from ".";
 import { type IOptions, type ITokenAmount } from "./interfaces";
 import { hexaToText } from "./string";
@@ -108,4 +111,22 @@ export const getSwapContract = ({
     },
   };
   return mkSwapContract(swapRequest);
+};
+
+export const waitTxConfirmation = (
+  contractId: ContractId,
+  txId: string,
+  client: RestClient | undefined,
+  setFinished: Dispatch<SetStateAction<boolean>>,
+) => {
+  if (!client) return;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  const pollingInterval = setInterval(async () => {
+    const pollingTx = await client.getContractTransactionById(contractId, txId);
+    if (pollingTx.status === "confirmed") {
+      clearInterval(pollingInterval);
+      setFinished(true);
+      return;
+    }
+  }, 3000);
 };
