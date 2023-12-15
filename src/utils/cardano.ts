@@ -1,5 +1,5 @@
 import { type ContractId } from "@marlowe.io/runtime-core";
-import { type RestAPI } from "@marlowe.io/runtime-rest-client";
+import { type RestClient } from "@marlowe.io/runtime-rest-client";
 import { type Assets, type Lucid } from "lucid-cardano";
 import {
   mkSwapContract,
@@ -116,7 +116,7 @@ export const getSwapContract = ({
 export const waitTxConfirmation = (
   contractId: ContractId,
   txId: string,
-  client: RestAPI | undefined,
+  client: RestClient | undefined,
   setFinished: Dispatch<SetStateAction<boolean>>,
 ) => {
   if (!client) return;

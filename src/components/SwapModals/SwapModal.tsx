@@ -201,7 +201,7 @@ export const SwapModal = ({
             </div>
             {showError && (
               <div className="font-semibold text-m-red">
-                There was an error on retracting the swap offer
+                There was an error on the transaction
               </div>
             )}
             {!showError &&

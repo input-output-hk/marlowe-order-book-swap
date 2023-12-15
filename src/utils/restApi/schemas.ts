@@ -82,15 +82,17 @@ export const addressSchema = z.tuple([
   z.bigint(),
 ]);
 
+export const initialContractSchema = z.object({
+  when: z.array(whenSchema).nonempty(),
+  timeout: z.bigint(),
+});
+
 export const contractDetailsSchema = z.object({
   contractId: z
     .string()
     .min(64)
     .transform((x: string) => contractId(x)),
-  initialContract: z.object({
-    when: z.array(whenSchema).nonempty(),
-    timeout: z.bigint(),
-  }),
+  initialContract: initialContractSchema,
   state: z.object({
     value: z.object({
       accounts: z
