@@ -1,7 +1,7 @@
 import { unContractId } from "@marlowe.io/runtime-core";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
-import { ContractHeader } from "@marlowe.io/runtime-rest-client/contract/header";
+import type { ContractHeader } from "@marlowe.io/runtime-rest-client/contract/header";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";

@@ -63,7 +63,7 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
                 }
                 className="py-4"
               />
-              {isEnoughBalance(balance, desired) ? (
+              {isEnoughBalance() ? (
                 <div className="flex gap-2 pb-11 text-sm text-m-green">
                   <Image
                     src={CheckIcon as string}
@@ -132,7 +132,7 @@ export const SwapModal = ({ open, setOpen, offered, desired }: ModalProps) => {
                 <Link href={PAGES.COMPLETE}>
                   <Button
                     size={SIZE.SMALL}
-                    disabled={!isEnoughBalance(balance, desired)}
+                    disabled={!isEnoughBalance()}
                     filled
                   >
                     Confirm Swap

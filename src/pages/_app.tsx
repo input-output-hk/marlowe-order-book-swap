@@ -36,12 +36,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [client, setClient] = useState<RestClient | undefined>(undefined);
 
   const setRuntime = async (options: BrowserRuntimeLifecycleOptions) => {
-    try {
-      const runtime = await mkRuntimeLifecycle(options);
-      setRuntimeLifecycle(runtime);
-    } catch (error) {
-      console.error(error);
-    }
+    const runtime = await mkRuntimeLifecycle(options);
+    setRuntimeLifecycle(runtime);
+    return runtime;
   };
 
   const setRestClient = () => {

@@ -1,7 +1,7 @@
 import { getInstalledWalletExtensions } from "@marlowe.io/wallet";
-import {
+import type {
+  BroswerWalletExtension,
   SupportedWalletName,
-  type BroswerWalletExtension,
 } from "@marlowe.io/wallet/browser";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -25,7 +25,7 @@ export const WalletWidget = () => {
   const [address, setAddress] = useState<string | undefined>(undefined);
 
   const router = useRouter();
-  const { setRuntime, runtimeLifecycle } = useContext(TSSDKContext);
+  const { setRuntime } = useContext(TSSDKContext);
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
@@ -58,23 +58,21 @@ export const WalletWidget = () => {
 
   const connectWallet = (walletName: SupportedWalletName) => async () => {
     if (setRuntime) {
-      await setRuntime({
+      const runtime = await setRuntime({
         runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
         walletName: walletName,
       });
 
-      const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
-      if (walletAddress !== undefined) {
-        window.localStorage.setItem(
-          "walletInfo",
-          JSON.stringify({
-            address: walletAddress,
-            walletProvider: walletName,
-          }),
-        );
+      const walletAddress = await runtime.wallet.getChangeAddress();
+      window.localStorage.setItem(
+        "walletInfo",
+        JSON.stringify({
+          address: walletAddress,
+          walletProvider: walletName,
+        }),
+      );
 
-        void router.reload();
-      }
+      void router.reload();
     }
   };
 
