@@ -190,6 +190,6 @@ export const getPayouts = async (
     setPossibleWithdraws(
       contractsList.map((contract) => getInitialContract(contract)),
     );
+    setLoadingContracts(false);
   }
-  setLoadingContracts(false);
 };

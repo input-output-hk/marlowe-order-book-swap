@@ -1,5 +1,5 @@
 import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
-import { COLORS } from "~/utils";
+import { COLORS, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { type IMoreContractDetails } from "./WithdrawPage";
 
@@ -22,15 +22,23 @@ export const ContractsList = ({
   selectAll,
   loadingWithdrawal,
 }: ContractListProps) => {
+  const noContractAvailable = possibleWithdraws.reduce((acc, curr) => {
+    return acc && curr.error !== "";
+  }, true);
+
+  const isAdding = possibleWithdraws.reduce((acc, curr) => {
+    return acc || curr.adding;
+  }, false);
+
   return (
     <div className="flex flex-col gap-3 ">
-      <div className="flex justify-between rounded-md bg-m-light-purple p-5 text-center text-2xl font-semibold">
+      <div className="flex flex-col items-center justify-between gap-3 rounded-md bg-m-light-purple p-5 text-center text-2xl font-semibold sm:flex-row">
         Pending Withdrawals
         <div className="text-base">
           <Button
             size={SIZE.XSMALL}
             onClick={selectAll}
-            disabled={loadingWithdrawal}
+            disabled={loadingWithdrawal || noContractAvailable || isAdding}
           >
             Select All
           </Button>
@@ -40,11 +48,16 @@ export const ContractsList = ({
         {possibleWithdraws.map((payout, index) => {
           return (
             <div className="w-inherit flex flex-col gap-3" key={index}>
-              <div className="flex items-center justify-between gap-4 p-3">
+              <div className="flex flex-col items-center justify-between gap-4 p-3 sm:flex-row">
                 <div className="flex w-4/5 flex-col">
-                  <div className="flex flex-col break-all 2xl:flex-row">
+                  <div className="flex flex-col break-all md:flex-row lg:flex-col 2xl:flex-row">
                     <b>Contract Id:&nbsp;</b>
-                    {unContractId(payout.contractId)}
+                    <div className="hidden lg:block">
+                      {unContractId(payout.contractId)}
+                    </div>
+                    <div className="block lg:hidden">
+                      {truncateString(unContractId(payout.contractId), 20)}
+                    </div>
                   </div>
                   <div className="flex flex-col lg:flex-row">
                     <b>Withdraw amount for provider:&nbsp;</b>
@@ -67,7 +80,7 @@ export const ContractsList = ({
                         id: payout.contractId,
                         toAdd: !payout.added,
                       })}
-                      disabled={loadingWithdrawal}
+                      disabled
                     >
                       <div className="animate-pulse">Adding</div>
                     </Button>
@@ -86,7 +99,7 @@ export const ContractsList = ({
                   )}
                 </div>
               </div>
-              {index < possibleWithdraws.length - 1 && <hr />}
+              <hr />
             </div>
           );
         })}
