@@ -13,13 +13,13 @@ import { useCardano } from "use-cardano";
 import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
-import type { IOptions } from "~/utils";
 import {
   COLORS,
   ICON_SIZES,
   PAGES,
   getSwapContract,
   tokenToTag,
+  type IOptions,
 } from "~/utils";
 import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";

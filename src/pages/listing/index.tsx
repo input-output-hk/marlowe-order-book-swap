@@ -1,10 +1,20 @@
 import Head from "next/head";
-import { useContext, useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
 import { ErrorMessage } from "~/components/ErrorMessage/ErrorMessage";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import useDebounce from "~/hooks/useDebounce";
 import { getContracts, type IFilters, type ITableData } from "~/utils";
+
+export interface IPagination {
+  page?: number;
+  fetchMore: boolean;
+}
+
+interface IQueryParams {
+  page?: string;
+}
 
 export default function Listing() {
   const [data, setData] = useState<ITableData[] | null>(null);
@@ -15,12 +25,25 @@ export default function Listing() {
     searchQuery: "",
     owner: "",
   });
+  const [pagination, setPagination] = useState<IPagination>({
+    page: undefined,
+    fetchMore: false,
+  });
   const { client } = useContext(TSSDKContext);
+  const { query }: { query: IQueryParams } = useRouter();
 
   const asyncGetContracts = async () => {
     if (client) {
       setLoading(true);
-      await getContracts(client, setData, setError, filters.searchQuery);
+
+      await getContracts(
+        client,
+        setData,
+        setPagination,
+        setError,
+        filters.searchQuery,
+        query.page ? Number(query.page) : 1,
+      );
       setLoading(false);
     }
   };
@@ -32,6 +55,17 @@ export default function Listing() {
     dependencies: [client, filters.searchQuery],
     delay: 1000,
   });
+
+  useEffect(() => {
+    setPagination((prev) => {
+      return {
+        ...prev,
+        page: query.page ? Number(query.page) : 1,
+      };
+    });
+    void asyncGetContracts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.page]);
 
   return (
     <>
@@ -46,6 +80,8 @@ export default function Listing() {
       ) : (
         <ListingPage
           listingData={data}
+          pagination={pagination}
+          setPagination={setPagination}
           filters={filters}
           setFilters={setFilters}
           loading={loading}

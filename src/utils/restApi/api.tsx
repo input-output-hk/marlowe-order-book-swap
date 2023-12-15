@@ -1,14 +1,14 @@
-import { unContractId } from "@marlowe.io/runtime-core";
+import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
 import { type RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
-import { type ContractHeader } from "@marlowe.io/runtime-rest-client/contract/header";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
 import { type IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
 import { env } from "~/env.mjs";
+import { type IPagination } from "~/pages/listing";
 import {
   contractDetailsSchema,
   contractHeaderSchema,
@@ -51,6 +51,7 @@ const getDesired = (data: DesiredType) => {
   };
 };
 
+export const PAGINATION_LIMIT = 10;
 export const SWAP_TAG = "swap";
 export const tokenToTag = (token: string) => {
   return env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-` + token.toLocaleLowerCase();
@@ -59,11 +60,17 @@ export const tokenToTag = (token: string) => {
 export const getContracts = async (
   client: RestClient,
   setData: Dispatch<SetStateAction<ITableData[] | null>>,
+  setPagination: Dispatch<SetStateAction<IPagination>>,
   setError: Dispatch<SetStateAction<string | null>>,
   searchQuery: string,
+  page: number,
 ) => {
   try {
-    const range = contractsRange(`contractId;limit 10;offset 0;order desc`);
+    const range = contractsRange(
+      `contractId;limit ${PAGINATION_LIMIT + 1};offset ${
+        (page - 1) * PAGINATION_LIMIT
+      };order desc`,
+    );
 
     const tags =
       searchQuery !== ""
@@ -72,41 +79,51 @@ export const getContracts = async (
 
     const allContracts = await client.getContracts({ tags, range });
 
-    const succededContracts: ContractHeader[] = [];
-    allContracts.headers.forEach((header) => {
+    const succededContracts: ContractId[] = [];
+    allContracts.headers.map((header) => {
       const parsedHeader = contractHeaderSchema.safeParse(header);
-      if (parsedHeader.success) succededContracts.push(header);
+      if (parsedHeader.success) succededContracts.push(header.contractId);
     });
 
-    const parsedContracts = contractSchema.safeParse(succededContracts);
+    if (succededContracts.length === PAGINATION_LIMIT + 1) {
+      succededContracts.pop();
+    }
+
+    const filteredContracts = allContracts.headers.filter((contract) => {
+      return succededContracts.includes(contract.contractId);
+    });
+
+    const parsedContracts = contractSchema.safeParse(filteredContracts);
 
     if (parsedContracts.success) {
-      const validContracts = parsedContracts.data.filter((contract) => {
-        if (
-          env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
-          contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
-        ) {
-          const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
-          const startDate =
-            typeof tag === "object" && tag !== null ? tag.startDate : undefined;
-          const expiryDate =
-            typeof tag === "object" && tag !== null
-              ? tag.expiryDate
-              : undefined;
-
-          return (
-            startDate &&
-            expiryDate &&
-            new Date(startDate) < new Date() &&
-            new Date(expiryDate) > new Date() &&
-            contract.status === "confirmed"
-          );
-        }
-      });
+      const validContracts = parsedContracts.data;
+      // It is disabled for the moment, until pagination is solved
+      // .filter((contract) => {
+      //   if (
+      //     env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
+      //     contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+      //   ) {
+      //     const tag = contract.tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
+      //     const startDate =
+      //       typeof tag === "object" && tag !== null ? tag.startDate : undefined;
+      //     const expiryDate =
+      //       typeof tag === "object" && tag !== null
+      //         ? tag.expiryDate
+      //         : undefined;
+      //     return (
+      //       startDate &&
+      //       expiryDate &&
+      //       new Date(startDate) < new Date() &&
+      //       new Date(expiryDate) > new Date() &&
+      //       contract.status === "confirmed"
+      //     );
+      //   }
+      // });
 
       const contractsListPromise = validContracts.map((contract) => {
         return client.getContractById(contract.contractId);
       });
+
       const contractsList = await Promise.all(contractsListPromise);
 
       const parsedContractsList = contractsList
@@ -114,13 +131,27 @@ export const getContracts = async (
           const parsedContract = contractDetailsSchema.safeParse(contract);
 
           if (parsedContract.success) {
-            const { contractId, initialContract, state } = parsedContract.data;
+            const { tags, contractId, initialContract, state } =
+              parsedContract.data;
+            let startDate = new Date();
+            if (
+              env.NEXT_PUBLIC_DAPP_ID in tags &&
+              tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+            ) {
+              const tag = tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
+              startDate =
+                typeof tag === "object" && tag?.startDate
+                  ? new Date(tag.startDate)
+                  : new Date();
+            }
+
             return {
               id: unContractId(contractId),
-              createdBy: state.value.accounts[0][0][0].address,
+              createdBy: state.value?.accounts[0][0][0].address,
               offered: getOffered(initialContract.when[0].case),
               desired: getDesired(initialContract.when[0].then),
               expiry: new Date(Number(initialContract.timeout)).toString(),
+              start: startDate.toString(),
             };
           } else {
             return null;
@@ -129,6 +160,14 @@ export const getContracts = async (
         .filter((x) => x !== null) as ITableData[];
 
       setData(parsedContractsList);
+      if (
+        allContracts.nextRange._tag === "None" ||
+        allContracts.headers.length < PAGINATION_LIMIT
+      ) {
+        setPagination((prev) => ({ ...prev, fetchMore: false }));
+      } else {
+        setPagination((prev) => ({ ...prev, fetchMore: true }));
+      }
     }
   } catch (err) {
     console.log(err);
