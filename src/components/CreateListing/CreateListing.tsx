@@ -69,7 +69,7 @@ export const CreateListing = () => {
   useEffect(() => {
     void getAddress();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [runtimeLifecycle]);
 
   useEffect(() => {
     if (createLoading.contractConfirmed !== "") {

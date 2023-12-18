@@ -38,6 +38,12 @@ export const TableBodyMobile = ({
     <>
       <div className="flex flex-col gap-2 rounded-lg bg-m-light-purple p-4 md:hidden">
         {data.map((row) => {
+          const hasExpired =
+            new Date(row.expiry).toISOString() < new Date().toISOString();
+          const hasFinished = row.createdBy === undefined;
+          const hasStarted =
+            new Date(row.start).toISOString() < new Date().toISOString();
+
           return (
             <div
               key={row.id}
@@ -73,20 +79,30 @@ export const TableBodyMobile = ({
                 <div className="w-1/3">
                   {row.createdBy === myAddress ? (
                     <Button
-                      size={SIZE.XSMALL}
+                      size={SIZE.SMALL}
                       color={COLORS.RED}
                       onClick={handleOpenRetract(row)}
-                      disabled={!myAddress}
+                      disabled={!myAddress || hasExpired || !hasStarted}
                     >
-                      Retract
+                      {hasExpired
+                        ? "Offer ended"
+                        : !hasStarted
+                        ? "Not started"
+                        : "Retract offer"}
                     </Button>
                   ) : (
                     <Button
-                      size={SIZE.XSMALL}
+                      size={SIZE.SMALL}
                       onClick={handleOpenAccept(row)}
-                      disabled={!myAddress}
+                      disabled={
+                        !myAddress || hasExpired || hasFinished || !hasStarted
+                      }
                     >
-                      Accept
+                      {hasExpired || hasFinished
+                        ? "Offer ended"
+                        : !hasStarted
+                        ? "Not started"
+                        : "Accept Offer"}
                     </Button>
                   )}
                 </div>
