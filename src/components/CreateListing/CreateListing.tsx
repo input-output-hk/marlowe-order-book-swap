@@ -88,13 +88,6 @@ export const CreateListing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createLoading.contractConfirmed]);
 
-  // const getAddress = async () => {
-  //   const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
-  //   if (walletAddress) {
-  //     setMyAddress(unAddressBech32(walletAddress));
-  //   }
-  // };
-
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

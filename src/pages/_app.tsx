@@ -49,9 +49,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (walletInfo) {
-      const { walletProvider: walletProvider } = JSON.parse(
-        walletInfo,
-      ) as IWalletInStorage;
+      const { walletProvider } = JSON.parse(walletInfo) as IWalletInStorage;
 
       void setRuntime({
         runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
