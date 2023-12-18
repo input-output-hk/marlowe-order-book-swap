@@ -2,20 +2,10 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import LogoIcon from "public/marlowe.svg";
-import { useCardano } from "use-cardano";
 import { Button } from "~/components/Button/Button";
 import { ICON_SIZES, PAGES } from "~/utils";
 
 export default function FourZeroFour() {
-  const { account } = useCardano();
-
-  const getLink = () => {
-    if (account.address) {
-      return PAGES.LISTING;
-    }
-    return PAGES.HOME;
-  };
-
   return (
     <>
       <Head>
@@ -50,7 +40,7 @@ export default function FourZeroFour() {
           </div>
 
           <div className="w-1/2 md:w-full lg:w-4/5">
-            <Link href={getLink()}>
+            <Link href={{ pathname: PAGES.LISTING, query: { page: 1 } }}>
               <Button>Go to Home</Button>
             </Link>
           </div>

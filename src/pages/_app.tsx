@@ -4,15 +4,9 @@ import {
   type BrowserRuntimeLifecycleOptions,
 } from "@marlowe.io/runtime-lifecycle/browser";
 import { mkRestClient, type RestClient } from "@marlowe.io/runtime-rest-client";
-import { type SupportedWalletName } from "@marlowe.io/wallet/browser";
 import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
-import {
-  CardanoProvider,
-  type UseCardanoNodeOptions,
-  type UseCardanoOptions,
-} from "use-cardano";
 import { Footer } from "~/components/Footer/Footer";
 import { Header } from "~/components/Header/Header";
 import { WalletWidget } from "~/components/WalletWidget/WalletWidget";
@@ -42,12 +36,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [client, setClient] = useState<RestClient | undefined>(undefined);
 
   const setRuntime = async (options: BrowserRuntimeLifecycleOptions) => {
-    try {
-      const runtime = await mkRuntimeLifecycle(options);
-      setRuntimeLifecycle(runtime);
-    } catch (error) {
-      console.error(error);
-    }
+    const runtime = await mkRuntimeLifecycle(options);
+    setRuntimeLifecycle(runtime);
+    return runtime;
   };
 
   const setRestClient = () => {
@@ -56,31 +47,18 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   };
 
   useEffect(() => {
-    // TODO: runtime can't be setted with nami
     const walletInfo = window.localStorage.getItem("walletInfo");
     if (walletInfo) {
       const { walletProvider } = JSON.parse(walletInfo) as IWalletInStorage;
 
       void setRuntime({
         runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
-        walletName: walletProvider as SupportedWalletName,
+        walletName: walletProvider,
       });
     }
 
     setRestClient();
   }, []);
-
-  const useCardanoNodeOptions: UseCardanoNodeOptions = {
-    provider: "blockfrost",
-    projectId: env.NEXT_PUBLIC_BLOCKFROST_PROJECT_ID,
-  };
-
-  const options: UseCardanoOptions = {
-    allowedNetworks: ["Mainnet", "Testnet"],
-    testnetNetwork: "Preprod",
-    node: useCardanoNodeOptions,
-    autoReconnect: false,
-  };
 
   return (
     <>
@@ -98,20 +76,15 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           client,
         }}
       >
-        <CardanoProvider options={options}>
-          <Header
-            links={headerLinks}
-            title={HEADER_TITLE}
-            homeLink={PAGES.LISTING}
-          >
-            <WalletWidget />
-          </Header>
-          <Component {...pageProps} />
-          <Footer
-            footerLinks={footerLinks}
-            socialMediaLinks={socialMediaLinks}
-          />
-        </CardanoProvider>
+        <Header
+          links={headerLinks}
+          title={HEADER_TITLE}
+          homeLink={PAGES.LISTING}
+        >
+          <WalletWidget />
+        </Header>
+        <Component {...pageProps} />
+        <Footer footerLinks={footerLinks} socialMediaLinks={socialMediaLinks} />
       </TSSDKContext.Provider>
     </>
   );

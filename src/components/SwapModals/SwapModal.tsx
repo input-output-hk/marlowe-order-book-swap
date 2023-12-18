@@ -1,12 +1,10 @@
-import { contractId } from "@marlowe.io/runtime-core";
-import { type Assets } from "lucid-cardano";
+import { contractId, unAddressBech32 } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import CrossIcon from "public/cancel.svg";
 import CheckIcon from "public/check.svg";
 import DownArrowIcon from "public/down_arrow.svg";
 import { useContext, useEffect, useState } from "react";
-import { useCardano } from "use-cardano";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ADA,
@@ -14,7 +12,6 @@ import {
   ICON_SIZES,
   PAGES,
   adaToLovelace,
-  getBalance,
   isEnoughBalance,
   waitTxConfirmation,
 } from "~/utils";
@@ -33,26 +30,29 @@ export const SwapModal = ({
   desired,
   id,
 }: ModalProps) => {
+  const [balance, setBalance] = useState<Record<string, bigint> | null>(null);
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
-  const [balance, setBalance] = useState<Assets | null>(null);
   const [finished, setFinished] = useState(false);
   const router = useRouter();
-  const { walletApi, lucid, account } = useCardano();
   const { runtimeLifecycle, client } = useContext(TSSDKContext);
-  const { address } = account;
 
   useEffect(() => {
-    const getBalanceFromWallet = async () => {
-      if (walletApi && lucid) {
-        const walletFromLucid = lucid.selectWallet(walletApi);
-        const balanceFromWallet = await getBalance(walletFromLucid);
-        setBalance(balanceFromWallet);
-      }
-    };
+    void getBalanceAndAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
 
-    void getBalanceFromWallet();
-  }, [lucid, walletApi]);
+  const getBalanceAndAddress = async () => {
+    if (runtimeLifecycle) {
+      const address = await runtimeLifecycle?.wallet.getChangeAddress();
+      setMyAddress(unAddressBech32(address));
+
+      const walletBalance = await runtimeLifecycle?.wallet.getTokens();
+      // TODO: get tokens and check if balance is enough
+      setBalance({ lovelace: BigInt(0) });
+    }
+  };
 
   const closeModal = () => {
     setOpen(false);
@@ -123,7 +123,7 @@ export const SwapModal = ({
                 }
                 className="py-4"
               />
-              {isEnoughBalance(balance, desired) ? (
+              {isEnoughBalance() ? (
                 <div className="flex gap-2 pb-11 text-sm text-m-green">
                   <Image
                     src={CheckIcon as string}
@@ -174,7 +174,7 @@ export const SwapModal = ({
               <div className="flex w-full flex-col gap-2 text-sm font-normal ">
                 Your wallet address
                 <div className="break-words rounded-lg border border-m-light-blue bg-m-light-blue px-5 py-3 font-semibold text-black">
-                  {address}
+                  {myAddress}
                 </div>
               </div>
             </div>
@@ -189,12 +189,7 @@ export const SwapModal = ({
                 </Button>
               </div>
               <div className="w-full">
-                <Button
-                  size={SIZE.SMALL}
-                  disabled={!isEnoughBalance(balance, desired)}
-                  filled
-                  onClick={acceptSwap}
-                >
+                <Button size={SIZE.SMALL} filled onClick={acceptSwap}>
                   Confirm Swap
                 </Button>
               </div>

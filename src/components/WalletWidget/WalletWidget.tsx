@@ -1,8 +1,14 @@
+import { getInstalledWalletExtensions } from "@marlowe.io/wallet";
+import type {
+  BroswerWalletExtension,
+  SupportedWalletName,
+} from "@marlowe.io/wallet/browser";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import ConnectIcon from "public/connect.svg";
-import { useEffect, useState } from "react";
-import { useCardano, type WalletProvider } from "use-cardano";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
+import { env } from "~/env.mjs";
 import { COLORS, ICON_SIZES, PAGES, type IWalletInStorage } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { Loading } from "../Loading/Loading";
@@ -13,77 +19,61 @@ import { DisconnectButton } from "./DisconnectButton";
 export const WalletWidget = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [walletSelected, setWalletSelected] = useState<
+    BroswerWalletExtension | undefined
+  >(undefined);
+  const [address, setAddress] = useState<string | undefined>(undefined);
 
-  const {
-    account,
-    accountLoaded,
-    walletProvider,
-    availableProviders,
-    setWalletProvider,
-    setAccountLoaded,
-    setAccount,
-  } = useCardano();
   const router = useRouter();
+  const { setRuntime } = useContext(TSSDKContext);
 
   useEffect(() => {
     const walletInfo = window.localStorage.getItem("walletInfo");
 
     if (walletInfo) {
-      const walletInfoParsed = JSON.parse(walletInfo) as IWalletInStorage;
+      setLoading(true);
+      const { walletProvider, address } = JSON.parse(
+        walletInfo,
+      ) as IWalletInStorage;
 
-      setAccount({
-        address: walletInfoParsed.address,
-        rewardAddress: walletInfoParsed.rewardAddress,
-      });
-      setWalletProvider(walletInfoParsed.walletProvider);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setAccount, setWalletProvider]);
-
-  useEffect(() => {
-    setAccountLoaded(account.address !== undefined);
-    setLoading(!accountLoaded && walletProvider !== undefined);
-
-    if (account.address) {
-      window.localStorage.setItem(
-        "walletInfo",
-        JSON.stringify({
-          address: account.address,
-          rewardAddress: account.rewardAddress,
-          walletProvider: walletProvider,
-        }),
+      setAddress(address);
+      const currentWallet = getInstalledWalletExtensions().filter(
+        (wallet) => wallet.name === walletProvider,
       );
-      setOpen(false);
+
+      if (currentWallet.length) {
+        setWalletSelected(currentWallet[0]);
+      }
     }
-  }, [
-    account.address,
-    account.rewardAddress,
-    walletProvider,
-    accountLoaded,
-    setAccountLoaded,
-  ]);
+    setLoading(false);
+  }, []);
 
   const toggleOpenConnect = () => {
-    if (!availableProviders.length) {
+    if (!getInstalledWalletExtensions().length) {
       void router.push(PAGES.HOME);
     } else {
       setOpen(!open);
     }
   };
 
-  const getWalletIcon = () => {
-    const prov = availableProviders.find((prov) => {
-      if (prov.key === walletProvider) {
-        return prov;
-      }
-    });
+  const connectWallet = (walletName: SupportedWalletName) => async () => {
+    if (setRuntime) {
+      const runtime = await setRuntime({
+        runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
+        walletName: walletName,
+      });
 
-    return prov ? prov.icon : "";
-  };
+      const walletAddress = await runtime.wallet.getChangeAddress();
+      window.localStorage.setItem(
+        "walletInfo",
+        JSON.stringify({
+          address: walletAddress,
+          walletProvider: walletName,
+        }),
+      );
 
-  const connectWallet = (provider: string) => () => {
-    setWalletProvider(provider.toLowerCase() as WalletProvider);
+      void router.reload();
+    }
   };
 
   if (loading) {
@@ -100,15 +90,15 @@ export const WalletWidget = () => {
 
   return (
     <div className="relative flex h-8 items-center">
-      {account.address ? (
+      {address ? (
         <div className="flex cursor-pointer items-center gap-1">
           <div
             onClick={toggleOpenConnect}
             className="flex items-center justify-center gap-2 rounded-md border border-m-light-purple bg-m-light-purple px-6 py-1"
           >
-            {getWalletIcon() && (
+            {walletSelected?.icon && (
               <Image
-                src={getWalletIcon()}
+                src={walletSelected.icon}
                 alt={"wallet"}
                 width={ICON_SIZES.M}
                 height={ICON_SIZES.M}
@@ -119,7 +109,7 @@ export const WalletWidget = () => {
           </div>
 
           <div className="flex w-16 items-center justify-center gap-2">
-            <CopyButton text={account.address} />
+            <CopyButton text={address} />
             <DisconnectButton />
           </div>
         </div>
@@ -139,21 +129,23 @@ export const WalletWidget = () => {
 
       {open && (
         <div className="absolute top-9 z-10 w-32 border border-m-purple/10 bg-m-light-purple md:w-44">
-          {availableProviders.sort().map((prov) => (
-            <div
-              key={prov.key}
-              className="flex cursor-pointer items-center justify-center gap-1 px-3 py-2 hover:bg-m-purple/10"
-              onClick={connectWallet(prov.key)}
-            >
-              <Image
-                src={prov.icon}
-                alt={prov.name}
-                width={ICON_SIZES.M}
-                height={ICON_SIZES.M}
-              />
-              <p className="text-sm capitalize md:text-base">{prov.name}</p>
-            </div>
-          ))}
+          {getInstalledWalletExtensions()
+            .sort()
+            .map((wallet) => (
+              <div
+                key={wallet.name}
+                className="flex cursor-pointer items-center justify-center gap-1 px-3 py-2 hover:bg-m-purple/10"
+                onClick={connectWallet(wallet.name as SupportedWalletName)}
+              >
+                <Image
+                  src={wallet.icon}
+                  alt={wallet.name}
+                  width={ICON_SIZES.M}
+                  height={ICON_SIZES.M}
+                />
+                <p className="text-sm capitalize md:text-base">{wallet.name}</p>
+              </div>
+            ))}
         </div>
       )}
     </div>

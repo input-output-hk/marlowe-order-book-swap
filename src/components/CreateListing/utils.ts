@@ -14,7 +14,6 @@ export interface ICreateErrors {
 }
 
 export interface ICreateLoading {
-  loading: boolean;
   contract: boolean;
   confirmation: boolean;
   contractConfirmed: string;

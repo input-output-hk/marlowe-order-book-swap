@@ -1,9 +1,11 @@
 import Image from "next/image";
 import SwapIcon from "public/swap.svg";
-import { useCardano } from "use-cardano";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   COLORS,
   ICON_SIZES,
+  getAddress,
   getExpiration,
   humanReadable,
   truncateString,
@@ -19,12 +21,24 @@ export const TableBodyMobile = ({
   pagination,
   setPagination,
 }: TableProps) => {
-  const { account } = useCardano();
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
+  const { runtimeLifecycle } = useContext(TSSDKContext);
+
+  useEffect(() => {
+    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       <div className="flex flex-col gap-2 rounded-lg bg-m-light-purple p-4 md:hidden">
         {data.map((row) => {
+          const hasExpired =
+            new Date(row.expiry).toISOString() < new Date().toISOString();
+          const hasFinished = row.createdBy === undefined;
+          const hasStarted =
+            new Date(row.start).toISOString() < new Date().toISOString();
+
           return (
             <div
               key={row.id}
@@ -58,22 +72,32 @@ export const TableBodyMobile = ({
               <div className="flex items-center justify-between px-4 pt-2">
                 <div>Expires in {getExpiration(row.expiry)}</div>
                 <div className="w-1/3">
-                  {row.createdBy === account.address ? (
+                  {row.createdBy === myAddress ? (
                     <Button
-                      size={SIZE.XSMALL}
+                      size={SIZE.SMALL}
                       color={COLORS.RED}
                       onClick={handleOpenRetract(row)}
-                      disabled={!account.address}
+                      disabled={!myAddress || hasExpired || !hasStarted}
                     >
-                      Retract
+                      {hasExpired
+                        ? "Offer ended"
+                        : !hasStarted
+                        ? "Not started"
+                        : "Retract offer"}
                     </Button>
                   ) : (
                     <Button
-                      size={SIZE.XSMALL}
+                      size={SIZE.SMALL}
                       onClick={handleOpenAccept(row)}
-                      disabled={!account.address}
+                      disabled={
+                        !myAddress || hasExpired || hasFinished || !hasStarted
+                      }
                     >
-                      Accept
+                      {hasExpired || hasFinished
+                        ? "Offer ended"
+                        : !hasStarted
+                        ? "Not started"
+                        : "Accept Offer"}
                     </Button>
                   )}
                 </div>

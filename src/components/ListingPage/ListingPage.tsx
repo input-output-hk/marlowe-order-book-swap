@@ -1,7 +1,6 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import { useCardano } from "use-cardano";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { Table } from "~/components/Table/Table";
-import { type IPagination } from "~/pages/listing";
+import type { IPagination } from "~/pages/listing";
 import {
   ICON_SIZES,
   SortOrder,
@@ -21,7 +20,6 @@ interface ListingPageProps {
   filters: IFilters;
   setFilters: Dispatch<SetStateAction<IFilters>>;
   loading: boolean;
-  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ListingPage = ({
@@ -31,27 +29,11 @@ export const ListingPage = ({
   filters,
   setFilters,
   loading,
-  setLoading,
 }: ListingPageProps) => {
-  const { account } = useCardano();
-
   const [sort, setSort] = useState<ISort>({
     sortBy: "expiryDate",
     sortOrder: SortOrder.ASC,
   });
-
-  useEffect(() => {
-    const walletInfo = window.localStorage.getItem("walletInfo");
-    if (!account.address || walletInfo) {
-      setLoading(false);
-    }
-    if (account.address) {
-      setFilters((prev) => {
-        return { ...prev, owner: account.address! };
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account.address]);
 
   // Sorting is disabled for now, we need to find a way to search contracts by expiryDate
   // const sortedData = sortTableData(listingData, sort);

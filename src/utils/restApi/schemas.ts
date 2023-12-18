@@ -3,8 +3,6 @@ import { z } from "zod";
 import { env } from "~/env.mjs";
 import { SWAP_TAG } from ".";
 
-export const swapTag = "-swap-";
-
 export const contractHeaderSchema = z.object({
   contractId: z
     .string()

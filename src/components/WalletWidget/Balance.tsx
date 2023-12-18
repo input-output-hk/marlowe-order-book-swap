@@ -1,21 +1,22 @@
-import { useEffect, useState } from "react";
-import { useCardano } from "use-cardano";
-import { adaToLovelace, getBalance, lovelaceToAda } from "~/utils";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
+import { adaToLovelace, lovelaceToAda } from "~/utils";
 
 export const Balance = () => {
   const [balance, setBalance] = useState(BigInt(0));
-  const { lucid } = useCardano();
+  const { runtimeLifecycle } = useContext(TSSDKContext);
 
   useEffect(() => {
-    const walletBalance = async () => {
-      if (lucid) {
-        const balance = await getBalance(lucid);
-        setBalance(balance.lovelace!);
-      }
-    };
+    void getBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
 
-    void walletBalance();
-  }, [lucid]);
+  const getBalance = async () => {
+    if (runtimeLifecycle) {
+      const walletBalance = await runtimeLifecycle?.wallet.getLovelaces();
+      setBalance(walletBalance);
+    }
+  };
 
   const balanceInt = Math.floor(Number(lovelaceToAda(balance)));
 

@@ -1,4 +1,4 @@
-import { type WalletProvider } from "use-cardano";
+import type { SupportedWalletName } from "@marlowe.io/wallet/browser";
 
 export interface IToken {
   token: string;
@@ -43,8 +43,7 @@ export interface IOptions {
 
 export interface IWalletInStorage {
   address: string;
-  rewardAddress: string;
-  walletProvider: WalletProvider;
+  walletProvider: SupportedWalletName;
 }
 
 export interface ILink {

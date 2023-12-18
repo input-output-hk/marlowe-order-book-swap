@@ -1,7 +1,9 @@
-import { useCardano } from "use-cardano";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   COLORS,
   dateTimeOptions,
+  getAddress,
   humanReadable,
   truncateString,
 } from "~/utils";
@@ -13,7 +15,13 @@ export const TableBodyDesktop = ({
   handleOpenAccept,
   handleOpenRetract,
 }: TableProps) => {
-  const { account } = useCardano();
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
+  const { runtimeLifecycle } = useContext(TSSDKContext);
+
+  useEffect(() => {
+    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
 
   return (
     <div className="hidden md:table-row-group">
@@ -58,13 +66,13 @@ export const TableBodyDesktop = ({
             </div>
             <div className="table-cell w-1/4">
               <div className="flex items-center justify-center">
-                {row.createdBy === account.address ? (
+                {row.createdBy === myAddress ? (
                   <div>
                     <Button
                       size={SIZE.SMALL}
                       color={COLORS.RED}
                       onClick={handleOpenRetract(row)}
-                      disabled={!account.address || hasExpired || !hasStarted}
+                      disabled={!myAddress || hasExpired || !hasStarted}
                     >
                       {hasExpired
                         ? "Offer ended"
@@ -79,10 +87,7 @@ export const TableBodyDesktop = ({
                       size={SIZE.SMALL}
                       onClick={handleOpenAccept(row)}
                       disabled={
-                        !account.address ||
-                        hasExpired ||
-                        hasFinished ||
-                        !hasStarted
+                        !myAddress || hasExpired || hasFinished || !hasStarted
                       }
                     >
                       {hasExpired || hasFinished

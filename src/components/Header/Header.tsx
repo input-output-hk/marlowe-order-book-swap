@@ -34,7 +34,7 @@ export const Header = ({
       className={`flex justify-between px-4 py-5 md:px-12 lg:px-24 xl:px-32 ${customClassName}`}
     >
       <div className="relative flex w-full flex-wrap justify-between gap-4 lg:flex-col">
-        <Link href={homeLink} className="flex items-center gap-2">
+        <Link href={homeLink} className="flex w-fit items-center gap-2">
           <Image
             src={MarloweIcon as string}
             alt="Marlowe"

@@ -1,3 +1,4 @@
+import { unAddressBech32 } from "@marlowe.io/runtime-core";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
@@ -29,13 +30,13 @@ export default function Listing() {
     page: undefined,
     fetchMore: false,
   });
-  const { client } = useContext(TSSDKContext);
+
+  const { client, runtimeLifecycle } = useContext(TSSDKContext);
   const { query }: { query: IQueryParams } = useRouter();
 
   const asyncGetContracts = async () => {
     if (client) {
       setLoading(true);
-
       await getContracts(
         client,
         setData,
@@ -48,13 +49,19 @@ export default function Listing() {
     }
   };
 
-  useDebounce({
-    effect: () => {
-      void asyncGetContracts();
-    },
-    dependencies: [client, filters.searchQuery],
-    delay: 1000,
-  });
+  const getAddress = async () => {
+    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+    if (walletAddress)
+      setFilters((prev) => ({
+        ...prev,
+        owner: unAddressBech32(walletAddress),
+      }));
+  };
+
+  useEffect(() => {
+    void getAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
 
   useEffect(() => {
     setPagination((prev) => {
@@ -66,6 +73,14 @@ export default function Listing() {
     void asyncGetContracts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.page]);
+
+  useDebounce({
+    effect: () => {
+      void asyncGetContracts();
+    },
+    dependencies: [client, filters.searchQuery],
+    delay: 1000,
+  });
 
   return (
     <>
@@ -80,12 +95,11 @@ export default function Listing() {
       ) : (
         <ListingPage
           listingData={data}
-          pagination={pagination}
-          setPagination={setPagination}
           filters={filters}
           setFilters={setFilters}
           loading={loading}
-          setLoading={setLoading}
+          pagination={pagination}
+          setPagination={setPagination}
         />
       )}
     </>

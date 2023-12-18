@@ -5,7 +5,9 @@ import { createContext } from "react";
 
 export interface TSSDKContextType {
   runtimeLifecycle?: RuntimeLifecycle;
-  setRuntime?: (options: BrowserRuntimeLifecycleOptions) => Promise<void>;
+  setRuntime?: (
+    options: BrowserRuntimeLifecycleOptions,
+  ) => Promise<RuntimeLifecycle>;
   client?: RestClient;
 }
 

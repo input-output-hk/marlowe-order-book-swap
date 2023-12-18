@@ -1,9 +1,15 @@
+import { getInstalledWalletExtensions } from "@marlowe.io/wallet";
+import {
+  type BroswerWalletExtension,
+  type SupportedWalletName,
+} from "@marlowe.io/wallet/browser";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import CardanoIcon from "public/cardano.svg";
 import InfoIcon from "public/info.svg";
-import { useEffect, useState } from "react";
-import { useCardano, type WalletProvider } from "use-cardano";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
+import { env } from "~/env.mjs";
 import { COLORS, ICON_SIZES, PAGES } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { Loading } from "../Loading/Loading";
@@ -12,46 +18,51 @@ import { WalletsSupported } from "./WalletSupported";
 export const WalletSelect = () => {
   const [openInfo, setOpenInfo] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [walletName, setWalletName] = useState<SupportedWalletName | undefined>(
+    undefined,
+  );
+  const [availableProviders, setAvailableProviders] = useState<
+    BroswerWalletExtension[]
+  >([]);
+  const { setRuntime, runtimeLifecycle } = useContext(TSSDKContext);
   const router = useRouter();
-  const {
-    account,
-    availableProviders,
-    accountLoaded,
-    walletProvider,
-    setWalletProvider,
-    setAccountLoaded,
-  } = useCardano();
 
   useEffect(() => {
-    const walletInfo = window.localStorage.getItem("walletInfo");
-    if (!walletInfo || walletInfo === "") {
-      setLoading(false);
-    }
+    const walletsInstalled = getInstalledWalletExtensions();
+    setAvailableProviders(walletsInstalled);
+    setLoading(false);
+  }, []);
 
-    setAccountLoaded(account.address !== undefined || !!walletInfo);
-    if (accountLoaded) {
+  useEffect(() => {
+    void getWalletAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
+
+  const getWalletAddress = async () => {
+    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+    if (walletAddress !== undefined) {
       window.localStorage.setItem(
         "walletInfo",
         JSON.stringify({
-          address: account.address,
-          rewardAddress: account.rewardAddress,
-          walletProvider: walletProvider,
+          address: walletAddress,
+          walletProvider: walletName,
         }),
       );
-      void router.push(PAGES.LISTING);
-    }
-  }, [
-    account.address,
-    account.rewardAddress,
-    accountLoaded,
-    router,
-    setAccountLoaded,
-    walletProvider,
-  ]);
 
-  const handleSelectWallet = (provider: string) => () => {
-    setWalletProvider(provider.toLowerCase() as WalletProvider);
+      void router.push({ pathname: PAGES.LISTING, query: { page: 1 } });
+    }
+  };
+
+  const handleSelectWallet = (walletName: SupportedWalletName) => async () => {
+    if (setRuntime) {
+      setWalletName(walletName);
+      await setRuntime({
+        runtimeURL: env.NEXT_PUBLIC_RUNTIME_URL,
+        walletName,
+      });
+
+      setLoading(true);
+    }
   };
 
   const toggleInfo = () => setOpenInfo((prev) => !prev);
@@ -102,26 +113,28 @@ export const WalletSelect = () => {
       </p>
 
       <div className="flex flex-col gap-2 py-8">
-        {availableProviders.sort().map((prov) => {
+        {availableProviders.sort().map((wallet) => {
           return (
             <div
-              key={prov.key}
+              key={wallet.name}
               className="flex items-center justify-between gap-2 rounded-lg border p-4"
             >
               <div className="flex w-1/4 items-center gap-2">
                 <Image
-                  src={prov.icon}
-                  alt={prov.name}
+                  src={wallet.icon}
+                  alt={wallet.name}
                   height={ICON_SIZES.L}
                   width={ICON_SIZES.L}
                 />
-                <p className="text-base font-bold capitalize">{prov.name}</p>
+                <p className="text-base font-bold capitalize">{wallet.name}</p>
               </div>
               <div className="w-1/2 sm:w-2/5 md:w-2/5 xl:w-1/3 2xl:min-w-min 2xl:max-w-min">
                 <Button
                   size={SIZE.SMALL}
                   color={COLORS.BLUE}
-                  onClick={handleSelectWallet(prov.key)}
+                  onClick={handleSelectWallet(
+                    wallet.name as SupportedWalletName,
+                  )}
                 >
                   <div className="flex items-center justify-center gap-2">
                     <Image
