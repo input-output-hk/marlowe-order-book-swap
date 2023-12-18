@@ -21,7 +21,7 @@ export const WithdrawFooter = ({
             </b>
           </div>
         ) : (
-          <b className="text-center text-m-blue">
+          <b className="flex items-start text-left text-sm text-m-blue">
             Once started a withdrawal, please don&apos;t close this page until
             the transaction is confirmed.
           </b>

@@ -24,6 +24,7 @@ export const WithdrawPage = () => {
   const [loadingContracts, setLoadingContracts] = useState(true);
   const [loadingWithdrawal, setLoadingWithdrawal] = useState(false);
   const [errorWithdrawal, setErrorWithdrawal] = useState(false);
+  const [walletAvailable, setWalletAvailable] = useState(true);
 
   const [possibleWithdraws, setPossibleWithdraws] = useState<
     IMoreContractDetails[]
@@ -32,13 +33,13 @@ export const WithdrawPage = () => {
   const router = useRouter();
 
   useEffect(() => {
+    setWalletAvailable(!!window.localStorage.getItem("walletInfo"));
     void getPayouts(
       runtimeLifecycle,
       client,
       setPossibleWithdraws,
       setLoadingContracts,
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client, runtimeLifecycle]);
 
   const withdraw = async () => {
@@ -154,17 +155,17 @@ export const WithdrawPage = () => {
       }
     };
 
-  const isAdding = possibleWithdraws.some((contract) => contract.adding);
-  const contractsToWitdhraw =
-    possibleWithdraws.filter((contract) => contract.added).length === 0;
-
-  if (loadingContracts) {
+  if (loadingContracts && walletAvailable) {
     return (
       <div className="flex flex-grow items-center justify-center">
         <Loading />
       </div>
     );
   }
+
+  const isAdding = possibleWithdraws.some((contract) => contract.adding);
+  const contractsToWitdhraw =
+    possibleWithdraws.filter((contract) => contract.added).length === 0;
 
   return (
     <div className="flex h-fit flex-grow flex-col items-center justify-between gap-3 text-m-disabled">
@@ -175,7 +176,9 @@ export const WithdrawPage = () => {
             alt=""
             height={ICON_SIZES.XXL}
           />
-          No pending withdrawals
+          {walletAvailable
+            ? "No pending withdrawals"
+            : "Please connect your wallet to see your pending withdrawals"}
         </div>
       ) : (
         <div className="w-2/3 rounded-md border p-7 py-10 shadow-container">
