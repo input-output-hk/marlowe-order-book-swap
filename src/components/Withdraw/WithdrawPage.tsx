@@ -21,10 +21,9 @@ export interface IMoreContractDetails extends ContractDetails {
 }
 
 export const WithdrawPage = () => {
-  const [loadingContracts, setLoadingContracts] = useState(true);
   const [loadingWithdrawal, setLoadingWithdrawal] = useState(false);
   const [errorWithdrawal, setErrorWithdrawal] = useState(false);
-  const [walletAvailable, setWalletAvailable] = useState(true);
+  const [addressExists, setAddressExists] = useState(false);
 
   const [possibleWithdraws, setPossibleWithdraws] = useState<
     IMoreContractDetails[]
@@ -33,14 +32,13 @@ export const WithdrawPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    setWalletAvailable(!!window.localStorage.getItem("walletInfo"));
     void getPayouts(
       runtimeLifecycle,
       client,
       setPossibleWithdraws,
-      setLoadingContracts,
+      setAddressExists,
     );
-  }, [client, runtimeLifecycle]);
+  }, [client, runtimeLifecycle, possibleWithdraws]);
 
   const withdraw = async () => {
     setLoadingWithdrawal(true);
@@ -155,7 +153,7 @@ export const WithdrawPage = () => {
       }
     };
 
-  if (loadingContracts && walletAvailable) {
+  if (!addressExists) {
     return (
       <div className="flex flex-grow items-center justify-center">
         <Loading />
@@ -163,20 +161,20 @@ export const WithdrawPage = () => {
     );
   }
 
-  const isAdding = possibleWithdraws.some((contract) => contract.adding);
+  const isAdding = possibleWithdraws?.some((contract) => contract.adding);
   const contractsToWitdhraw =
-    possibleWithdraws.filter((contract) => contract.added).length === 0;
+    possibleWithdraws?.filter((contract) => contract.added).length === 0;
 
   return (
     <div className="flex h-fit flex-grow flex-col items-center justify-between gap-3 text-m-disabled">
-      {possibleWithdraws.length === 0 ? (
+      {possibleWithdraws?.length === 0 || !addressExists ? (
         <div className="m-auto flex flex-col items-center gap-3 rounded-md p-5 text-center text-3xl font-semibold">
           <Image
             src={NoWithdrawalIcon as string}
             alt=""
             height={ICON_SIZES.XXL}
           />
-          {walletAvailable
+          {addressExists
             ? "No pending withdrawals"
             : "Please connect your wallet to see your pending withdrawals"}
         </div>
