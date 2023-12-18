@@ -6,10 +6,11 @@ import YoutubeLogo from "public/youtube.svg";
 export const PAGES = {
   ABOUT: "/about",
   COMPLETE: "/listing/complete",
+  CREATE: "/create",
   DEPOSIT: "/create/deposit",
   HOME: "/",
   LISTING: "/listing",
-  CREATE: "/create",
+  WITHDRAW: "/withdraw",
 } as const;
 export type PagesValue = (typeof PAGES)[keyof typeof PAGES];
 
@@ -17,6 +18,7 @@ export const headerLinks = [
   { displayText: "Listing", href: PAGES.LISTING },
   { displayText: "Create", href: PAGES.CREATE },
   { displayText: "About", href: PAGES.ABOUT },
+  { displayText: "Withdraw", href: PAGES.WITHDRAW },
 ];
 
 export const HEADER_TITLE = "Order Book Swap Prototype";

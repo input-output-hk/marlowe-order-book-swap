@@ -13,8 +13,14 @@ import { useContext, useEffect, useState, type FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
-import type { IOptions } from "~/utils";
-import { COLORS, ICON_SIZES, PAGES, SWAP_TAG, getSwapContract } from "~/utils";
+import {
+  COLORS,
+  ICON_SIZES,
+  PAGES,
+  getSwapContract,
+  tokenToTag,
+  type IOptions,
+} from "~/utils";
 import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
@@ -155,12 +161,8 @@ export const CreateListing = () => {
             startDate: startDate !== "" ? startDate : new Date().toISOString(),
             expiryDate,
           },
-          [env.NEXT_PUBLIC_DAPP_ID +
-          SWAP_TAG +
-          selectedOffered.option.toLowerCase()]: "",
-          [env.NEXT_PUBLIC_DAPP_ID +
-          SWAP_TAG +
-          selectedDesired.option.toLowerCase()]: "",
+          [tokenToTag(selectedOffered.option)]: "",
+          [tokenToTag(selectedDesired.option)]: "",
         };
 
         const contract = await runtimeLifecycle.contracts.createContract({

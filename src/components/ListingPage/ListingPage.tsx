@@ -1,5 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { Table } from "~/components/Table/Table";
+import type { IPagination } from "~/pages/listing";
 import {
   ICON_SIZES,
   SortOrder,
@@ -14,6 +15,8 @@ import { UtilityMobile } from "./UtilityMobile";
 
 interface ListingPageProps {
   listingData: Array<ITableData> | null;
+  pagination: IPagination;
+  setPagination: Dispatch<SetStateAction<IPagination>>;
   filters: IFilters;
   setFilters: Dispatch<SetStateAction<IFilters>>;
   loading: boolean;
@@ -21,6 +24,8 @@ interface ListingPageProps {
 
 export const ListingPage = ({
   listingData,
+  pagination,
+  setPagination,
   filters,
   setFilters,
   loading,
@@ -50,7 +55,13 @@ export const ListingPage = ({
             <Loading sizeDesktop={ICON_SIZES.XXXL} sizeMobile={ICON_SIZES.XL} />
           </div>
         ) : (
-          <Table data={data} sort={sort} setSort={setSort} />
+          <Table
+            data={data}
+            sort={sort}
+            setSort={setSort}
+            pagination={pagination}
+            setPagination={setPagination}
+          />
         )}
       </div>
     </main>

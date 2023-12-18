@@ -16,6 +16,7 @@ export interface ITableData {
   offered: ITokenAmount;
   desired: ITokenAmount;
   expiry: string;
+  start: string;
 }
 
 export interface IFilters {

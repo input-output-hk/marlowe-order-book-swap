@@ -5,21 +5,29 @@ import { useState } from "react";
 import { ICON_SIZES, type ITableData, type ITokenAmount } from "~/utils";
 import { RetractModal } from "../SwapModals/RetractModal";
 import { SwapModal } from "../SwapModals/SwapModal";
+import { TableFooterDesktop } from "./Footer/TableFooterDesktop";
 import { TableHead } from "./TableHead";
 import type { TablePropsWithSort } from "./table.interface";
 
 const TableBodyMobile = dynamic(
-  () => import("./TableBodyMobile").then((mod) => mod.TableBodyMobile),
+  () => import("./Body/TableBodyMobile").then((mod) => mod.TableBodyMobile),
   { ssr: false },
 );
 const TableBodyDesktop = dynamic(
-  () => import("./TableBodyDesktop").then((mod) => mod.TableBodyDesktop),
+  () => import("./Body/TableBodyDesktop").then((mod) => mod.TableBodyDesktop),
   { ssr: false },
 );
 
-export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
+export const Table = ({
+  data,
+  sort,
+  setSort,
+  pagination,
+  setPagination,
+}: TablePropsWithSort) => {
   const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
+  const [contractId, setContractId] = useState<string>("");
   const [desired, setDesired] = useState<ITokenAmount>({
     token: "",
     icon: <></>,
@@ -37,11 +45,13 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
     setOffered(row.offered);
     setDesired(row.desired);
     setOpenRetract(true);
+    setContractId(row.id);
   };
   const handleOpenAccept = (row: ITableData) => () => {
     setOffered(row.offered);
     setDesired(row.desired);
     setOpenAccept(true);
+    setContractId(row.id);
   };
 
   if (!data.length) {
@@ -69,22 +79,27 @@ export const Table = ({ data, sort, setSort }: TablePropsWithSort) => {
           handleOpenAccept={handleOpenAccept}
         />
       </div>
+      <TableFooterDesktop pagination={pagination} />
       <TableBodyMobile
         data={data}
         handleOpenRetract={handleOpenRetract}
         handleOpenAccept={handleOpenAccept}
+        pagination={pagination}
+        setPagination={setPagination}
       />
       <RetractModal
         open={openRetract}
         setOpen={setOpenRetract}
         offered={offered}
         desired={desired}
+        id={contractId}
       />
       <SwapModal
         open={openAccept}
         setOpen={setOpenAccept}
         offered={offered}
         desired={desired}
+        id={contractId}
       />
     </>
   );

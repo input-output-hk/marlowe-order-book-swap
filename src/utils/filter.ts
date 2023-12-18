@@ -6,7 +6,6 @@ const filterMyListing = (data: ITableData[], owner: string) => {
 
 export const filterTableData = (data: ITableData[], filters: IFilters) => {
   const { filterOwnListings, owner } = filters;
-  console.log(owner);
 
   let filteredData = data;
 

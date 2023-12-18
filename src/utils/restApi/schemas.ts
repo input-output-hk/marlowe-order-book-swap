@@ -1,8 +1,7 @@
 import { contractId } from "@marlowe.io/runtime-core";
 import { z } from "zod";
 import { env } from "~/env.mjs";
-
-export const SWAP_TAG = "-swap-";
+import { SWAP_TAG } from ".";
 
 export const contractHeaderSchema = z.object({
   contractId: z
@@ -20,7 +19,7 @@ export const contractHeaderSchema = z.object({
       })
       .required(),
     z.record(
-      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + SWAP_TAG),
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-`),
       z.string(),
     ),
   ]),
@@ -83,36 +82,55 @@ export const addressSchema = z.tuple([
   z.bigint(),
 ]);
 
+export const initialContractSchema = z.object({
+  when: z.array(whenSchema).nonempty(),
+  timeout: z.bigint(),
+});
+
 export const contractDetailsSchema = z.object({
+  tags: z.union([
+    z
+      .object({
+        [env.NEXT_PUBLIC_DAPP_ID]: z.object({
+          startDate: z.string().optional(),
+          expiryDate: z.string().optional(),
+          createdBy: z.string().optional(),
+        }),
+      })
+      .required(),
+    z.record(
+      z.string().startsWith(env.NEXT_PUBLIC_DAPP_ID + `-${SWAP_TAG}-`),
+      z.string(),
+    ),
+  ]),
   contractId: z
     .string()
     .min(64)
     .transform((x: string) => contractId(x)),
-  initialContract: z.object({
-    when: z.array(whenSchema).nonempty(),
-    timeout: z.bigint(),
-  }),
+  initialContract: initialContractSchema,
   state: z.object({
-    value: z.object({
-      accounts: z
-        .array(addressSchema)
-        .nonempty()
-        .or(
-          z.tuple([
-            addressSchema,
+    value: z
+      .object({
+        accounts: z
+          .array(addressSchema)
+          .nonempty()
+          .or(
             z.tuple([
+              addressSchema,
               z.tuple([
-                z.object({ role_token: z.string() }),
-                z.object({
-                  token_name: z.string(),
-                  currency_symbol: z.string(),
-                }),
+                z.tuple([
+                  z.object({ role_token: z.string() }),
+                  z.object({
+                    token_name: z.string(),
+                    currency_symbol: z.string(),
+                  }),
+                ]),
+                z.bigint(),
               ]),
-              z.bigint(),
             ]),
-          ]),
-        ),
-    }),
+          ),
+      })
+      .optional(),
   }),
 });
 
