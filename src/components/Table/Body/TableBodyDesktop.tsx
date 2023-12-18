@@ -1,9 +1,9 @@
-import { unAddressBech32 } from "@marlowe.io/runtime-core";
 import { useContext, useEffect, useState } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   COLORS,
   dateTimeOptions,
+  getAddress,
   humanReadable,
   truncateString,
 } from "~/utils";
@@ -19,16 +19,9 @@ export const TableBodyDesktop = ({
   const { runtimeLifecycle } = useContext(TSSDKContext);
 
   useEffect(() => {
-    void getAddress();
+    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runtimeLifecycle]);
-
-  const getAddress = async () => {
-    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
-    if (walletAddress) {
-      setMyAddress(unAddressBech32(walletAddress));
-    }
-  };
 
   return (
     <div className="hidden md:table-row-group">

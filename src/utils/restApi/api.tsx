@@ -1,4 +1,8 @@
-import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
+import {
+  unAddressBech32,
+  unContractId,
+  type ContractId,
+} from "@marlowe.io/runtime-core";
 import { type RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
@@ -18,6 +22,14 @@ import {
   type OfferedType,
 } from ".";
 import { ADA, ICON_SIZES, lovelaceToAda, type ITableData } from "..";
+
+export const getAddress = async (
+  runtime: RuntimeLifecycle,
+  setAddress: Dispatch<SetStateAction<string | undefined>>,
+) => {
+  const walletAddress = await runtime.wallet.getChangeAddress();
+  if (walletAddress) setAddress(unAddressBech32(walletAddress));
+};
 
 const getOffered = (data: OfferedType) => {
   const token =

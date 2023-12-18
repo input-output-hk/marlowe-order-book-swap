@@ -1,6 +1,5 @@
 import {
   addressBech32,
-  unAddressBech32,
   unContractId,
   type ContractId,
 } from "@marlowe.io/runtime-core";
@@ -17,6 +16,7 @@ import {
   COLORS,
   ICON_SIZES,
   PAGES,
+  getAddress,
   getSwapContract,
   tokenToTag,
   type IOptions,
@@ -67,7 +67,7 @@ export const CreateListing = () => {
   const { runtimeLifecycle, setRuntime, client } = useContext(TSSDKContext);
 
   useEffect(() => {
-    void getAddress();
+    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runtimeLifecycle]);
 
@@ -88,12 +88,12 @@ export const CreateListing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createLoading.contractConfirmed]);
 
-  const getAddress = async () => {
-    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
-    if (walletAddress) {
-      setMyAddress(unAddressBech32(walletAddress));
-    }
-  };
+  // const getAddress = async () => {
+  //   const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
+  //   if (walletAddress) {
+  //     setMyAddress(unAddressBech32(walletAddress));
+  //   }
+  // };
 
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;

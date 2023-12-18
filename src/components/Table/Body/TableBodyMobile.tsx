@@ -1,4 +1,3 @@
-import { unAddressBech32 } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import SwapIcon from "public/swap.svg";
 import { useContext, useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   COLORS,
   ICON_SIZES,
+  getAddress,
   getExpiration,
   humanReadable,
   truncateString,
@@ -25,14 +25,9 @@ export const TableBodyMobile = ({
   const { runtimeLifecycle } = useContext(TSSDKContext);
 
   useEffect(() => {
-    void getAddress();
+    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const getAddress = async () => {
-    const walletAddress = await runtimeLifecycle?.wallet.getChangeAddress();
-    if (walletAddress) setMyAddress(unAddressBech32(walletAddress));
-  };
 
   return (
     <>
