@@ -9,7 +9,6 @@ export const TOKENS = {
   TDRIP: "tDRIP",
   DTU: "DTU",
   TWRT: "tWRT",
-  SODITA: "SODITA",
 } as const;
 
 export type TOKENS = (typeof TOKENS)[keyof typeof TOKENS];
@@ -49,11 +48,6 @@ export const tokensData: Record<TOKENS, Asset> = {
   [TOKENS.TWRT]: {
     policyId: "659ab0b5658687c2e74cd10dba8244015b713bf503b90557769d77a7",
     assetName: "tWRT",
-    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
-  },
-  [TOKENS.SODITA]: {
-    policyId: "77211b30313564b8b11db9c9de94addc5fa305f5d47fd278140eef63",
-    assetName: "SODITA",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
   },
 };
