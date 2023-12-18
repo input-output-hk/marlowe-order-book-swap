@@ -1,4 +1,8 @@
-import { contractId, unAddressBech32 } from "@marlowe.io/runtime-core";
+import {
+  contractId,
+  unAddressBech32,
+  type Token,
+} from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import CrossIcon from "public/cancel.svg";
@@ -12,10 +16,12 @@ import {
   ICON_SIZES,
   PAGES,
   adaToLovelace,
+  checkIfIsToken,
   isEnoughBalance,
   waitTxConfirmation,
+  type AssetAndAmount,
 } from "~/utils";
-import { tokensData, type TOKENS } from "~/utils/tokens";
+import { TOKENS, tokensData } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -30,7 +36,7 @@ export const SwapModal = ({
   desired,
   id,
 }: ModalProps) => {
-  const [balance, setBalance] = useState<Record<string, bigint> | null>(null);
+  const [balance, setBalance] = useState<Token[] | null>(null);
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
@@ -49,14 +55,11 @@ export const SwapModal = ({
       setMyAddress(unAddressBech32(address));
 
       const walletBalance = await runtimeLifecycle?.wallet.getTokens();
-      // TODO: get tokens and check if balance is enough
-      setBalance({ lovelace: BigInt(0) });
+      setBalance(walletBalance);
     }
   };
 
-  const closeModal = () => {
-    setOpen(false);
-  };
+  const closeModal = () => setOpen(false);
 
   useEffect(() => {
     if (finished) {
@@ -80,8 +83,7 @@ export const SwapModal = ({
                     ? (adaToLovelace(BigInt(desired.amount)) as bigint)
                     : BigInt(desired.amount),
                 of_token: {
-                  currency_symbol:
-                    tokensData[desired.token as TOKENS].currency_symbol,
+                  currency_symbol: tokensData[desired.token as TOKENS].policyId,
                   token_name: desired.token === ADA ? "" : desired.token,
                 },
                 into_account: { role_token: "swapper" },
@@ -99,6 +101,17 @@ export const SwapModal = ({
       console.log(e);
     }
   };
+
+  const getAssetDesired = (): AssetAndAmount | undefined => {
+    if (checkIfIsToken(desired.token))
+      return {
+        ...tokensData[
+          String(desired.token) === "" ? TOKENS.ADA : desired.token
+        ],
+        amount: desired.amount,
+      };
+  };
+  const assetDesired = getAssetDesired();
 
   return (
     <Modal open={open} setOpen={setOpen} title="Swap Offer">
@@ -123,7 +136,7 @@ export const SwapModal = ({
                 }
                 className="py-4"
               />
-              {isEnoughBalance() ? (
+              {assetDesired && isEnoughBalance(balance, assetDesired) ? (
                 <div className="flex gap-2 pb-11 text-sm text-m-green">
                   <Image
                     src={CheckIcon as string}
@@ -189,7 +202,14 @@ export const SwapModal = ({
                 </Button>
               </div>
               <div className="w-full">
-                <Button size={SIZE.SMALL} filled onClick={acceptSwap}>
+                <Button
+                  size={SIZE.SMALL}
+                  filled
+                  onClick={acceptSwap}
+                  disabled={
+                    assetDesired && !isEnoughBalance(balance, assetDesired)
+                  }
+                >
                   Confirm Swap
                 </Button>
               </div>

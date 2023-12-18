@@ -9,42 +9,51 @@ export const TOKENS = {
   TDRIP: "tDRIP",
   DTU: "DTU",
   TWRT: "tWRT",
+  SODITA: "SODITA",
 } as const;
 
 export type TOKENS = (typeof TOKENS)[keyof typeof TOKENS];
 
-export const tokensData: Record<
-  TOKENS,
-  { currency_symbol: string; token_name: string; icon: JSX.Element }
-> = {
+export interface Asset {
+  policyId: string;
+  assetName: string;
+  icon: JSX.Element;
+}
+
+export const tokensData: Record<TOKENS, Asset> = {
   [TOKENS.ADA]: {
-    currency_symbol: "",
-    token_name: "",
+    policyId: "",
+    assetName: "",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
   },
   [TOKENS.TGENS]: {
-    currency_symbol: "c6e65ba7878b2f8ea0ad39287d3e2fd256dc5c4160fc19bdf4c4d87e",
-    token_name: "tGENS",
+    policyId: "c6e65ba7878b2f8ea0ad39287d3e2fd256dc5c4160fc19bdf4c4d87e",
+    assetName: "tGENS",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
   },
   [TOKENS.AGIX]: {
-    currency_symbol: "6f1a1f0c7ccf632cc9ff4b79687ed13ffe5b624cce288b364ebdce50",
-    token_name: "AGIX",
+    policyId: "6f1a1f0c7ccf632cc9ff4b79687ed13ffe5b624cce288b364ebdce50",
+    assetName: "AGIX",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
   },
   [TOKENS.TDRIP]: {
-    currency_symbol: "698a6ea0ca99f315034072af31eaac6ec11fe8558d3f48e9775aab9d",
-    token_name: "tDRIP",
+    policyId: "698a6ea0ca99f315034072af31eaac6ec11fe8558d3f48e9775aab9d",
+    assetName: "tDRIP",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
   },
   [TOKENS.DTU]: {
-    currency_symbol: "9772ff715b691c0444f333ba1db93b055c0864bec48fff92d1f2a7fe",
-    token_name: "DTU",
+    policyId: "9772ff715b691c0444f333ba1db93b055c0864bec48fff92d1f2a7fe",
+    assetName: "DTU",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
   },
   [TOKENS.TWRT]: {
-    currency_symbol: "659ab0b5658687c2e74cd10dba8244015b713bf503b90557769d77a7",
-    token_name: "tWRT",
+    policyId: "659ab0b5658687c2e74cd10dba8244015b713bf503b90557769d77a7",
+    assetName: "tWRT",
+    icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
+  },
+  [TOKENS.SODITA]: {
+    policyId: "77211b30313564b8b11db9c9de94addc5fa305f5d47fd278140eef63",
+    assetName: "SODITA",
     icon: <Image src={CardanoIcon as string} height={ICON_SIZES.M} alt="C" />,
   },
 };

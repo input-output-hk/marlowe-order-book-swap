@@ -31,13 +31,6 @@ export const DropDown = ({
     }
   };
 
-  const truncatedOptions = options.map((option) => {
-    return {
-      option: truncateString(option.option, 5),
-      icon: option.icon,
-    };
-  });
-
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     !disabled && setOpenDropDown(!openDropDown);
@@ -87,7 +80,7 @@ export const DropDown = ({
       {openDropDown && (
         <div className="absolute z-10 w-full rounded-b-lg bg-m-light-gray px-1 text-xs ">
           <ul className="overflow-y-auto text-m-dark-gray">
-            {truncatedOptions.map((option, index) => {
+            {options.map((option, index) => {
               return (
                 <div key={index}>
                   <li
@@ -95,9 +88,9 @@ export const DropDown = ({
                     onClick={selectOption(option)}
                   >
                     {option.icon}
-                    {option.option}
+                    {truncateString(option.option, 5)}
                   </li>
-                  {index < truncatedOptions.length - 1 && <hr />}
+                  {index < options.length - 1 && <hr />}
                 </div>
               );
             })}

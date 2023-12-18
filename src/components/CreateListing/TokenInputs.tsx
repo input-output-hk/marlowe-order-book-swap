@@ -23,7 +23,7 @@ export const TokenInputs = ({
 }: TokenInputsProps) => {
   const dropDownOptions = Object.entries(tokensData).map(([_, token]) => {
     return {
-      option: token.token_name === "" ? ADA : token.token_name,
+      option: token.assetName === "" ? ADA : token.assetName,
       icon: token.icon,
     };
   });

@@ -1,4 +1,8 @@
-import { type ContractId } from "@marlowe.io/runtime-core";
+import {
+  unPolicyId,
+  type ContractId,
+  type Token,
+} from "@marlowe.io/runtime-core";
 import { type RestClient } from "@marlowe.io/runtime-rest-client";
 import {
   mkSwapContract,
@@ -7,32 +11,34 @@ import {
 import { type Dispatch, type SetStateAction } from "react";
 import { adaToLovelace } from ".";
 import { type IOptions } from "./interfaces";
-import { tokensData, type TOKENS } from "./tokens";
+import { tokensData, type Asset, type TOKENS } from "./tokens";
 
 export const POLICY_LENGTH = 56;
 export const ADA = "ADA";
 export const LOVELACE = "Lovelace";
 
-export const isEnoughBalance = () =>
-  // balance: Assets,
-  // tokenToCompare: ITokenAmount,
-  {
-    return false;
-    // const myTokens = Object.keys(balance);
-    // const tokenLowercase = tokenToCompare.token.toLowerCase();
+export const checkIfIsToken = (token: string): token is TOKENS => {
+  if (token === ADA) return true;
+  return Object.values(tokensData).some((t) => t.assetName === token);
+};
 
-    // if (
-    //   tokenLowercase === ADA.toLowerCase() &&
-    //   Number(balance.lovelace) / 1e6 >= tokenToCompare.amount
-    // ) {
-    //   return true;
-    // }
+export type AssetAndAmount = Asset & { amount: number };
+export const isEnoughBalance = (
+  balance: Token[],
+  assetToCompare: AssetAndAmount,
+) => {
+  const asset = balance.find(
+    (a) => unPolicyId(a.assetId.policyId) === assetToCompare.policyId,
+  );
 
-    // return (
-    //   myTokens.includes(tokenLowercase) &&
-    //   Number(balance[tokenLowercase]!) >= tokenToCompare.amount
-    // );
-  };
+  if (!asset) return false;
+
+  if (asset.assetId.assetName === "") {
+    return asset.quantity >= adaToLovelace(assetToCompare.amount);
+  } else {
+    return asset.quantity >= assetToCompare.amount;
+  }
+};
 
 interface ISwapRequest {
   valueOffered: string;
@@ -67,8 +73,8 @@ export const getSwapContract = ({
         amount: parsedValueOffered,
         token: {
           currency_symbol:
-            tokensData[selectedOffered.option as TOKENS].currency_symbol,
-          token_name: tokensData[selectedOffered.option as TOKENS].token_name,
+            tokensData[selectedOffered.option as TOKENS].policyId,
+          token_name: tokensData[selectedOffered.option as TOKENS].assetName,
         },
       },
     },
@@ -79,8 +85,8 @@ export const getSwapContract = ({
         amount: parsedValueDesired,
         token: {
           currency_symbol:
-            tokensData[selectedDesired.option as TOKENS].currency_symbol,
-          token_name: tokensData[selectedDesired.option as TOKENS].token_name,
+            tokensData[selectedDesired.option as TOKENS].policyId,
+          token_name: tokensData[selectedDesired.option as TOKENS].assetName,
         },
       },
     },

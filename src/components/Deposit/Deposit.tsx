@@ -8,10 +8,10 @@ import { Button } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ADA,
-  adaToLovelace,
-  dateTimeOptions,
   ICON_SIZES,
   PAGES,
+  adaToLovelace,
+  dateTimeOptions,
   waitTxConfirmation,
 } from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
@@ -62,8 +62,7 @@ export const Deposit = () => {
                     ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
                     : BigInt(offeredAmount),
                 of_token: {
-                  currency_symbol:
-                    tokensData[offeredToken as TOKENS].currency_symbol,
+                  currency_symbol: tokensData[offeredToken as TOKENS].policyId,
                   token_name: offeredToken === ADA ? "" : offeredToken,
                 },
                 into_account: { role_token: "provider" },
