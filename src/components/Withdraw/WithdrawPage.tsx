@@ -17,7 +17,7 @@ export interface IMoreContractDetails extends ContractDetails {
   payoutId: PayoutId[] | null;
   error: string;
   amount: { provider: bigint; swapper: bigint };
-  token: string;
+  token: { provider: string; swapper: string };
 }
 
 export const WithdrawPage = () => {
