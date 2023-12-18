@@ -8,10 +8,10 @@ import { Button } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ADA,
-  adaToLovelace,
-  dateTimeOptions,
   ICON_SIZES,
   PAGES,
+  adaToLovelace,
+  dateTimeOptions,
   waitTxConfirmation,
 } from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
@@ -48,6 +48,7 @@ export const Deposit = () => {
   }, [finished]);
 
   async function handleApplyInput() {
+    setShowError(false);
     try {
       setLoading(true);
       if (client && runtimeLifecycle) {

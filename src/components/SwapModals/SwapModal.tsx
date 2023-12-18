@@ -66,6 +66,7 @@ export const SwapModal = ({
   }, [finished]);
 
   const acceptSwap = async () => {
+    setShowError(false);
     try {
       setLoading(true);
       if (client && runtimeLifecycle) {

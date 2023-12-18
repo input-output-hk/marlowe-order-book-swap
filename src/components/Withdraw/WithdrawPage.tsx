@@ -41,6 +41,7 @@ export const WithdrawPage = () => {
   }, [client, runtimeLifecycle, possibleWithdraws]);
 
   const withdraw = async () => {
+    setErrorWithdrawal(false);
     setLoadingWithdrawal(true);
     const isContractToWithdraw = possibleWithdraws.some(
       (contract) => contract.added,
