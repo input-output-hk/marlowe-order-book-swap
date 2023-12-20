@@ -77,7 +77,7 @@ export const SwapModal = ({
           {
             inputs: [
               {
-                input_from_party: { role_token: "swapper" },
+                input_from_party: { role_token: "buyer" },
                 that_deposits:
                   desired.token === ADA
                     ? (adaToLovelace(BigInt(desired.amount)) as bigint)
@@ -86,7 +86,7 @@ export const SwapModal = ({
                   currency_symbol: tokensData[desired.token as TOKENS].policyId,
                   token_name: desired.token === ADA ? "" : desired.token,
                 },
-                into_account: { role_token: "swapper" },
+                into_account: { role_token: "buyer" },
               },
             ],
           },

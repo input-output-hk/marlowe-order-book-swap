@@ -12,6 +12,7 @@ import {
   PAGES,
   adaToLovelace,
   dateTimeOptions,
+  getAddress,
   waitTxConfirmation,
 } from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
@@ -21,6 +22,7 @@ export const Deposit = () => {
   const [loading, setLoading] = useState(false);
   const [finished, setFinished] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const router = useRouter();
   const { runtimeLifecycle, client } = useContext(TSSDKContext);
 
@@ -41,6 +43,11 @@ export const Deposit = () => {
   };
 
   useEffect(() => {
+    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
+
+  useEffect(() => {
     if (finished) {
       void router.push(PAGES.LISTING);
     }
@@ -50,13 +57,15 @@ export const Deposit = () => {
   async function handleApplyInput() {
     try {
       setLoading(true);
-      if (client && runtimeLifecycle) {
+      if (client && runtimeLifecycle && myAddress) {
         const txId = await runtimeLifecycle.contracts.applyInputs(
           contractId(id),
           {
             inputs: [
               {
-                input_from_party: { role_token: "provider" },
+                input_from_party: {
+                  address: myAddress,
+                },
                 that_deposits:
                   offeredToken === ADA
                     ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
@@ -65,7 +74,9 @@ export const Deposit = () => {
                   currency_symbol: tokensData[offeredToken as TOKENS].policyId,
                   token_name: offeredToken === ADA ? "" : offeredToken,
                 },
-                into_account: { role_token: "provider" },
+                into_account: {
+                  address: myAddress,
+                },
               },
             ],
           },

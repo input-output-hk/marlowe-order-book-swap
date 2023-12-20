@@ -109,7 +109,7 @@ export const getContracts = async (
 
     if (parsedContracts.success) {
       const validContracts = parsedContracts.data;
-      // It is disabled for the moment, until pagination is solved
+      // FIXME: It is disabled for the moment, until pagination is solved
       // .filter((contract) => {
       //   if (
       //     env.NEXT_PUBLIC_DAPP_ID in contract.tags &&
@@ -138,6 +138,7 @@ export const getContracts = async (
 
       const contractsList = await Promise.all(contractsListPromise);
 
+      // TODO: Implement a better solution. Check https://github.com/input-output-hk/marlowe-ts-sdk/discussions/129
       const parsedContractsList = contractsList
         .map((contract) => {
           const parsedContract = contractDetailsSchema.safeParse(contract);

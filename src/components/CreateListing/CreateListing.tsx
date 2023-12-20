@@ -1,5 +1,10 @@
 import { Address } from "@marlowe.io/language-core-v1";
-import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
+import {
+  addressBech32,
+  unContractId,
+  type ContractId,
+} from "@marlowe.io/runtime-core";
+import { RolesConfig } from "@marlowe.io/runtime-rest-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,12 +12,14 @@ import DownIcon from "public/down_arrow.svg";
 import { useContext, useEffect, useState, type FormEvent } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
+import { env } from "~/env.mjs";
 import {
   COLORS,
   ICON_SIZES,
   PAGES,
   getAddress,
   getSwapContract,
+  tokenToTag,
   type IOptions,
 } from "~/utils";
 import { Loading } from "../Loading/Loading";
@@ -143,35 +150,32 @@ export const CreateListing = () => {
           providerAddress,
         });
 
-        console.log(swapContract);
+        const roles: RolesConfig = {
+          buyer: addressBech32(myAddress),
+        };
 
-        // const roles: RolesConfig = {
-        //   provider: addressBech32(myAddress),
-        //   swapper: addressBech32(myAddress),
-        // };
+        const tags = {
+          [env.NEXT_PUBLIC_DAPP_ID]: {
+            startDate: startDate !== "" ? startDate : new Date().toISOString(),
+            expiryDate,
+          },
+          [tokenToTag(selectedOffered.option)]: "",
+          [tokenToTag(selectedDesired.option)]: "",
+        };
 
-        // const tags = {
-        //   [env.NEXT_PUBLIC_DAPP_ID]: {
-        //     startDate: startDate !== "" ? startDate : new Date().toISOString(),
-        //     expiryDate,
-        //   },
-        //   [tokenToTag(selectedOffered.option)]: "",
-        //   [tokenToTag(selectedDesired.option)]: "",
-        // };
+        const contract = await runtimeLifecycle.contracts.createContract({
+          contract: swapContract,
+          roles,
+          tags,
+        });
 
-        // const contract = await runtimeLifecycle.contracts.createContract({
-        //   contract: swapContract,
-        //   roles,
-        //   tags,
-        // });
+        setCreateLoading((prev) => ({
+          ...prev,
+          contract: false,
+          confirmation: true,
+        }));
 
-        // setCreateLoading((prev) => ({
-        //   ...prev,
-        //   contract: false,
-        //   confirmation: true,
-        // }));
-
-        // waitConfirmation(contract[0]);
+        waitConfirmation(contract[0]);
       } catch (err) {
         console.log(err);
         setErrors((prev) => {
