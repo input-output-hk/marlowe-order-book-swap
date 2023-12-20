@@ -93,6 +93,11 @@ export const SwapModal = ({
         );
 
         waitTxConfirmation(contractId(id), txId, client, setFinished);
+
+        await runtimeLifecycle.contracts.applyInputs(contractId(id), {
+          inputs: ["input_notify"],
+        });
+
         void router.push(PAGES.COMPLETE + `/${id}`);
       }
     } catch (e) {
