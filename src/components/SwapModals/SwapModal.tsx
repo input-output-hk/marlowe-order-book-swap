@@ -1,3 +1,4 @@
+import { mkEnvironment } from "@marlowe.io/language-core-v1";
 import {
   contractId,
   unAddressBech32,
@@ -41,6 +42,7 @@ export const SwapModal = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const [finished, setFinished] = useState(false);
+  const [nextStep, setNextStep] = useState(false);
   const router = useRouter();
   const { runtimeLifecycle, client } = useContext(TSSDKContext);
 
@@ -62,11 +64,18 @@ export const SwapModal = ({
   const closeModal = () => setOpen(false);
 
   useEffect(() => {
-    if (finished) {
-      void router.push(PAGES.LISTING);
-    }
+    if (nextStep && runtimeLifecycle) void makeNotify();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [finished]);
+  }, [nextStep]);
+
+  const makeNotify = async () => {
+    if (!runtimeLifecycle) return;
+    await runtimeLifecycle.contracts.applyInputs(contractId(id), {
+      inputs: ["input_notify"],
+    });
+
+    void router.push(PAGES.COMPLETE + `/${id}`);
+  };
 
   const acceptSwap = async () => {
     try {
@@ -94,11 +103,18 @@ export const SwapModal = ({
 
         waitTxConfirmation(contractId(id), txId, client, setFinished);
 
-        await runtimeLifecycle.contracts.applyInputs(contractId(id), {
-          inputs: ["input_notify"],
-        });
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        setInterval(async () => {
+          const nextStep = await runtimeLifecycle.contracts.getApplicableInputs(
+            contractId(id),
+            mkEnvironment(new Date())(new Date()),
+          );
 
-        void router.push(PAGES.COMPLETE + `/${id}`);
+          if (nextStep.applicable_inputs.notify._tag === "Some") {
+            setNextStep(true);
+            return;
+          }
+        }, 1000);
       }
     } catch (e) {
       setLoading(false);
