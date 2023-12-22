@@ -41,7 +41,6 @@ export const SwapModal = ({
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
-  const [finished, setFinished] = useState(false);
   const [nextStep, setNextStep] = useState(false);
   const router = useRouter();
   const { runtimeLifecycle, client } = useContext(TSSDKContext);
@@ -101,7 +100,7 @@ export const SwapModal = ({
           },
         );
 
-        waitTxConfirmation(contractId(id), txId, client, setFinished);
+        waitTxConfirmation(contractId(id), txId, client);
 
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         setInterval(async () => {

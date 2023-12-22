@@ -104,7 +104,7 @@ export const waitTxConfirmation = (
   contractId: ContractId,
   txId: string,
   client: RestClient | undefined,
-  setFinished: Dispatch<SetStateAction<boolean>>,
+  setFinished?: Dispatch<SetStateAction<boolean>>,
 ) => {
   if (!client) return;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -112,7 +112,7 @@ export const waitTxConfirmation = (
     const pollingTx = await client.getContractTransactionById(contractId, txId);
     if (pollingTx.status === "confirmed") {
       clearInterval(pollingInterval);
-      setFinished(true);
+      setFinished && setFinished(true);
       return;
     }
   }, 3000);
