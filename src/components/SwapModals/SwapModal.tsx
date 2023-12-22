@@ -114,7 +114,7 @@ export const SwapModal = ({
             setNextStep(true);
             return;
           }
-        }, 1000);
+        }, 2000);
       }
     } catch (e) {
       setLoading(false);
