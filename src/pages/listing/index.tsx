@@ -6,7 +6,13 @@ import { ErrorMessage } from "~/components/ErrorMessage/ErrorMessage";
 import { ListingPage } from "~/components/ListingPage/ListingPage";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import useDebounce from "~/hooks/useDebounce";
-import { getContracts, type IFilters, type ITableData } from "~/utils";
+import useUpdate from "~/hooks/useUpdate";
+import {
+  UPDATING_INTERVAL,
+  getContracts,
+  type IFilters,
+  type ITableData,
+} from "~/utils";
 
 export interface IPagination {
   page?: number;
@@ -80,6 +86,15 @@ export default function Listing() {
     },
     dependencies: [client, filters.searchQuery],
     delay: 1000,
+  });
+
+  useUpdate({
+    callback: () => {
+      if (pagination.page === 1) {
+        void asyncGetContracts();
+      }
+    },
+    delay: UPDATING_INTERVAL,
   });
 
   return (
