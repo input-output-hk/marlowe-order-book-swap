@@ -90,9 +90,10 @@ export default function Listing() {
 
   useUpdate({
     callback: () => {
-      void asyncGetContracts();
+      if (pagination.page === 1) {
+        void asyncGetContracts();
+      }
     },
-    dependence: pagination.page,
     delay: UPDATING_INTERVAL,
   });
 
