@@ -195,22 +195,27 @@ const getInitialContract = (contract: ContractDetails) => {
   let swapperAmount = BigInt(0);
   let providerAmount = BigInt(0);
   let error = "";
-  let token = "";
+  let providerToken = "";
+  let swapperToken = "";
   if (parsedPayout.success) {
-    token =
+    providerToken =
+      parsedPayout.data.when[0].case.of_token.token_name === ""
+        ? ADA
+        : parsedPayout.data.when[0].case.of_token.token_name;
+    swapperToken =
       parsedPayout.data.when[0].then.when[0].case.of_token.token_name === ""
         ? ADA
         : parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
     providerAmount =
-      token === ADA
+      providerToken === ADA
         ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
         : parsedPayout.data.when[0].case.deposits;
     swapperAmount =
-      token === ADA
+      swapperToken === ADA
         ? (lovelaceToAda(
             parsedPayout.data.when[0].then.when[0].case.deposits,
           ) as bigint)
-        : parsedPayout.data.when[0].then.when[0].then.pay;
+        : parsedPayout.data.when[0].then.when[0].case.deposits;
   } else {
     error = "Error obtaining amount";
   }
@@ -221,7 +226,7 @@ const getInitialContract = (contract: ContractDetails) => {
     payoutId: null,
     error: error,
     amount: { swapper: swapperAmount, provider: providerAmount },
-    token: token,
+    token: { swapper: swapperToken, provider: providerToken },
   };
 };
 
@@ -229,7 +234,8 @@ export const getPayouts = async (
   runtimeLifecycle: RuntimeLifecycle | undefined,
   client: RestClient | undefined,
   setPossibleWithdraws: Dispatch<SetStateAction<IMoreContractDetails[]>>,
-  setLoadingContracts: Dispatch<SetStateAction<boolean>>,
+  setLoadingPayouts: Dispatch<SetStateAction<boolean>>,
+  setAddressExists: Dispatch<SetStateAction<boolean | null>>,
 ) => {
   const availableWithdraws = await runtimeLifecycle?.payouts.available();
   availableWithdraws?.map((payout) => payout.contractId);
@@ -242,6 +248,9 @@ export const getPayouts = async (
     setPossibleWithdraws(
       contractsList.map((contract) => getInitialContract(contract)),
     );
-    setLoadingContracts(false);
   }
+
+  const walletInfo = window.localStorage.getItem("walletInfo");
+  setLoadingPayouts(availableWithdraws?.length === undefined);
+  setAddressExists(!!walletInfo);
 };

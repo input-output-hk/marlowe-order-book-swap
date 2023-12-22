@@ -1,10 +1,10 @@
-import { Address } from "@marlowe.io/language-core-v1";
+import { type Address } from "@marlowe.io/language-core-v1";
 import {
   addressBech32,
   unContractId,
   type ContractId,
 } from "@marlowe.io/runtime-core";
-import { RolesConfig } from "@marlowe.io/runtime-rest-client";
+import { type RolesConfig } from "@marlowe.io/runtime-rest-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";

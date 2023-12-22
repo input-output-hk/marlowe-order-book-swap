@@ -21,3 +21,5 @@ export const dateTimeOptions: Intl.DateTimeFormatOptions = {
   minute: "2-digit",
   hour12: false,
 };
+
+export const UPDATING_INTERVAL = 45 * 1000;

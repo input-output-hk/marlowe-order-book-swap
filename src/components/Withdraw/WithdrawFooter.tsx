@@ -28,7 +28,7 @@ export const WithdrawFooter = ({
         )
       ) : (
         <div className=" font-semibold text-m-red">
-          There was an error on retracting the swap offer
+          There was an error on withdrawing your funds. Please try again.
         </div>
       )}
     </>
