@@ -233,7 +233,8 @@ export const getPayouts = async (
   runtimeLifecycle: RuntimeLifecycle | undefined,
   client: RestClient | undefined,
   setPossibleWithdraws: Dispatch<SetStateAction<IMoreContractDetails[]>>,
-  setAddressExists: Dispatch<SetStateAction<boolean>>,
+  setLoadingPayouts: Dispatch<SetStateAction<boolean>>,
+  setAddressExists: Dispatch<SetStateAction<boolean | null>>,
 ) => {
   const availableWithdraws = await runtimeLifecycle?.payouts.available();
   availableWithdraws?.map((payout) => payout.contractId);
@@ -249,5 +250,6 @@ export const getPayouts = async (
   }
 
   const walletInfo = window.localStorage.getItem("walletInfo");
-  setAddressExists(!!runtimeLifecycle || !walletInfo);
+  setLoadingPayouts(availableWithdraws?.length === undefined);
+  setAddressExists(!!walletInfo);
 };

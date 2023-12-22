@@ -22,8 +22,9 @@ export interface IMoreContractDetails extends ContractDetails {
 
 export const WithdrawPage = () => {
   const [loadingWithdrawal, setLoadingWithdrawal] = useState(false);
+  const [loadingPayouts, setLoadingPayouts] = useState(true);
   const [errorWithdrawal, setErrorWithdrawal] = useState(false);
-  const [addressExists, setAddressExists] = useState(false);
+  const [addressExists, setAddressExists] = useState<boolean | null>(null);
 
   const [possibleWithdraws, setPossibleWithdraws] = useState<
     IMoreContractDetails[]
@@ -36,9 +37,11 @@ export const WithdrawPage = () => {
       runtimeLifecycle,
       client,
       setPossibleWithdraws,
+      setLoadingPayouts,
       setAddressExists,
     );
-  }, [client, runtimeLifecycle, possibleWithdraws]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
 
   const withdraw = async () => {
     setErrorWithdrawal(false);
@@ -154,7 +157,7 @@ export const WithdrawPage = () => {
       }
     };
 
-  if (!addressExists) {
+  if (addressExists === null || (addressExists && loadingPayouts)) {
     return (
       <div className="flex flex-grow items-center justify-center">
         <Loading />
@@ -163,7 +166,7 @@ export const WithdrawPage = () => {
   }
 
   const isAdding = possibleWithdraws?.some((contract) => contract.adding);
-  const contractsToWitdhraw =
+  const contractsToWithdraw =
     possibleWithdraws?.filter((contract) => contract.added).length === 0;
 
   return (
@@ -198,7 +201,7 @@ export const WithdrawPage = () => {
               <Button
                 size={SIZE.XSMALL}
                 onClick={withdraw}
-                disabled={isAdding || loadingWithdrawal || contractsToWitdhraw}
+                disabled={isAdding || loadingWithdrawal || contractsToWithdraw}
                 filled
               >
                 Withdraw
