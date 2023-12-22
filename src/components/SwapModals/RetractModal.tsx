@@ -1,7 +1,12 @@
-import { COLORS } from "~/utils";
+import { contractId } from "@marlowe.io/runtime-core";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
+import { COLORS, ICON_SIZES, getAddress } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
+import { Loading } from "../Loading/Loading";
 import { Modal } from "../Modal/Modal";
 import { type ModalProps } from "./interface";
 
@@ -10,10 +15,47 @@ export const RetractModal = ({
   setOpen,
   offered,
   desired,
+  id,
 }: ModalProps) => {
-  const closeModal = () => {
-    setOpen(false);
+  const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const { runtimeLifecycle } = useContext(TSSDKContext);
+
+  useEffect(() => {
+    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runtimeLifecycle]);
+
+  const closeModal = () => setOpen(false);
+
+  const handleRetract = async () => {
+    if (runtimeLifecycle && myAddress) {
+      setError(null);
+      try {
+        setLoading(true);
+        await runtimeLifecycle.contracts.applyInputs(contractId(id), {
+          inputs: [
+            {
+              for_choice_id: {
+                choice_name: "retract",
+                choice_owner: { address: myAddress },
+              },
+              input_that_chooses_num: BigInt(0),
+            },
+          ],
+        });
+
+        setLoading(false);
+        void router.reload();
+      } catch (err) {
+        console.log(err);
+        setError("There was an error on the transaction.");
+      }
+    }
   };
+
   return (
     <Modal open={open} setOpen={setOpen} title="Retract Swap Offer">
       <main className="flex w-full flex-col items-center text-m-disabled">
@@ -60,11 +102,21 @@ export const RetractModal = ({
               color={COLORS.RED}
               size={SIZE.SMALL}
               filled
-              onClick={closeModal}
+              onClick={handleRetract}
+              disabled={!myAddress}
             >
               Retract Swap
             </Button>
           </div>
+          {error && <div className="font-semibold text-m-red">{error}</div>}
+          {loading && !error && (
+            <div className="flex w-full items-center gap-4">
+              <Loading sizeDesktop={ICON_SIZES.XS} sizeMobile={ICON_SIZES.XS} />
+              <b className="text-base text-m-purple">
+                Don&apos;t leave the page. Waiting confirmation...
+              </b>
+            </div>
+          )}
         </div>
       </main>
     </Modal>
