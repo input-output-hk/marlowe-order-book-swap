@@ -35,35 +35,47 @@ export const contractSchema = z.array(contractHeaderSchema);
 export const caseSchema = z.object({
   deposits: z.bigint(),
   into_account: z.object({
-    role_token: z.string(),
+    address: z.string(),
   }),
   of_token: z.object({
     currency_symbol: z.string(),
     token_name: z.string(),
   }),
   party: z.object({
-    role_token: z.string(),
+    address: z.string(),
   }),
 });
 
+export const swapperSchema = z.object({
+  case: z.object({
+    deposits: z.bigint(),
+    into_account: z.object({
+      role_token: z.string(),
+    }),
+    of_token: z.object({
+      currency_symbol: z.string(),
+      token_name: z.string(),
+    }),
+    party: z.object({
+      role_token: z.string(),
+    }),
+  }),
+  then: z.object({
+    pay: z.bigint(),
+  }),
+});
+
+export const retractSchema = z.object({
+  case: z.object({
+    choose_between: z
+      .array(z.object({ from: z.bigint(), to: z.bigint() }))
+      .nonempty(),
+  }),
+  then: z.literal("close"),
+});
+
 export const thenSchema = z.object({
-  when: z
-    .array(
-      z.object({
-        case: caseSchema,
-        then: z.object({
-          from_account: z.object({
-            role_token: z.string(),
-          }),
-          pay: z.bigint(),
-          token: z.object({
-            currency_symbol: z.string(),
-            token_name: z.string(),
-          }),
-        }),
-      }),
-    )
-    .nonempty(),
+  when: z.tuple([swapperSchema, retractSchema]),
 });
 
 export const whenSchema = z.object({
@@ -94,7 +106,6 @@ export const contractDetailsSchema = z.object({
         [env.NEXT_PUBLIC_DAPP_ID]: z.object({
           startDate: z.string().optional(),
           expiryDate: z.string().optional(),
-          createdBy: z.string().optional(),
         }),
       })
       .required(),

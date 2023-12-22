@@ -1,15 +1,18 @@
 import {
+  datetoTimeout,
+  tokenValue,
+  type Address,
+  type Token as TokenSwap,
+} from "@marlowe.io/language-core-v1";
+import {
   unPolicyId,
   type ContractId,
   type Token,
 } from "@marlowe.io/runtime-core";
 import { type RestClient } from "@marlowe.io/runtime-rest-client";
-import {
-  mkSwapContract,
-  type SwapRequest,
-} from "node_modules/@marlowe.io/language-examples/dist/esm/swaps/swap-token-token";
 import { type Dispatch, type SetStateAction } from "react";
 import { adaToLovelace } from ".";
+import { mkContract, type Scheme } from "./atomicSwap";
 import { type IOptions } from "./interfaces";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
@@ -46,6 +49,7 @@ interface ISwapRequest {
   selectedOffered: IOptions;
   selectedDesired: IOptions;
   expiryDate: string;
+  providerAddress: Address;
 }
 
 export const getSwapContract = ({
@@ -54,6 +58,7 @@ export const getSwapContract = ({
   selectedOffered,
   selectedDesired,
   expiryDate,
+  providerAddress,
 }: ISwapRequest) => {
   const parsedValueOffered =
     selectedOffered.option === ADA
@@ -63,42 +68,43 @@ export const getSwapContract = ({
     selectedDesired.option === ADA
       ? (adaToLovelace(BigInt(valueDesired)) as bigint)
       : BigInt(valueDesired);
-  const parsedExpiryDate = BigInt(new Date(expiryDate).getTime());
 
-  const swapRequest: SwapRequest = {
-    provider: {
-      roleName: "provider",
-      depositTimeout: parsedExpiryDate,
-      value: {
-        amount: parsedValueOffered,
-        token: {
-          currency_symbol:
-            tokensData[selectedOffered.option as TOKENS].policyId,
-          token_name: tokensData[selectedOffered.option as TOKENS].assetName,
-        },
-      },
+  const tokenOffered: TokenSwap = {
+    currency_symbol: tokensData[selectedOffered.option as TOKENS].policyId,
+    token_name: tokensData[selectedOffered.option as TOKENS].assetName,
+  };
+
+  const tokenDesired: TokenSwap = {
+    currency_symbol: tokensData[selectedDesired.option as TOKENS].policyId,
+    token_name: tokensData[selectedDesired.option as TOKENS].assetName,
+  };
+
+  const swapSchema: Scheme = {
+    participants: {
+      seller: providerAddress,
+      buyer: { role_token: "buyer" },
     },
-    swapper: {
-      roleName: "swapper",
-      depositTimeout: parsedExpiryDate,
-      value: {
-        amount: parsedValueDesired,
-        token: {
-          currency_symbol:
-            tokensData[selectedDesired.option as TOKENS].policyId,
-          token_name: tokensData[selectedDesired.option as TOKENS].assetName,
-        },
-      },
+    offer: {
+      deadline: datetoTimeout(new Date(expiryDate)),
+      asset: tokenValue(parsedValueOffered)(tokenOffered),
+    },
+    ask: {
+      deadline: datetoTimeout(new Date(expiryDate)),
+      asset: tokenValue(parsedValueDesired)(tokenDesired),
+    },
+    swapConfirmation: {
+      deadline: datetoTimeout(new Date(expiryDate)),
     },
   };
-  return mkSwapContract(swapRequest);
+
+  return mkContract(swapSchema);
 };
 
 export const waitTxConfirmation = (
   contractId: ContractId,
   txId: string,
   client: RestClient | undefined,
-  setFinished: Dispatch<SetStateAction<boolean>>,
+  setFinished?: Dispatch<SetStateAction<boolean>>,
 ) => {
   if (!client) return;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -106,7 +112,7 @@ export const waitTxConfirmation = (
     const pollingTx = await client.getContractTransactionById(contractId, txId);
     if (pollingTx.status === "confirmed") {
       clearInterval(pollingInterval);
-      setFinished(true);
+      setFinished && setFinished(true);
       return;
     }
   }, 3000);

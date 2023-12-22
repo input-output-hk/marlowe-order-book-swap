@@ -1,3 +1,4 @@
+import { type Address } from "@marlowe.io/language-core-v1";
 import {
   addressBech32,
   unContractId,
@@ -136,17 +137,21 @@ export const CreateListing = () => {
           contract: true,
         }));
 
+        const providerAddress: Address = {
+          address: myAddress,
+        };
+
         const swapContract = getSwapContract({
           valueOffered,
           valueDesired,
           selectedOffered,
           selectedDesired,
           expiryDate,
+          providerAddress,
         });
 
         const roles: RolesConfig = {
-          provider: addressBech32(myAddress),
-          swapper: addressBech32(myAddress),
+          buyer: addressBech32(myAddress),
         };
 
         const tags = {
