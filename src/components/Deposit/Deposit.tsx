@@ -48,6 +48,7 @@ export const Deposit = () => {
   }, [finished]);
 
   async function handleApplyInput() {
+    setShowError(false);
     try {
       setLoading(true);
       if (client && runtimeLifecycle) {
