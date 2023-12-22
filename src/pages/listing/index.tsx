@@ -92,6 +92,7 @@ export default function Listing() {
     callback: () => {
       void asyncGetContracts();
     },
+    dependence: pagination.page,
     delay: UPDATING_INTERVAL,
   });
 
