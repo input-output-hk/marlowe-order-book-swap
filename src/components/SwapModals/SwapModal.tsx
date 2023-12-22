@@ -103,13 +103,14 @@ export const SwapModal = ({
         waitTxConfirmation(contractId(id), txId, client);
 
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        setInterval(async () => {
+        const nextStepInterval = setInterval(async () => {
           const nextStep = await runtimeLifecycle.contracts.getApplicableInputs(
             contractId(id),
             mkEnvironment(new Date())(new Date()),
           );
 
           if (nextStep.applicable_inputs.notify._tag === "Some") {
+            clearInterval(nextStepInterval);
             setNextStep(true);
             return;
           }
