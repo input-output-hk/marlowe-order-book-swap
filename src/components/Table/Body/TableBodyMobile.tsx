@@ -17,7 +17,7 @@ import type { TableProps } from "../table.interface";
 export const TableBodyMobile = ({
   data,
   handleOpenAccept,
-  handleOpenRetract,
+  handleOpenRetractOrDeposit,
   pagination,
   setPagination,
 }: TableProps) => {
@@ -38,6 +38,9 @@ export const TableBodyMobile = ({
           const hasFinished = row.createdBy === undefined;
           const hasStarted =
             new Date(row.start).toISOString() < new Date().toISOString();
+
+          // TODO: CHANGE
+          const hasDeposited = false;
 
           return (
             <div
@@ -76,13 +79,15 @@ export const TableBodyMobile = ({
                     <Button
                       size={SIZE.SMALL}
                       color={COLORS.RED}
-                      onClick={handleOpenRetract(row)}
+                      onClick={handleOpenRetractOrDeposit(row)}
                       disabled={!myAddress || hasExpired || !hasStarted}
                     >
                       {hasExpired
                         ? "Offer ended"
                         : !hasStarted
                         ? "Not started"
+                        : !hasDeposited
+                        ? "Deposit"
                         : "Retract offer"}
                     </Button>
                   ) : (

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import SwapCircleIcon from "public/swap_circle.svg";
 import SwapIcon from "public/swap_vert.svg";
 import { useContext, useEffect, useState } from "react";
-import { Button } from "~/components/Button/Button";
+import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ADA,
@@ -44,15 +44,9 @@ export const Deposit = () => {
 
   useEffect(() => {
     if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
+    if (finished) void router.push(PAGES.LISTING);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runtimeLifecycle]);
-
-  useEffect(() => {
-    if (finished) {
-      void router.push(PAGES.LISTING);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [finished]);
+  }, [runtimeLifecycle, finished]);
 
   async function handleApplyInput() {
     setShowError(false);
@@ -64,9 +58,7 @@ export const Deposit = () => {
           {
             inputs: [
               {
-                input_from_party: {
-                  address: myAddress,
-                },
+                input_from_party: { address: myAddress },
                 that_deposits:
                   offeredToken === ADA
                     ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
@@ -75,9 +67,7 @@ export const Deposit = () => {
                   currency_symbol: tokensData[offeredToken as TOKENS].policyId,
                   token_name: offeredToken === ADA ? "" : offeredToken,
                 },
-                into_account: {
-                  address: myAddress,
-                },
+                into_account: { address: myAddress },
               },
             ],
           },
@@ -98,7 +88,7 @@ export const Deposit = () => {
         <Image src={SwapCircleIcon as string} alt="" height={ICON_SIZES.L} />
         Swap Details
       </div>
-      <div className="flex flex-col  items-center gap-4 p-5">
+      <div className="flex flex-col items-center gap-4 p-5">
         <div className="flex flex-col items-center justify-center gap-5 md:flex-row md:items-start">
           <div className="flex gap-3 text-xl font-semibold">
             {tokensData[offeredToken as TOKENS]?.icon}
@@ -133,8 +123,12 @@ export const Deposit = () => {
           </div>
         </div>
 
-        <div className="flex  flex-col gap-3 p-5 pb-0 text-center text-m-blue">
-          <Button onClick={handleApplyInput}>Deposit</Button>
+        <div className="flex flex-col items-center gap-3 pt-5 text-center text-sm text-m-blue">
+          <div className="w-36 text-base">
+            <Button size={SIZE.SMALL} onClick={handleApplyInput}>
+              Deposit
+            </Button>
+          </div>
           {showError && (
             <div className="font-semibold text-m-red">
               There was an error on the deposit
@@ -147,9 +141,7 @@ export const Deposit = () => {
                   sizeDesktop={ICON_SIZES.XS}
                   sizeMobile={ICON_SIZES.XS}
                 />
-                <b className="text-base text-m-purple">
-                  Don&apos;t leave the page. Waiting confirmation...
-                </b>
+                <b>Don&apos;t leave the page. Waiting confirmation...</b>
               </div>
             ) : (
               <b>

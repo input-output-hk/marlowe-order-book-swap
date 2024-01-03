@@ -13,7 +13,7 @@ import type { TableProps } from "../table.interface";
 export const TableBodyDesktop = ({
   data,
   handleOpenAccept,
-  handleOpenRetract,
+  handleOpenRetractOrDeposit,
 }: TableProps) => {
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const { runtimeLifecycle } = useContext(TSSDKContext);
@@ -31,6 +31,9 @@ export const TableBodyDesktop = ({
         const hasFinished = row.createdBy === undefined;
         const hasStarted =
           new Date(row.start).toISOString() < new Date().toISOString();
+
+        // TODO: CHANGE
+        const hasDeposited = false;
 
         return (
           <div key={row.id} className="table-row">
@@ -67,22 +70,24 @@ export const TableBodyDesktop = ({
             <div className="table-cell w-1/4">
               <div className="flex items-center justify-center">
                 {row.createdBy === myAddress ? (
-                  <div>
+                  <div className="w-36">
                     <Button
                       size={SIZE.SMALL}
-                      color={COLORS.RED}
-                      onClick={handleOpenRetract(row)}
+                      color={!hasDeposited ? COLORS.GREEN : COLORS.RED}
+                      onClick={handleOpenRetractOrDeposit(row)}
                       disabled={!myAddress || hasExpired || !hasStarted}
                     >
                       {hasExpired
                         ? "Offer ended"
                         : !hasStarted
                         ? "Not started"
+                        : !hasDeposited
+                        ? "Deposit"
                         : "Retract offer"}
                     </Button>
                   </div>
                 ) : (
-                  <div>
+                  <div className="w-36">
                     <Button
                       size={SIZE.SMALL}
                       onClick={handleOpenAccept(row)}

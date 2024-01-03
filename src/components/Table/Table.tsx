@@ -1,8 +1,9 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import SearchNoneIcon from "public/search-none.svg";
 import { useState } from "react";
-import { ICON_SIZES, type ITableData, type ITokenAmount } from "~/utils";
+import { ICON_SIZES, PAGES, type ITableData, type ITokenAmount } from "~/utils";
 import { RetractModal } from "../SwapModals/RetractModal";
 import { SwapModal } from "../SwapModals/SwapModal";
 import { TableFooterDesktop } from "./Footer/TableFooterDesktop";
@@ -25,7 +26,7 @@ export const Table = ({
   pagination,
   setPagination,
 }: TablePropsWithSort) => {
-  const [openRetract, setOpenRetract] = useState(false);
+  const [openRetractOrDeposit, setOpenRetractOrDeposit] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
   const [contractId, setContractId] = useState<string>("");
   const [desired, setDesired] = useState<ITokenAmount>({
@@ -40,12 +41,28 @@ export const Table = ({
     amount: 0,
     currency: "",
   });
+  const router = useRouter();
 
-  const handleOpenRetract = (row: ITableData) => () => {
+  const handleOpenRetractOrDeposit = (row: ITableData) => () => {
     setOffered(row.offered);
     setDesired(row.desired);
-    setOpenRetract(true);
-    setContractId(row.id);
+    // TODO: CHANGE
+    if (false) {
+      setOpenRetractOrDeposit(true);
+      setContractId(row.id);
+    } else {
+      void router.push({
+        pathname: PAGES.DEPOSIT,
+        query: {
+          id: row.id,
+          offeredToken: row.offered.token,
+          offeredAmount: row.offered.amount,
+          desiredToken: row.desired.token,
+          desiredAmount: row.desired.amount,
+          expiryDate: row.expiry,
+        },
+      });
+    }
   };
   const handleOpenAccept = (row: ITableData) => () => {
     setOffered(row.offered);
@@ -75,21 +92,21 @@ export const Table = ({
         <TableHead sort={sort} setSort={setSort} />
         <TableBodyDesktop
           data={data}
-          handleOpenRetract={handleOpenRetract}
+          handleOpenRetractOrDeposit={handleOpenRetractOrDeposit}
           handleOpenAccept={handleOpenAccept}
         />
       </div>
       <TableFooterDesktop pagination={pagination} />
       <TableBodyMobile
         data={data}
-        handleOpenRetract={handleOpenRetract}
+        handleOpenRetractOrDeposit={handleOpenRetractOrDeposit}
         handleOpenAccept={handleOpenAccept}
         pagination={pagination}
         setPagination={setPagination}
       />
       <RetractModal
-        open={openRetract}
-        setOpen={setOpenRetract}
+        open={openRetractOrDeposit}
+        setOpen={setOpenRetractOrDeposit}
         offered={offered}
         desired={desired}
         id={contractId}

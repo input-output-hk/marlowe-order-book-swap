@@ -4,7 +4,7 @@ import type { ISort, ITableData } from "~/utils";
 
 export interface TableProps {
   data: Array<ITableData>;
-  handleOpenRetract: (row: ITableData) => () => void;
+  handleOpenRetractOrDeposit: (row: ITableData) => () => void;
   handleOpenAccept: (row: ITableData) => () => void;
   pagination?: IPagination;
   setPagination?: Dispatch<SetStateAction<IPagination>>;
