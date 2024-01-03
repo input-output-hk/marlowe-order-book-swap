@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { IPagination } from "~/pages/listing";
-import type { ISort, ITableData } from "~/utils";
+import type { COLORS, ISort, ITableData } from "~/utils";
 
 export interface TableProps {
   data: Array<ITableData>;
@@ -20,4 +20,18 @@ export interface TablePropsWithSort {
 
 export interface ITableFooter {
   pagination: IPagination;
+}
+
+export interface DataRowProps {
+  row: ITableData;
+  address: string | undefined;
+  handleOpenRetract: (row: ITableData) => () => void;
+  handleOpenAccept: (row: ITableData) => () => void;
+}
+
+export interface IStateData {
+  disabled: boolean;
+  text: string;
+  action: <T extends never[]>(...args: T) => void;
+  color?: COLORS;
 }

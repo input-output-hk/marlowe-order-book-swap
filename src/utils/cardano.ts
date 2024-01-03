@@ -11,8 +11,12 @@ import {
 } from "@marlowe.io/runtime-core";
 import { type RestClient } from "@marlowe.io/runtime-rest-client";
 import { type Dispatch, type SetStateAction } from "react";
-import { adaToLovelace } from ".";
-import { mkContract, type Scheme } from "./atomicSwap";
+import type {
+  DataRowProps,
+  IStateData,
+} from "~/components/Table/table.interface";
+import { COLORS, adaToLovelace } from ".";
+import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { type IOptions } from "./interfaces";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
@@ -116,4 +120,68 @@ export const waitTxConfirmation = (
       return;
     }
   }, 3000);
+};
+
+export const loadingState = {
+  disabled: true,
+  text: "Loading...",
+  action: () => null,
+};
+export const parseState = (
+  componentInfo: DataRowProps & {
+    setState: Dispatch<SetStateAction<IStateData>>;
+  },
+  state: State | undefined,
+) => {
+  const { row, address, handleOpenAccept, handleOpenRetract, setState } =
+    componentInfo;
+  const nullFn = () => null;
+
+  if (!state) return setState(loadingState);
+
+  switch (state.typeName) {
+    case "WaitingForAnswer": {
+      return setState({
+        disabled: false,
+        text: row.createdBy === address ? "Retract Offer" : "Accept Offer",
+        action:
+          row.createdBy === address
+            ? handleOpenRetract(row)
+            : handleOpenAccept(row),
+        color: COLORS.RED,
+      });
+    }
+    case "NoSellerOfferInTime": {
+      return setState({
+        disabled: true,
+        text: "Offer Ended",
+        action: nullFn,
+      });
+    }
+    case "WaitingSellerOffer": {
+      return setState({
+        disabled: true,
+        text: row.createdBy === address ? "Deposit" : "Not Started",
+        // TODO change to deposit page
+        action: nullFn,
+      });
+    }
+    case "WaitingForSwapConfirmation": {
+      return setState({
+        disabled: true,
+        text: "Waiting",
+        action: nullFn,
+      });
+    }
+    case "Closed": {
+      return setState({
+        disabled: true,
+        text: "Offer Ended",
+        action: nullFn,
+      });
+    }
+    default: {
+      return setState(loadingState);
+    }
+  }
 };
