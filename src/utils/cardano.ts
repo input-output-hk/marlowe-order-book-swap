@@ -169,7 +169,7 @@ export const parseState = (
     case "WaitingForSwapConfirmation": {
       return setState({
         disabled: true,
-        text: "Waiting",
+        text: "Finishing...",
         action: nullFn,
       });
     }

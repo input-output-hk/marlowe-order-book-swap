@@ -20,7 +20,7 @@ export const DataRowDesktop = ({
   const { client } = useContext(TSSDKContext);
 
   useEffect(() => {
-    if (client && address)
+    if (client)
       void getTransactionDetails(
         client,
         row,
