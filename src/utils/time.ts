@@ -22,4 +22,4 @@ export const dateTimeOptions: Intl.DateTimeFormatOptions = {
   hour12: false,
 };
 
-export const UPDATING_INTERVAL = 10 * 1000;
+export const UPDATING_INTERVAL = 45 * 1000;
