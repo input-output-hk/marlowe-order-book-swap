@@ -9,6 +9,7 @@ export const TableBodyMobile = ({
   data,
   handleOpenAccept,
   handleOpenRetract,
+  handleGoToDeposit,
   pagination,
   setPagination,
 }: TableProps) => {
@@ -30,6 +31,7 @@ export const TableBodyMobile = ({
               row={row}
               handleOpenAccept={handleOpenAccept}
               handleOpenRetract={handleOpenRetract}
+              handleGoToDeposit={handleGoToDeposit}
               address={myAddress}
             />
           );

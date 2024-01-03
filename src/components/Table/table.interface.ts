@@ -6,6 +6,7 @@ export interface TableProps {
   data: Array<ITableData>;
   handleOpenRetract: (row: ITableData) => () => void;
   handleOpenAccept: (row: ITableData) => () => void;
+  handleGoToDeposit: (row: ITableData) => () => void;
   pagination?: IPagination;
   setPagination?: Dispatch<SetStateAction<IPagination>>;
 }
@@ -27,6 +28,7 @@ export interface DataRowProps {
   address: string | undefined;
   handleOpenRetract: (row: ITableData) => () => void;
   handleOpenAccept: (row: ITableData) => () => void;
+  handleGoToDeposit: (row: ITableData) => () => void;
 }
 
 export interface IStateData {

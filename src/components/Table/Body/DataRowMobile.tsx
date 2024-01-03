@@ -18,6 +18,7 @@ export const DataRowMobile = ({
   address,
   handleOpenAccept,
   handleOpenRetract,
+  handleGoToDeposit,
 }: DataRowProps) => {
   const [state, setState] = useState<IStateData>(loadingState);
   const { client } = useContext(TSSDKContext);
@@ -30,6 +31,7 @@ export const DataRowMobile = ({
         address,
         handleOpenRetract,
         handleOpenAccept,
+        handleGoToDeposit,
         setState,
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
