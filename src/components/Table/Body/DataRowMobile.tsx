@@ -23,7 +23,7 @@ export const DataRowMobile = ({
   const { client } = useContext(TSSDKContext);
 
   useEffect(() => {
-    if (client)
+    if (client && address)
       void getTransactionDetails(
         client,
         row,
@@ -33,7 +33,7 @@ export const DataRowMobile = ({
         setState,
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client]);
+  }, [client, address]);
 
   const hasStarted =
     new Date(row.start).toISOString() < new Date().toISOString();
