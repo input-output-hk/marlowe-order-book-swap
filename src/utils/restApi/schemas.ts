@@ -60,9 +60,7 @@ export const swapperSchema = z.object({
       role_token: z.string(),
     }),
   }),
-  then: z.object({
-    pay: z.bigint(),
-  }),
+  then: z.object({}),
 });
 
 export const retractSchema = z.object({

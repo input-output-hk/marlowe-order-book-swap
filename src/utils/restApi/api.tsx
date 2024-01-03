@@ -289,12 +289,9 @@ export const getTransactionDetails = async (
   const deadline = datetoTimeout(new Date(row.expiry));
   // Some data in scheme is not used, we can leave it empty. We just use deadline.
   const scheme: Scheme = {
-    participants: {
-      seller: { address: "" },
-      buyer: { role_token: "" },
-    },
     offer: {
       deadline,
+      seller: { address: "" },
       asset: {
         amount: BigInt(0),
         token: { currency_symbol: "", token_name: "" },
@@ -302,6 +299,7 @@ export const getTransactionDetails = async (
     },
     ask: {
       deadline,
+      buyer: { role_token: "" },
       asset: {
         amount: BigInt(0),
         token: { currency_symbol: "", token_name: "" },
