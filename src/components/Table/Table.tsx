@@ -26,7 +26,7 @@ export const Table = ({
   pagination,
   setPagination,
 }: TablePropsWithSort) => {
-  const [openRetractOrDeposit, setOpenRetractOrDeposit] = useState(false);
+  const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
   const [contractId, setContractId] = useState<string>("");
   const [desired, setDesired] = useState<ITokenAmount>({
@@ -46,7 +46,7 @@ export const Table = ({
   const handleOpenRetract = (row: ITableData) => () => {
     setOffered(row.offered);
     setDesired(row.desired);
-    setOpenRetractOrDeposit(true);
+    setOpenRetract(true);
     setContractId(row.id);
   };
   const handleOpenAccept = (row: ITableData) => () => {
@@ -105,8 +105,8 @@ export const Table = ({
         setPagination={setPagination}
       />
       <RetractModal
-        open={openRetractOrDeposit}
-        setOpen={setOpenRetractOrDeposit}
+        open={openRetract}
+        setOpen={setOpenRetract}
         offered={offered}
         desired={desired}
         id={contractId}
