@@ -1,3 +1,4 @@
+import { type MarloweState } from "@marlowe.io/language-core-v1";
 import type { SupportedWalletName } from "@marlowe.io/wallet/browser";
 
 export interface IToken {
@@ -17,6 +18,7 @@ export interface ITableData {
   desired: ITokenAmount;
   expiry: string;
   start: string;
+  state: MarloweState;
 }
 
 export interface IFilters {
