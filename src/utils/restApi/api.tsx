@@ -1,18 +1,21 @@
+import { datetoTimeout } from "@marlowe.io/language-core-v1";
 import {
+  contractId,
   unAddressBech32,
   unContractId,
   type ContractId,
 } from "@marlowe.io/runtime-core";
-import { type RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
+import type { RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
-import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
+import type { ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import Image from "next/image";
 import MarloweIcon from "public/marlowe.svg";
 import type { Dispatch, SetStateAction } from "react";
-import { type IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
+import type { IStateData } from "~/components/Table/table.interface";
+import type { IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
 import { env } from "~/env.mjs";
-import { type IPagination } from "~/pages/listing";
+import type { IPagination } from "~/pages/listing";
 import {
   contractDetailsSchema,
   contractHeaderSchema,
@@ -21,7 +24,14 @@ import {
   type DesiredType,
   type OfferedType,
 } from ".";
-import { ADA, ICON_SIZES, lovelaceToAda, type ITableData } from "..";
+import {
+  ADA,
+  ICON_SIZES,
+  lovelaceToAda,
+  parseState,
+  type ITableData,
+} from "..";
+import { getState, type Scheme } from "../atomicSwap";
 
 export const getAddress = async (
   runtime: RuntimeLifecycle,
@@ -165,6 +175,7 @@ export const getContracts = async (
               desired: getDesired(initialContract.when[0].then),
               expiry: new Date(Number(initialContract.timeout)).toString(),
               start: startDate.toString(),
+              state: parsedContract.data.state,
             };
           } else {
             return null;
@@ -253,4 +264,70 @@ export const getPayouts = async (
   const walletInfo = window.localStorage.getItem("walletInfo");
   setLoadingPayouts(availableWithdraws?.length === undefined);
   setAddressExists(!!walletInfo);
+};
+
+export const getTransactionDetails = async (
+  client: RestClient,
+  row: ITableData,
+  address: string | undefined,
+  handleOpenRetract: (row: ITableData) => () => void,
+  handleOpenAccept: (row: ITableData) => () => void,
+  setState: Dispatch<SetStateAction<IStateData>>,
+) => {
+  const transactions = await client.getTransactionsForContract(
+    contractId(row.id),
+  );
+  const txIds = transactions.headers.map((tx) => tx.transactionId);
+  const txsPromises = txIds.map((txId) =>
+    client.getContractTransactionById(contractId(row.id), txId),
+  );
+
+  const txDetails = await Promise.all(txsPromises);
+  const inputs = txDetails.flatMap((tx) => tx.inputs);
+
+  const deadline = datetoTimeout(new Date(row.expiry));
+  // Some data in scheme is not used, we can leave it empty. We just use deadline.
+  const scheme: Scheme = {
+    participants: {
+      seller: { address: "" },
+      buyer: { role_token: "" },
+    },
+    offer: {
+      deadline,
+      asset: {
+        amount: BigInt(0),
+        token: { currency_symbol: "", token_name: "" },
+      },
+    },
+    ask: {
+      deadline,
+      asset: {
+        amount: BigInt(0),
+        token: { currency_symbol: "", token_name: "" },
+      },
+    },
+    swapConfirmation: {
+      deadline,
+    },
+  };
+
+  const contractStateFromData = Object.keys(row.state).length
+    ? row.state
+    : undefined;
+
+  try {
+    const contractState = getState(scheme, inputs, contractStateFromData);
+    parseState(
+      {
+        row,
+        address,
+        handleOpenRetract,
+        handleOpenAccept,
+        setState,
+      },
+      contractState,
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };

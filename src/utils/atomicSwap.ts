@@ -161,8 +161,8 @@ export const getState = (
   state?: MarloweState,
 ): State => {
   /* #region Closed State */
-  if (state === null) {
-    // The Contract is closed when the State is null
+  if (state === undefined) {
+    // The Contract is closed when the State is undefined
     if (inputHistory.length === 0) {
       // Offer Provision Deadline has passed and there is one reduced applied to close the contract
       return {
