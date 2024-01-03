@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
-  IWalletInStorage,
   dateTimeOptions,
   getTransactionDetails,
   humanReadable,
   loadingState,
   truncateString,
+  type IWalletInStorage,
 } from "~/utils";
 import { type DataRowProps, type IStateData } from "../table.interface";
 
