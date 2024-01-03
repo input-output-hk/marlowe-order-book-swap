@@ -10,6 +10,7 @@ import {
   humanReadable,
   loadingState,
   truncateString,
+  type IWalletInStorage,
 } from "~/utils";
 import { type DataRowProps, type IStateData } from "../table.interface";
 
@@ -23,17 +24,23 @@ export const DataRowMobile = ({
   const { client } = useContext(TSSDKContext);
 
   useEffect(() => {
-    if (client)
+    if (client) {
+      const walletInfo = window.localStorage.getItem("walletInfo");
+      const addressLocalStorage = walletInfo
+        ? (JSON.parse(walletInfo) as IWalletInStorage).address
+        : "";
+
       void getTransactionDetails(
         client,
         row,
-        address,
+        addressLocalStorage,
         handleOpenRetract,
         handleOpenAccept,
         setState,
       );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client, address]);
+  }, [client]);
 
   const hasStarted =
     new Date(row.start).toISOString() < new Date().toISOString();
