@@ -1,23 +1,20 @@
 import Image from "next/image";
 import CloseIcon from "public/close.svg";
-import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
+import type { PropsWithChildren } from "react";
 import { ICON_SIZES } from "~/utils";
 
 interface ModalProps {
   title: string;
   open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  closeModal: () => void;
 }
 
 export const Modal = ({
   title,
   children,
   open,
-  setOpen,
+  closeModal,
 }: PropsWithChildren<ModalProps>) => {
-  const closeModal = () => {
-    setOpen(false);
-  };
   if (!open) return;
   return (
     <div className="fixed inset-0 z-40 flex h-full items-center bg-gray-600 bg-opacity-50  text-m-disabled">

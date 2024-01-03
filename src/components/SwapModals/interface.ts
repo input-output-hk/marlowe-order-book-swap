@@ -4,6 +4,7 @@ import { type ITokenAmount } from "~/utils";
 export interface ModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  setModalOpen: Dispatch<SetStateAction<boolean>>;
   offered: ITokenAmount;
   desired: ITokenAmount;
   id: string;

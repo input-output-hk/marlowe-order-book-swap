@@ -17,6 +17,7 @@ export interface TablePropsWithSort {
   setPagination: Dispatch<SetStateAction<IPagination>>;
   sort: ISort;
   setSort: Dispatch<SetStateAction<ISort>>;
+  setModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface ITableFooter {

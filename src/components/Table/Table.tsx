@@ -25,6 +25,7 @@ export const Table = ({
   setSort,
   pagination,
   setPagination,
+  setModalOpen,
 }: TablePropsWithSort) => {
   const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
@@ -48,12 +49,16 @@ export const Table = ({
     setDesired(row.desired);
     setOpenRetract(true);
     setContractId(row.id);
+    console.log("open RETRACT");
+    setModalOpen(true);
   };
   const handleOpenAccept = (row: ITableData) => () => {
     setOffered(row.offered);
     setDesired(row.desired);
     setOpenAccept(true);
     setContractId(row.id);
+    console.log("open ACCEPT");
+    setModalOpen(true);
   };
   const handleGoToDeposit = (row: ITableData) => () => {
     void router.push({
@@ -110,6 +115,7 @@ export const Table = ({
         offered={offered}
         desired={desired}
         id={contractId}
+        setModalOpen={setModalOpen}
       />
       <SwapModal
         open={openAccept}
@@ -117,6 +123,7 @@ export const Table = ({
         offered={offered}
         desired={desired}
         id={contractId}
+        setModalOpen={setModalOpen}
       />
     </>
   );

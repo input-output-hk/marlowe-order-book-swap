@@ -27,6 +27,7 @@ export default function Listing() {
   const [data, setData] = useState<ITableData[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [filters, setFilters] = useState<IFilters>({
     filterOwnListings: false,
     searchQuery: "",
@@ -90,7 +91,7 @@ export default function Listing() {
 
   useUpdate({
     callback: () => {
-      if (pagination.page === 1) {
+      if (pagination.page === 1 && !modalOpen) {
         void asyncGetContracts();
       }
     },
@@ -115,6 +116,7 @@ export default function Listing() {
           loading={loading}
           pagination={pagination}
           setPagination={setPagination}
+          setModalOpen={setModalOpen}
         />
       )}
     </>

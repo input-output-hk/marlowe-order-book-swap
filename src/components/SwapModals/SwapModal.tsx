@@ -36,6 +36,7 @@ export const SwapModal = ({
   offered,
   desired,
   id,
+  setModalOpen,
 }: ModalProps) => {
   const [balance, setBalance] = useState<Token[] | null>(null);
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
@@ -60,7 +61,10 @@ export const SwapModal = ({
     }
   };
 
-  const closeModal = () => setOpen(false);
+  const closeModal = () => {
+    setOpen(false);
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     if (nextStep && runtimeLifecycle) void makeNotify();
@@ -136,7 +140,7 @@ export const SwapModal = ({
   const assetDesired = getAssetDesired();
 
   return (
-    <Modal open={open} setOpen={setOpen} title="Swap Offer">
+    <Modal open={open} closeModal={closeModal} title="Swap Offer">
       {!balance ? (
         <div className="flex flex-grow items-center justify-center py-8">
           <Loading sizeDesktop={ICON_SIZES.XXL} sizeMobile={ICON_SIZES.L} />

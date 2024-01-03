@@ -20,6 +20,7 @@ interface ListingPageProps {
   filters: IFilters;
   setFilters: Dispatch<SetStateAction<IFilters>>;
   loading: boolean;
+  setModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ListingPage = ({
@@ -29,6 +30,7 @@ export const ListingPage = ({
   filters,
   setFilters,
   loading,
+  setModalOpen,
 }: ListingPageProps) => {
   const [sort, setSort] = useState<ISort>({
     sortBy: "expiryDate",
@@ -61,6 +63,7 @@ export const ListingPage = ({
             setSort={setSort}
             pagination={pagination}
             setPagination={setPagination}
+            setModalOpen={setModalOpen}
           />
         )}
       </div>
