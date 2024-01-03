@@ -19,6 +19,7 @@ export const DataRowMobile = ({
   address,
   handleOpenAccept,
   handleOpenRetract,
+  handleGoToDeposit,
 }: DataRowProps) => {
   const [state, setState] = useState<IStateData>(loadingState);
   const { client } = useContext(TSSDKContext);
@@ -36,6 +37,7 @@ export const DataRowMobile = ({
         addressLocalStorage,
         handleOpenRetract,
         handleOpenAccept,
+        handleGoToDeposit,
         setState,
       );
     }

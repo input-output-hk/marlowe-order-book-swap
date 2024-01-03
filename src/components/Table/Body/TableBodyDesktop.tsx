@@ -8,6 +8,7 @@ export const TableBodyDesktop = ({
   data,
   handleOpenAccept,
   handleOpenRetract,
+  handleGoToDeposit,
 }: TableProps) => {
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const { runtimeLifecycle } = useContext(TSSDKContext);
@@ -26,6 +27,7 @@ export const TableBodyDesktop = ({
             row={row}
             handleOpenAccept={handleOpenAccept}
             handleOpenRetract={handleOpenRetract}
+            handleGoToDeposit={handleGoToDeposit}
             address={myAddress}
           />
         );

@@ -1,8 +1,9 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import SearchNoneIcon from "public/search-none.svg";
 import { useState } from "react";
-import { ICON_SIZES, type ITableData, type ITokenAmount } from "~/utils";
+import { ICON_SIZES, PAGES, type ITableData, type ITokenAmount } from "~/utils";
 import { RetractModal } from "../SwapModals/RetractModal";
 import { SwapModal } from "../SwapModals/SwapModal";
 import { TableFooterDesktop } from "./Footer/TableFooterDesktop";
@@ -40,6 +41,7 @@ export const Table = ({
     amount: 0,
     currency: "",
   });
+  const router = useRouter();
 
   const handleOpenRetract = (row: ITableData) => () => {
     setOffered(row.offered);
@@ -52,6 +54,19 @@ export const Table = ({
     setDesired(row.desired);
     setOpenAccept(true);
     setContractId(row.id);
+  };
+  const handleGoToDeposit = (row: ITableData) => () => {
+    void router.push({
+      pathname: PAGES.DEPOSIT,
+      query: {
+        id: row.id,
+        offeredToken: row.offered.token,
+        offeredAmount: row.offered.amount,
+        desiredToken: row.desired.token,
+        desiredAmount: row.desired.amount,
+        expiryDate: row.expiry,
+      },
+    });
   };
 
   if (!data.length) {
@@ -77,6 +92,7 @@ export const Table = ({
           data={data}
           handleOpenRetract={handleOpenRetract}
           handleOpenAccept={handleOpenAccept}
+          handleGoToDeposit={handleGoToDeposit}
         />
       </div>
       <TableFooterDesktop pagination={pagination} />
@@ -84,6 +100,7 @@ export const Table = ({
         data={data}
         handleOpenRetract={handleOpenRetract}
         handleOpenAccept={handleOpenAccept}
+        handleGoToDeposit={handleGoToDeposit}
         pagination={pagination}
         setPagination={setPagination}
       />

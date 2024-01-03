@@ -131,8 +131,14 @@ export const parseState = (
   },
   state: State | undefined,
 ) => {
-  const { row, address, handleOpenAccept, handleOpenRetract, setState } =
-    componentInfo;
+  const {
+    row,
+    address,
+    handleOpenAccept,
+    handleOpenRetract,
+    handleGoToDeposit,
+    setState,
+  } = componentInfo;
   const nullFn = () => null;
 
   if (!state) return setState(loadingState);
@@ -158,10 +164,10 @@ export const parseState = (
     }
     case "WaitingSellerOffer": {
       return setState({
-        disabled: true,
+        disabled: row.createdBy !== address,
         text: row.createdBy === address ? "Deposit" : "Not Started",
-        // TODO change to deposit page
-        action: nullFn,
+        action: handleGoToDeposit(row),
+        color: row.createdBy === address ? COLORS.GREEN : COLORS.DISABLED,
       });
     }
     case "WaitingForSwapConfirmation": {
