@@ -321,8 +321,8 @@ export const getTransactionDetails = async (
       {
         row,
         address,
-        handleOpenAccept,
         handleOpenRetract,
+        handleOpenAccept,
         setState,
       },
       contractState,

@@ -28,8 +28,8 @@ export const DataRowMobile = ({
         client,
         row,
         address,
-        handleOpenAccept,
         handleOpenRetract,
+        handleOpenAccept,
         setState,
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
