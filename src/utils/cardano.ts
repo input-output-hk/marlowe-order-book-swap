@@ -148,7 +148,7 @@ export const parseState = (
           row.createdBy === address
             ? handleOpenRetract(row)
             : handleOpenAccept(row),
-        color: COLORS.RED,
+        color: row.createdBy === address ? COLORS.RED : COLORS.PURPLE,
       });
     }
     case "NoSellerOfferInTime": {
