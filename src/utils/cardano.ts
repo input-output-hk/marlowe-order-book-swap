@@ -84,17 +84,15 @@ export const getSwapContract = ({
   };
 
   const swapSchema: Scheme = {
-    participants: {
-      seller: providerAddress,
-      buyer: { role_token: "buyer" },
-    },
     offer: {
-      deadline: datetoTimeout(new Date(expiryDate)),
+      seller: providerAddress,
       asset: tokenValue(parsedValueOffered)(tokenOffered),
+      deadline: datetoTimeout(new Date(expiryDate)),
     },
     ask: {
-      deadline: datetoTimeout(new Date(expiryDate)),
+      buyer: { role_token: "buyer" },
       asset: tokenValue(parsedValueDesired)(tokenDesired),
+      deadline: datetoTimeout(new Date(expiryDate)),
     },
     swapConfirmation: {
       deadline: datetoTimeout(new Date(expiryDate)),
