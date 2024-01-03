@@ -8,7 +8,8 @@ import { DataRowMobile } from "./DataRowMobile";
 export const TableBodyMobile = ({
   data,
   handleOpenAccept,
-  handleOpenRetractOrDeposit,
+  handleOpenRetract,
+  handleGoToDeposit,
   pagination,
   setPagination,
 }: TableProps) => {
@@ -29,7 +30,8 @@ export const TableBodyMobile = ({
               key={row.id}
               row={row}
               handleOpenAccept={handleOpenAccept}
-              handleOpenRetract={handleOpenRetractOrDeposit}
+              handleOpenRetract={handleOpenRetract}
+              handleGoToDeposit={handleGoToDeposit}
               address={myAddress}
             />
           );

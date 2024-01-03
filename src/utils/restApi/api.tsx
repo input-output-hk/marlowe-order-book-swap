@@ -272,6 +272,7 @@ export const getTransactionDetails = async (
   address: string | undefined,
   handleOpenRetract: (row: ITableData) => () => void,
   handleOpenAccept: (row: ITableData) => () => void,
+  handleGoToDeposit: (row: ITableData) => () => void,
   setState: Dispatch<SetStateAction<IStateData>>,
 ) => {
   const transactions = await client.getTransactionsForContract(
@@ -323,6 +324,7 @@ export const getTransactionDetails = async (
         address,
         handleOpenRetract,
         handleOpenAccept,
+        handleGoToDeposit,
         setState,
       },
       contractState,

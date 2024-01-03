@@ -15,6 +15,7 @@ export const DataRowDesktop = ({
   address,
   handleOpenAccept,
   handleOpenRetract,
+  handleGoToDeposit,
 }: DataRowProps) => {
   const [state, setState] = useState<IStateData>(loadingState);
   const { client } = useContext(TSSDKContext);
@@ -27,6 +28,7 @@ export const DataRowDesktop = ({
         address,
         handleOpenRetract,
         handleOpenAccept,
+        handleGoToDeposit,
         setState,
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,7 +68,7 @@ export const DataRowDesktop = ({
       </div>
       <div className="table-cell w-1/4">
         <div className="flex items-center justify-center">
-          <div className="w-fit">
+          <div className="w-36">
             <Button
               size={SIZE.SMALL}
               onClick={state.action}

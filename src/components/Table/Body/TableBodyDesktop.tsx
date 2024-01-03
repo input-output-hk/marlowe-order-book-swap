@@ -7,7 +7,8 @@ import { DataRowDesktop } from "./DataRowDesktop";
 export const TableBodyDesktop = ({
   data,
   handleOpenAccept,
-  handleOpenRetractOrDeposit,
+  handleOpenRetract,
+  handleGoToDeposit,
 }: TableProps) => {
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const { runtimeLifecycle } = useContext(TSSDKContext);
@@ -25,7 +26,8 @@ export const TableBodyDesktop = ({
             key={row.id}
             row={row}
             handleOpenAccept={handleOpenAccept}
-            handleOpenRetract={handleOpenRetractOrDeposit}
+            handleOpenRetract={handleOpenRetract}
+            handleGoToDeposit={handleGoToDeposit}
             address={myAddress}
           />
         );
