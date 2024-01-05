@@ -47,9 +47,6 @@ export const TokenElement = ({
           )}
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">
-            Decimals: {token.decimals}
-          </span>
           <div className="w-fit">
             <Button size={SIZE.XSMALL} onClick={handleSelect}>
               Select
