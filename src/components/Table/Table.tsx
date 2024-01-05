@@ -49,7 +49,6 @@ export const Table = ({
     setDesired(row.desired);
     setOpenRetract(true);
     setContractId(row.id);
-    console.log("open RETRACT");
     setModalOpen(true);
   };
   const handleOpenAccept = (row: ITableData) => () => {
@@ -57,7 +56,6 @@ export const Table = ({
     setDesired(row.desired);
     setOpenAccept(true);
     setContractId(row.id);
-    console.log("open ACCEPT");
     setModalOpen(true);
   };
   const handleGoToDeposit = (row: ITableData) => () => {

@@ -51,6 +51,10 @@ export const FiltersAndSort = ({
     });
   }, [selectedSortByDate, setSort]);
 
+  const closeModal = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <div
@@ -65,7 +69,7 @@ export const FiltersAndSort = ({
         />
         <p>Filters & Sort</p>
       </div>
-      <Modal open={open} setOpen={setOpen} title="Filters & Sort">
+      <Modal open={open} closeModal={closeModal} title="Filters & Sort">
         <p className="font-semibold text-black">Filters</p>
         <hr className="mb-6" />
         <div className="mb-6 flex justify-between">
