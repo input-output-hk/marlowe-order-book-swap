@@ -1,8 +1,8 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import { ADA, type IOptions } from "~/utils";
 import { tokensData } from "~/utils/tokens";
-import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
+import { TokensModal } from "../TokensModal/TokensModal";
 
 interface TokenInputsProps {
   label: string;
@@ -41,13 +41,7 @@ export const TokenInputs = ({
       pointerEvents
       placeholder="0"
       error={errors}
-      endContent={
-        <DropDown
-          options={dropDownOptions}
-          selected={selectedOffered}
-          setSelected={setSelectedOffered}
-        />
-      }
+      endContent={<TokensModal />}
     />
   );
 };

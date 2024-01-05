@@ -6,6 +6,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: string;
   filled?: boolean;
   hovered?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 export const SIZE = {
@@ -24,6 +25,7 @@ export const Button = ({
   onClick,
   disabled,
   hovered,
+  type = "button",
   className: customClassName,
 }: PropsWithChildren<ButtonProps>) => {
   const getBgColor = () => {
@@ -60,6 +62,7 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled}
       className={`shadow-button-shadow h-min w-full whitespace-nowrap rounded-md font-bold ${getBgColor()} ${getBorder()} ${getPadding()} ${customClassName}`}
+      type={type}
     >
       {children}
     </button>
