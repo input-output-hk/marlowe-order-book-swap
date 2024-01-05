@@ -10,7 +10,7 @@ import {
   type SetStateAction,
 } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { ADA, ICON_SIZES, type IOptions } from "~/utils";
+import { ADA, ICON_SIZES } from "~/utils";
 import { type Asset } from "~/utils/tokens";
 import { Input } from "../Input/Input";
 import { TokensModal } from "../TokensModal/TokensModal";
@@ -19,8 +19,8 @@ interface TokenInputsProps {
   label: string;
   valueOffered: string;
   setValueOffered: Dispatch<SetStateAction<string>>;
-  selectedOffered: IOptions;
-  setSelectedOffered: Dispatch<SetStateAction<IOptions>>;
+  selectedOffered: Asset;
+  setSelectedOffered: Dispatch<SetStateAction<Asset>>;
   errors: (string | undefined)[];
 }
 
@@ -53,8 +53,8 @@ export const TokenInputs = ({
             icon: (
               <Image
                 src={CardanoIcon as string}
-                alt={"C"}
-                height={ICON_SIZES.XS}
+                alt="C"
+                height={ICON_SIZES.S}
               />
             ),
             amount: token.quantity,
@@ -79,7 +79,13 @@ export const TokenInputs = ({
       pointerEvents
       placeholder="0"
       error={errors}
-      endContent={<TokensModal assets={ownTokens} />}
+      endContent={
+        <TokensModal
+          assets={label === "You will swap *" ? ownTokens : undefined}
+          selectedOffered={selectedOffered}
+          setSelectedOffered={setSelectedOffered}
+        />
+      }
     />
   );
 };

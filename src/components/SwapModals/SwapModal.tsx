@@ -20,9 +20,8 @@ import {
   checkIfIsToken,
   isEnoughBalance,
   waitTxConfirmation,
-  type AssetAndAmount,
 } from "~/utils";
-import { TOKENS, tokensData } from "~/utils/tokens";
+import { TOKENS, tokensData, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -128,13 +127,13 @@ export const SwapModal = ({
     }
   };
 
-  const getAssetDesired = (): AssetAndAmount | undefined => {
+  const getAssetDesired = (): Asset | undefined => {
     if (checkIfIsToken(desired.token))
       return {
         ...tokensData[
           String(desired.token) === "" ? TOKENS.ADA : desired.token
         ],
-        amount: desired.amount,
+        amount: BigInt(desired.amount),
       };
   };
   const assetDesired = getAssetDesired();

@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { ADA, adaToLovelace, lovelaceToAda, truncateString } from "~/utils";
 import { TOKENS, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 interface TokenElementProps {
   token: Asset;
+  setSelectedOffered: Dispatch<SetStateAction<Asset>>;
+  closeModal: () => void;
 }
-export const TokenElement = ({ token }: TokenElementProps) => {
+
+export const TokenElement = ({
+  token,
+  setSelectedOffered,
+  closeModal,
+}: TokenElementProps) => {
   const [hiddenPolicy, setHiddenPolicy] = useState(true);
   const changeVisibility = () => setHiddenPolicy(!hiddenPolicy);
   const balanceInt = Math.floor(Number(lovelaceToAda(token.amount ?? 0)));
@@ -13,6 +20,14 @@ export const TokenElement = ({ token }: TokenElementProps) => {
   const balanceDecimals = Number(
     (token.amount ?? BigInt(0)) - (adaToLovelace(BigInt(balanceInt)) as bigint),
   );
+
+  const handleSelect = () => {
+    setSelectedOffered({
+      ...token,
+      assetName: token.assetName === "" ? TOKENS.ADA : token.assetName,
+    });
+    closeModal();
+  };
 
   return (
     <div className="flex flex-col">
@@ -57,7 +72,9 @@ export const TokenElement = ({ token }: TokenElementProps) => {
             Decimals: {token.decimals}
           </span>
           <div className="w-fit">
-            <Button size={SIZE.XSMALL}>Select</Button>
+            <Button size={SIZE.XSMALL} onClick={handleSelect}>
+              Select
+            </Button>
           </div>
         </div>
       </div>

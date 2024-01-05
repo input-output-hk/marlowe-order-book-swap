@@ -17,7 +17,6 @@ import type {
 } from "~/components/Table/table.interface";
 import { COLORS, adaToLovelace } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
-import { type IOptions } from "./interfaces";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
 export const POLICY_LENGTH = 56;
@@ -29,11 +28,7 @@ export const checkIfIsToken = (token: string): token is TOKENS => {
   return Object.values(tokensData).some((t) => t.assetName === token);
 };
 
-export type AssetAndAmount = Asset & { amount: number };
-export const isEnoughBalance = (
-  balance: Token[],
-  assetToCompare: AssetAndAmount,
-) => {
+export const isEnoughBalance = (balance: Token[], assetToCompare: Asset) => {
   const asset = balance.find(
     (a) => unPolicyId(a.assetId.policyId) === assetToCompare.policyId,
   );
@@ -41,17 +36,17 @@ export const isEnoughBalance = (
   if (!asset) return false;
 
   if (asset.assetId.assetName === "") {
-    return asset.quantity >= adaToLovelace(assetToCompare.amount);
+    return asset.quantity >= adaToLovelace(assetToCompare.amount ?? 0);
   } else {
-    return asset.quantity >= assetToCompare.amount;
+    return asset.quantity >= (assetToCompare.amount ?? 0);
   }
 };
 
 interface ISwapRequest {
   valueOffered: string;
   valueDesired: string;
-  selectedOffered: IOptions;
-  selectedDesired: IOptions;
+  selectedOffered: Asset;
+  selectedDesired: Asset;
   expiryDate: string;
   providerAddress: Address;
 }
@@ -65,22 +60,22 @@ export const getSwapContract = ({
   providerAddress,
 }: ISwapRequest) => {
   const parsedValueOffered =
-    selectedOffered.option === ADA
+    selectedOffered.assetName === ADA
       ? (adaToLovelace(BigInt(valueOffered)) as bigint)
       : BigInt(valueOffered);
   const parsedValueDesired =
-    selectedDesired.option === ADA
+    selectedDesired.assetName === ADA
       ? (adaToLovelace(BigInt(valueDesired)) as bigint)
       : BigInt(valueDesired);
 
   const tokenOffered: TokenSwap = {
-    currency_symbol: tokensData[selectedOffered.option as TOKENS].policyId,
-    token_name: tokensData[selectedOffered.option as TOKENS].assetName,
+    currency_symbol: tokensData[selectedOffered.assetName as TOKENS].policyId,
+    token_name: tokensData[selectedOffered.assetName as TOKENS].assetName,
   };
 
   const tokenDesired: TokenSwap = {
-    currency_symbol: tokensData[selectedDesired.option as TOKENS].policyId,
-    token_name: tokensData[selectedDesired.option as TOKENS].assetName,
+    currency_symbol: tokensData[selectedDesired.assetName as TOKENS].policyId,
+    token_name: tokensData[selectedDesired.assetName as TOKENS].assetName,
   };
 
   const swapSchema: Scheme = {
