@@ -16,6 +16,7 @@ export const RetractModal = ({
   offered,
   desired,
   id,
+  setModalOpen,
 }: ModalProps) => {
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +29,10 @@ export const RetractModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runtimeLifecycle]);
 
-  const closeModal = () => setOpen(false);
+  const closeModal = () => {
+    setOpen(false);
+    setModalOpen(false);
+  };
 
   const handleRetract = async () => {
     if (runtimeLifecycle && myAddress) {
@@ -57,7 +61,7 @@ export const RetractModal = ({
   };
 
   return (
-    <Modal open={open} setOpen={setOpen} title="Retract Swap Offer">
+    <Modal open={open} closeModal={closeModal} title="Retract Swap Offer">
       <main className="flex w-full flex-col items-center text-m-disabled">
         <div className="flex w-full flex-col items-center justify-center gap-5 align-middle">
           <div className="flex w-full flex-col content-start items-start gap-2">
