@@ -154,8 +154,7 @@ export const getContracts = async (
           const parsedContract = contractDetailsSchema.safeParse(contract);
 
           if (parsedContract.success) {
-            const { tags, contractId, initialContract, state } =
-              parsedContract.data;
+            const { tags, contractId, initialContract } = parsedContract.data;
             let startDate = new Date();
             if (
               env.NEXT_PUBLIC_DAPP_ID in tags &&
@@ -170,7 +169,9 @@ export const getContracts = async (
 
             return {
               id: unContractId(contractId),
-              createdBy: state.value?.accounts[0][0][0].address,
+              createdBy:
+                parsedContract.data.initialContract.when[0].case.into_account
+                  .address,
               offered: getOffered(initialContract.when[0].case),
               desired: getDesired(initialContract.when[0].then),
               expiry: new Date(Number(initialContract.timeout)).toString(),
