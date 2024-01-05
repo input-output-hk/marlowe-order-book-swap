@@ -45,7 +45,7 @@ const TokenElement = ({ token }: TokenElementProps) => {
 };
 
 interface TokensModalProps {
-  assets?: Asset[];
+  assets?: [string, Asset];
 }
 
 export const TokensModal = ({ assets }: TokensModalProps) => {
