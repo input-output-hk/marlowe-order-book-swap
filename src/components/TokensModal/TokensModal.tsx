@@ -1,14 +1,16 @@
 import Image from "next/image";
 import FullscreenIcon from "public/fullscreen.svg";
-import { useState } from "react";
+import SearchIcon from "public/search.svg";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { COLORS, ICON_SIZES } from "~/utils";
 import { tokensData, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
+import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
 import { TokenElement } from "./TokenElement";
 
 interface TokensModalProps {
-  assets?: [string, Asset];
+  assets?: Asset[];
 }
 
 export const TokensModal = ({ assets }: TokensModalProps) => {
@@ -16,6 +18,23 @@ export const TokensModal = ({ assets }: TokensModalProps) => {
 
   const closeModal = () => setOpen(false);
   const openModal = () => setOpen(true);
+
+  const [query, setQuery] = useState("");
+  const [options, setOptions] = useState(assets);
+
+  useEffect(() => {
+    setOptions(
+      assets?.filter(
+        (option) =>
+          option.assetName.toLowerCase().includes(query.toLocaleLowerCase()) ||
+          option.policyId?.toLowerCase().includes(query.toLocaleLowerCase()),
+      ),
+    );
+  }, [query, assets]);
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value || "");
+  };
 
   return (
     <>
@@ -41,12 +60,27 @@ export const TokensModal = ({ assets }: TokensModalProps) => {
 
       <Modal closeModal={closeModal} open={open} title="Token Select">
         <div className="flex flex-col gap-4 pt-2">
-          {assets
-            ? //TODO add own tokens instead of null
-              null
-            : Object.entries(tokensData).map((token) => {
-                return <TokenElement key={token[0]} token={token} />;
-              })}
+          <Input
+            value={query}
+            onChange={handleSearch}
+            startContent={
+              <Image
+                src={SearchIcon as string}
+                height={ICON_SIZES.S}
+                alt="Search by Token Name"
+              />
+            }
+            placeholder="Search by Token Name"
+          />
+          <div className="flex max-h-96 flex-col gap-4 overflow-auto">
+            {assets
+              ? options!.map((token) => {
+                  return <TokenElement key={token.policyId} token={token} />;
+                })
+              : Object.values(tokensData).map((token) => {
+                  return <TokenElement key={token.policyId} token={token} />;
+                })}
+          </div>
         </div>
       </Modal>
     </>

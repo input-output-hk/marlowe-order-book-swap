@@ -68,11 +68,9 @@ export const CreateListing = () => {
   const { runtimeLifecycle, setRuntime, client } = useContext(TSSDKContext);
 
   useEffect(() => {
-    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runtimeLifecycle]);
-
-  useEffect(() => {
+    if (runtimeLifecycle) {
+      void getAddress(runtimeLifecycle, setMyAddress);
+    }
     if (createLoading.contractConfirmed !== "") {
       void router.push({
         pathname: PAGES.DEPOSIT,
@@ -87,7 +85,7 @@ export const CreateListing = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createLoading.contractConfirmed]);
+  }, [createLoading.contractConfirmed, runtimeLifecycle]);
 
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;
