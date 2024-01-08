@@ -89,7 +89,6 @@ export const CreateListing = () => {
           offeredDecimals: selectedOffered.decimals,
           desiredToken: selectedDesired.assetName,
           desiredAmount: valueDesired,
-          desiredDecimals: selectedDesired.decimals,
           expiryDate: expiryDate,
         },
       });

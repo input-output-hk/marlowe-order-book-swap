@@ -34,7 +34,6 @@ export const Deposit = () => {
     offeredDecimals,
     desiredToken,
     desiredAmount,
-    desiredDecimals,
     expiryDate,
   } = router.query as {
     offeredToken: string;
@@ -42,7 +41,6 @@ export const Deposit = () => {
     offeredDecimals: string;
     desiredToken: string;
     desiredAmount: string;
-    desiredDecimals: string;
     id: string;
     expiryDate: string;
   };
