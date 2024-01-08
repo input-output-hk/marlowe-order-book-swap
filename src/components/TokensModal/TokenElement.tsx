@@ -1,7 +1,16 @@
+import Image from "next/image";
+import InfoIcon from "public/info.svg";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { ADA, adaToLovelace, lovelaceToAda, truncateString } from "~/utils";
+import {
+  ADA,
+  ICON_SIZES,
+  adaToLovelace,
+  lovelaceToAda,
+  truncateString,
+} from "~/utils";
 import { TOKENS, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
+
 interface TokenElementProps {
   token: Asset;
   setSelectedOffered: Dispatch<SetStateAction<Asset>>;
@@ -67,12 +76,23 @@ export const TokenElement = ({
             )}
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">
-            Decimals: {token.decimals}
-          </span>
-          <div className="w-fit">
-            <Button size={SIZE.XSMALL} onClick={handleSelect}>
+        <div className="flex w-fit items-center gap-2">
+          {token.decimals < 0 && (
+            <abbr title="This token is not supported">
+              <Image
+                src={InfoIcon as string}
+                alt="i"
+                height={ICON_SIZES.L}
+                className="cursor-pointer"
+              />
+            </abbr>
+          )}
+          <div className="w-28">
+            <Button
+              size={SIZE.XSMALL}
+              onClick={handleSelect}
+              disabled={token.decimals < 0}
+            >
               Select
             </Button>
           </div>

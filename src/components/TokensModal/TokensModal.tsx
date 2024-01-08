@@ -14,6 +14,7 @@ import { tokensData, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
+import { Switch } from "../Switch/Switch";
 import { TokenElement } from "./TokenElement";
 
 interface TokensModalProps {
@@ -34,6 +35,7 @@ export const TokensModal = ({
 
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState(assets);
+  const [switchEnabled, setSwitchEnabled] = useState(false);
 
   useEffect(() => {
     setOptions(
@@ -47,6 +49,25 @@ export const TokensModal = ({
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+  };
+
+  const changeSwitch = () => {
+    setSwitchEnabled(!switchEnabled);
+    if (!switchEnabled) {
+      setOptions(options?.filter((token) => token.decimals > 0));
+    } else if (query !== "") {
+      setOptions(
+        assets?.filter(
+          (option) =>
+            option.assetName
+              .toLowerCase()
+              .includes(query.toLocaleLowerCase()) ||
+            option.policyId?.toLowerCase().includes(query.toLocaleLowerCase()),
+        ),
+      );
+    } else {
+      setOptions(assets);
+    }
   };
 
   return (
@@ -66,7 +87,7 @@ export const TokensModal = ({
                 </span>
                 <Image
                   src={FullscreenIcon as string}
-                  alt=""
+                  alt="[ ]"
                   height={ICON_SIZES.S}
                 />
               </>
@@ -85,20 +106,30 @@ export const TokensModal = ({
       <Modal closeModal={closeModal} open={open} title="Token Select">
         <div className="flex flex-col gap-4 pt-2">
           {assets && (
-            <Input
-              value={query}
-              onChange={handleSearch}
-              startContent={
-                <Image
-                  src={SearchIcon as string}
-                  height={ICON_SIZES.S}
-                  alt="Search by Token Name"
+            <div className="flex items-center justify-between gap-4 ">
+              <div className="w-4/5">
+                <Input
+                  value={query}
+                  onChange={handleSearch}
+                  startContent={
+                    <Image
+                      src={SearchIcon as string}
+                      height={ICON_SIZES.S}
+                      alt="Search"
+                    />
+                  }
+                  placeholder="Search by Token Name or Policy ID"
                 />
-              }
-              placeholder="Search by Token Name"
-            />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm text-black" onClick={changeSwitch}>
+                  Supported tokens
+                </label>
+                <Switch enabled={switchEnabled} setEnabled={changeSwitch} />
+              </div>
+            </div>
           )}
-          <div className="flex max-h-96 flex-col gap-4 overflow-auto">
+          <div className="flex h-96 flex-col gap-4 overflow-auto overscroll-contain pr-2">
             {options !== undefined ? (
               options.length > 0 ? (
                 options.map((token) => (

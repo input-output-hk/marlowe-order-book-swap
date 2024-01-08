@@ -11,3 +11,11 @@ export const hexaToText = (hexa: string) => {
   }
   return text;
 };
+
+export const textToHexa = (text: string) => {
+  let hexa = "";
+  for (let i = 0; i < text.length; i++) {
+    hexa += text.charCodeAt(i).toString(16);
+  }
+  return hexa;
+};
