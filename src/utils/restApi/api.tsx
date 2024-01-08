@@ -265,7 +265,6 @@ export const getContracts = async (
       });
 
       const contractsList = await Promise.all(contractsListPromise);
-      console.log(contractsList);
 
       // TODO: Implement a better solution. Check https://github.com/input-output-hk/marlowe-ts-sdk/discussions/129
       const parsedContractsList = contractsList.map(async (contract) => {
@@ -304,8 +303,6 @@ export const getContracts = async (
       const filteredData = nonFilteredData.filter(
         (x) => x !== null,
       ) as ITableData[];
-
-      console.log(filteredData);
 
       setData(filteredData);
       if (

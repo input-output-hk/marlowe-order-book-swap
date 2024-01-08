@@ -120,24 +120,21 @@ export const contractDetailsSchema = z.object({
   state: z.object({
     value: z
       .object({
-        accounts: z
-          .array(addressSchema)
-          .nonempty()
-          .or(
+        accounts: z.array(
+          z.union([
+            addressSchema,
             z.tuple([
-              addressSchema,
               z.tuple([
-                z.tuple([
-                  z.object({ role_token: z.string() }),
-                  z.object({
-                    token_name: z.string(),
-                    currency_symbol: z.string(),
-                  }),
-                ]),
-                z.bigint(),
+                z.object({ role_token: z.string() }),
+                z.object({
+                  token_name: z.string(),
+                  currency_symbol: z.string(),
+                }),
               ]),
+              z.bigint(),
             ]),
-          ),
+          ]),
+        ),
       })
       .optional(),
   }),
