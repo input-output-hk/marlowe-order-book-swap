@@ -35,12 +35,14 @@ export const Table = ({
     icon: <></>,
     amount: 0,
     currency: "",
+    policyId: "",
   });
   const [offered, setOffered] = useState<ITokenAmount>({
     token: "",
     icon: <></>,
     amount: 0,
     currency: "",
+    policyId: "",
   });
   const router = useRouter();
 
@@ -65,6 +67,7 @@ export const Table = ({
         id: row.id,
         offeredToken: row.offered.token,
         offeredAmount: row.offered.amount,
+        offeredPolicyId: row.offered.policyId,
         desiredToken: row.desired.token,
         desiredAmount: row.desired.amount,
         expiryDate: row.expiry,

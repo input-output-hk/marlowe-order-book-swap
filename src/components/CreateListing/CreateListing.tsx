@@ -82,6 +82,7 @@ export const CreateListing = () => {
           id: createLoading.contractConfirmed,
           offeredToken: selectedOffered.assetName,
           offeredAmount: valueOffered,
+          offeredPolicyId: selectedOffered.policyId,
           desiredToken: selectedDesired.assetName,
           desiredAmount: valueDesired,
           expiryDate: expiryDate,

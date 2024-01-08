@@ -30,12 +30,14 @@ export const Deposit = () => {
     id,
     offeredToken,
     offeredAmount,
+    offeredPolicyId,
     desiredToken,
     desiredAmount,
     expiryDate,
   } = router.query as {
     offeredToken: string;
     offeredAmount: string;
+    offeredPolicyId: string;
     desiredToken: string;
     desiredAmount: string;
     id: string;
@@ -64,7 +66,7 @@ export const Deposit = () => {
                     ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
                     : BigInt(offeredAmount),
                 of_token: {
-                  currency_symbol: tokensData[offeredToken as TOKENS].policyId,
+                  currency_symbol: offeredPolicyId,
                   token_name: offeredToken === ADA ? "" : offeredToken,
                 },
                 into_account: { address: myAddress },

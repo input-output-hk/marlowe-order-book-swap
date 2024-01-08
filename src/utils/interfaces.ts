@@ -5,6 +5,7 @@ export interface IToken {
   token: string;
   icon: JSX.Element;
   currency: string;
+  policyId: string;
 }
 
 export interface ITokenAmount extends IToken {
