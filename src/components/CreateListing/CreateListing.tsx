@@ -41,8 +41,8 @@ export const CreateListing = () => {
   const [errors, setErrors] = useState<ICreateErrors>({
     valueOffered: undefined,
     valueDesired: undefined,
-    dropOffered: undefined,
-    dropDesired: undefined,
+    tokenOffered: undefined,
+    tokenDesired: undefined,
     expiryDate: undefined,
     startDate: undefined,
     beforeTodayStartError: undefined,
@@ -212,7 +212,7 @@ export const CreateListing = () => {
             setValueOffered={setValueOffered}
             selectedOffered={selectedOffered}
             setSelectedOffered={setSelectedOffered}
-            errors={[errors.dropOffered, errors.valueOffered]}
+            errors={[errors.tokenOffered, errors.valueOffered]}
           />
           <Image
             src={DownIcon as string}
@@ -226,7 +226,7 @@ export const CreateListing = () => {
             setValueOffered={setValueDesired}
             selectedOffered={selectedDesired}
             setSelectedOffered={setSelectedDesired}
-            errors={[errors.dropDesired, errors.valueDesired]}
+            errors={[errors.tokenDesired, errors.valueDesired]}
           />
         </div>
         <div className="flex w-full flex-col content-start items-start gap-4">

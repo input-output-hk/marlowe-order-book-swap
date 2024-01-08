@@ -4,8 +4,8 @@ import { type Asset } from "~/utils/tokens";
 export interface ICreateErrors {
   valueOffered: string | undefined;
   valueDesired: string | undefined;
-  dropOffered: string | undefined;
-  dropDesired: string | undefined;
+  tokenOffered: string | undefined;
+  tokenDesired: string | undefined;
   expiryDate: string | undefined;
   startDate: string | undefined;
   beforeTodayStartError: string | undefined;
@@ -52,16 +52,19 @@ export const checkValidity = ({
       valueOffered:
         Number(valueOffered) <= 0 || valueOffered === ""
           ? "Value must be greater than 0"
+          : selectedOffered.amount &&
+            Number(valueOffered) > selectedOffered.amount
+          ? "Value must be lower or equal than owned amount"
           : undefined,
       valueDesired:
         Number(valueDesired) <= 0 || valueDesired === ""
           ? "Value must be greater than 0"
           : undefined,
-      dropOffered:
+      tokenOffered:
         selectedOffered.assetName === "Token Select"
           ? "You must select an offered token"
           : undefined,
-      dropDesired:
+      tokenDesired:
         selectedDesired.assetName === "Token Select"
           ? "You must select a desired token"
           : undefined,
