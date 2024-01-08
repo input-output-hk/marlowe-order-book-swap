@@ -23,6 +23,7 @@ export const TokensModal = ({
   assets,
 }: TokensModalProps) => {
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
   const [policyId, setPolicyId] = useState("");
   const [assetName, setAssetName] = useState("");
 
@@ -61,7 +62,7 @@ export const TokensModal = ({
         throw new Error("Token not found");
       }
     } catch (err) {
-      console.log(err);
+      setError("Token not found");
     }
   };
 
@@ -124,9 +125,9 @@ export const TokensModal = ({
                 })}
           </div>
 
-          <div className="flex items-end justify-between">
-            <div className="flex gap-2">
-              <div className="flex flex-col">
+          <div className="flex flex-col items-start justify-between gap-2 md:grid md:grid-cols-1">
+            <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
+              <div className="flex w-full flex-col">
                 <Input
                   className="p-1 text-sm"
                   label="Policy ID"
@@ -134,7 +135,7 @@ export const TokensModal = ({
                   onChange={handlePolicyChange}
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex w-full flex-col">
                 <Input
                   className="p-1 text-sm"
                   label="Asset Name (not encoded)"
@@ -143,16 +144,21 @@ export const TokensModal = ({
                 />
               </div>
             </div>
-            <div className="w-fit">
-              <Button size={SIZE.XSMALL} onClick={searchToken} type="button">
-                Select
-              </Button>
-            </div>
+            <span className="self-start">
+              <b>Warning:</b> Some tokens might not be listed
+            </span>
+            {error && (
+              <span className="self-start text-m-red">
+                <b>Error:</b> {error}
+              </span>
+            )}
+          </div>
+          <div className="w-fit self-end">
+            <Button size={SIZE.XSMALL} onClick={searchToken} type="button">
+              Search token
+            </Button>
           </div>
         </div>
-        <span>
-          <b>Warning:</b> Some tokens might not be listed
-        </span>
       </Modal>
     </>
   );

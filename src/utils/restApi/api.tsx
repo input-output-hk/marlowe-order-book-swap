@@ -49,6 +49,15 @@ const getOffered = (data: OfferedType) => {
       ? (lovelaceToAda(Number(data.deposits)) as number)
       : Number(data.deposits);
 
+  // const tokenFromLocal = Object.values(tokensData).find(
+  //   (tokenData) => tokenData.assetName === data.of_token.token_name,
+  // );
+
+  // if (!tokenFromLocal) {
+  //   console.log(data);
+  //   // await lookupTokenMetadata();
+  // }
+
   return {
     token,
     amount,

@@ -74,8 +74,8 @@ export const getSwapContract = ({
   };
 
   const tokenDesired: TokenSwap = {
-    currency_symbol: tokensData[selectedDesired.assetName as TOKENS].policyId,
-    token_name: tokensData[selectedDesired.assetName as TOKENS].assetName,
+    currency_symbol: selectedDesired.policyId,
+    token_name: selectedDesired.assetName,
   };
 
   const swapSchema: Scheme = {
