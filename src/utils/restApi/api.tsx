@@ -117,18 +117,18 @@ const getOffered = async (data: OfferedType) => {
 
 const getDesired = async (data: DesiredType) => {
   const token =
-    data.when[0].case.of_token.token_name === ""
+    data.when[0].case.of_token.token_name === ADA
       ? ADA
       : data.when[0].case.of_token.token_name;
 
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) =>
-      tokenData.assetName === data.when[0].case.of_token.token_name,
+      tokenData.tokenName === data.when[0].case.of_token.token_name,
   );
 
   if (tokenFromLocal) {
     const amount =
-      data.when[0].case.of_token.token_name === ""
+      data.when[0].case.of_token.token_name === ADA
         ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
         : (intToDecimal(
             Number(data.when[0].case.deposits),
@@ -150,7 +150,7 @@ const getDesired = async (data: DesiredType) => {
 
       if (tokenInfo) {
         const amount =
-          data.when[0].case.of_token.token_name === ""
+          data.when[0].case.of_token.token_name === ADA
             ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
             : (intToDecimal(
                 Number(data.when[0].case.deposits),
@@ -262,6 +262,7 @@ export const getContracts = async (
       });
 
       const contractsList = await Promise.all(contractsListPromise);
+      console.log(contractsList);
 
       // TODO: Implement a better solution. Check https://github.com/input-output-hk/marlowe-ts-sdk/discussions/129
       const parsedContractsList = contractsList.map(async (contract) => {
@@ -300,6 +301,8 @@ export const getContracts = async (
       const filteredData = nonFilteredData.filter(
         (x) => x !== null,
       ) as ITableData[];
+
+      console.log(filteredData);
 
       setData(filteredData);
       if (
