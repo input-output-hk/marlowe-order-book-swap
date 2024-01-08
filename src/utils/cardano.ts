@@ -69,8 +69,9 @@ export const getSwapContract = ({
       : BigInt(valueDesired);
 
   const tokenOffered: TokenSwap = {
-    currency_symbol: tokensData[selectedOffered.assetName as TOKENS].policyId,
-    token_name: tokensData[selectedOffered.assetName as TOKENS].assetName,
+    currency_symbol: selectedOffered.policyId,
+    token_name:
+      selectedOffered.assetName === ADA ? "" : selectedOffered.assetName,
   };
 
   const tokenDesired: TokenSwap = {

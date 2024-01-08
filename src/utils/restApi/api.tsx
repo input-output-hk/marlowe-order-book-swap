@@ -10,7 +10,7 @@ import type { RestClient } from "@marlowe.io/runtime-rest-client";
 import type { ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
 import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
 import Image from "next/image";
-import MarloweIcon from "public/marlowe.svg";
+import CardanoIcon from "public/cardano.svg";
 import type { Dispatch, SetStateAction } from "react";
 import type { IStateData } from "~/components/Table/table.interface";
 import type { IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
@@ -29,9 +29,12 @@ import {
   ICON_SIZES,
   lovelaceToAda,
   parseState,
+  textToHexa,
   type ITableData,
 } from "..";
 import { getState, type Scheme } from "../atomicSwap";
+import { lookupTokenMetadata } from "../lookupTokenMetadata";
+import { tokensData } from "../tokens";
 
 export const getAddress = async (
   runtime: RuntimeLifecycle,
@@ -41,7 +44,7 @@ export const getAddress = async (
   if (walletAddress) setAddress(unAddressBech32(walletAddress));
 };
 
-const getOffered = (data: OfferedType) => {
+const getOffered = async (data: OfferedType) => {
   const token =
     data.of_token.token_name === "" ? ADA : data.of_token.token_name;
   const amount =
@@ -49,23 +52,57 @@ const getOffered = (data: OfferedType) => {
       ? (lovelaceToAda(Number(data.deposits)) as number)
       : Number(data.deposits);
 
-  // const tokenFromLocal = Object.values(tokensData).find(
-  //   (tokenData) => tokenData.assetName === data.of_token.token_name,
-  // );
+  const tokenFromLocal = Object.values(tokensData).find(
+    (tokenData) => tokenData.assetName === data.of_token.token_name,
+  );
 
-  // if (!tokenFromLocal) {
-  //   console.log(data);
-  //   // await lookupTokenMetadata();
-  // }
+  if (tokenFromLocal) {
+    return {
+      token: tokenFromLocal.tokenName,
+      amount,
+      icon: tokenFromLocal.icon,
+    };
+  } else {
+    try {
+      const tokenInfo = await lookupTokenMetadata(
+        data.of_token.currency_symbol,
+        textToHexa(data.of_token.token_name),
+        "preprod",
+      );
 
-  return {
-    token,
-    amount,
-    icon: <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />,
-  };
+      if (tokenInfo) {
+        return {
+          token: tokenInfo.ticker ?? tokenInfo.name,
+          amount,
+          icon: (
+            <Image
+              src={
+                tokenInfo.logo
+                  ? "data:image/png;base64," + tokenInfo.logo
+                  : (CardanoIcon as string)
+              }
+              alt=""
+              height={ICON_SIZES.S}
+              width={ICON_SIZES.S}
+            />
+          ),
+        };
+      } else {
+        throw new Error("Token not found");
+      }
+    } catch (err) {
+      return {
+        token,
+        amount,
+        icon: (
+          <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
+        ),
+      };
+    }
+  }
 };
 
-const getDesired = (data: DesiredType) => {
+const getDesired = async (data: DesiredType) => {
   const token =
     data.when[0].case.of_token.token_name === ""
       ? ADA
@@ -75,11 +112,55 @@ const getDesired = (data: DesiredType) => {
       ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
       : Number(data.when[0].case.deposits);
 
-  return {
-    token,
-    amount,
-    icon: <Image src={MarloweIcon as string} alt="M" height={ICON_SIZES.XS} />,
-  };
+  const tokenFromLocal = Object.values(tokensData).find(
+    (tokenData) =>
+      tokenData.assetName === data.when[0].case.of_token.token_name,
+  );
+
+  if (tokenFromLocal) {
+    return {
+      token: tokenFromLocal.tokenName,
+      amount,
+      icon: tokenFromLocal.icon,
+    };
+  } else {
+    try {
+      const tokenInfo = await lookupTokenMetadata(
+        data.when[0].case.of_token.currency_symbol,
+        textToHexa(data.when[0].case.of_token.token_name),
+        "preprod",
+      );
+
+      if (tokenInfo) {
+        return {
+          token: tokenInfo.ticker ?? tokenInfo.name,
+          amount,
+          icon: (
+            <Image
+              src={
+                tokenInfo.logo
+                  ? "data:image/png;base64," + tokenInfo.logo
+                  : (CardanoIcon as string)
+              }
+              alt=""
+              height={ICON_SIZES.S}
+              width={ICON_SIZES.S}
+            />
+          ),
+        };
+      } else {
+        throw new Error("Token not found");
+      }
+    } catch (err) {
+      return {
+        token,
+        amount,
+        icon: (
+          <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
+        ),
+      };
+    }
+  }
 };
 
 export const PAGINATION_LIMIT = 10;
@@ -158,42 +239,44 @@ export const getContracts = async (
       const contractsList = await Promise.all(contractsListPromise);
 
       // TODO: Implement a better solution. Check https://github.com/input-output-hk/marlowe-ts-sdk/discussions/129
-      const parsedContractsList = contractsList
-        .map((contract) => {
-          const parsedContract = contractDetailsSchema.safeParse(contract);
+      const parsedContractsList = contractsList.map(async (contract) => {
+        const parsedContract = contractDetailsSchema.safeParse(contract);
 
-          if (parsedContract.success) {
-            const { tags, contractId, initialContract } = parsedContract.data;
-            let startDate = new Date();
-            if (
-              env.NEXT_PUBLIC_DAPP_ID in tags &&
-              tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
-            ) {
-              const tag = tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
-              startDate =
-                typeof tag === "object" && tag?.startDate
-                  ? new Date(tag.startDate)
-                  : new Date();
-            }
-
-            return {
-              id: unContractId(contractId),
-              createdBy:
-                parsedContract.data.initialContract.when[0].case.into_account
-                  .address,
-              offered: getOffered(initialContract.when[0].case),
-              desired: getDesired(initialContract.when[0].then),
-              expiry: new Date(Number(initialContract.timeout)).toString(),
-              start: startDate.toString(),
-              state: parsedContract.data.state,
-            };
-          } else {
-            return null;
+        if (parsedContract.success) {
+          const { tags, contractId, initialContract } = parsedContract.data;
+          let startDate = new Date();
+          if (
+            env.NEXT_PUBLIC_DAPP_ID in tags &&
+            tags[`${env.NEXT_PUBLIC_DAPP_ID}`]
+          ) {
+            const tag = tags[`${env.NEXT_PUBLIC_DAPP_ID}`];
+            startDate =
+              typeof tag === "object" && tag?.startDate
+                ? new Date(tag.startDate)
+                : new Date();
           }
-        })
-        .filter((x) => x !== null) as ITableData[];
 
-      setData(parsedContractsList);
+          return {
+            id: unContractId(contractId),
+            createdBy:
+              parsedContract.data.initialContract.when[0].case.into_account
+                .address,
+            offered: await getOffered(initialContract.when[0].case),
+            desired: await getDesired(initialContract.when[0].then),
+            expiry: new Date(Number(initialContract.timeout)).toString(),
+            start: startDate.toString(),
+            state: parsedContract.data.state,
+          };
+        } else {
+          return null;
+        }
+      });
+      const nonFilteredData = await Promise.all(parsedContractsList);
+      const filteredData = nonFilteredData.filter(
+        (x) => x !== null,
+      ) as ITableData[];
+
+      setData(filteredData);
       if (
         allContracts.nextRange._tag === "None" ||
         allContracts.headers.length < PAGINATION_LIMIT

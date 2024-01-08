@@ -33,7 +33,7 @@ export const TokenElement = ({
           <span className="text-sm font-bold text-black">
             {token.assetName === ""
               ? TOKENS.ADA
-              : truncateString(token.assetName, 7)}
+              : truncateString(token.tokenName, 7)}
           </span>
           {token.assetName !== TOKENS.ADA && (
             <span

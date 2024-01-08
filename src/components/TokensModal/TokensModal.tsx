@@ -40,7 +40,8 @@ export const TokensModal = ({
 
       if (token) {
         setSelectedOffered({
-          assetName: token.ticker ?? token.name,
+          tokenName: token.ticker ?? token.name,
+          assetName: assetName,
           policyId: policyId,
           icon: (
             <Image
@@ -84,7 +85,7 @@ export const TokensModal = ({
           filled
         >
           <div className="flex items-center justify-center gap-1">
-            {selectedOffered.assetName === "" ? (
+            {selectedOffered.tokenName === "" ? (
               <div className="flex items-center justify-center gap-2">
                 <span className="text-xs font-medium text-m-dark-gray">
                   Token Select
@@ -99,7 +100,7 @@ export const TokensModal = ({
               <div className="flex items-center justify-center gap-2">
                 {selectedOffered.icon}
                 <span className="text-xs font-medium text-m-dark-gray">
-                  {selectedOffered.assetName}
+                  {selectedOffered.tokenName}
                 </span>
               </div>
             )}
