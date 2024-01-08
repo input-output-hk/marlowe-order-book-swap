@@ -117,7 +117,7 @@ const getOffered = async (data: OfferedType) => {
 
 const getDesired = async (data: DesiredType) => {
   const token =
-    data.when[0].case.of_token.token_name === ADA
+    data.when[0].case.of_token.token_name === ""
       ? ADA
       : data.when[0].case.of_token.token_name;
 
@@ -149,6 +149,9 @@ const getDesired = async (data: DesiredType) => {
       );
 
       if (tokenInfo) {
+        const tokenName =
+          tokenInfo.ticker === "t₳" ? ADA : tokenInfo.ticker ?? tokenInfo.name;
+
         const amount =
           data.when[0].case.of_token.token_name === ADA
             ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
@@ -158,7 +161,7 @@ const getDesired = async (data: DesiredType) => {
               ) as number);
 
         return {
-          token: tokenInfo.ticker ?? tokenInfo.name,
+          token: tokenName,
           amount,
           icon: (
             <Image
