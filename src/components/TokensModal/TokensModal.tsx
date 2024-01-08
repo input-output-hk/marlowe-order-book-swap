@@ -28,7 +28,10 @@ export const TokensModal = ({
   const [assetName, setAssetName] = useState("");
 
   const closeModal = () => setOpen(false);
-  const openModal = () => setOpen(true);
+  const openModal = () => {
+    setError(undefined);
+    setOpen(true);
+  };
 
   const searchToken = async () => {
     try {
@@ -39,6 +42,8 @@ export const TokensModal = ({
       );
 
       if (token) {
+        if (!token.decimals) throw new Error("Token not found");
+        setError(undefined);
         setSelectedOffered({
           tokenName: token.ticker ?? token.name,
           assetName: assetName,
@@ -55,7 +60,7 @@ export const TokensModal = ({
               width={ICON_SIZES.S}
             />
           ),
-          decimals: token.decimals ?? 0,
+          decimals: token.decimals,
         });
 
         closeModal();
@@ -126,39 +131,43 @@ export const TokensModal = ({
                 })}
           </div>
 
-          <div className="flex flex-col items-start justify-between gap-2 md:grid md:grid-cols-1">
-            <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
-              <div className="flex w-full flex-col">
-                <Input
-                  className="p-1 text-sm"
-                  label="Policy ID"
-                  value={policyId}
-                  onChange={handlePolicyChange}
-                />
+          {!assets && (
+            <>
+              <div className="flex flex-col items-start justify-between gap-2 md:grid md:grid-cols-1">
+                <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
+                  <div className="flex w-full flex-col">
+                    <Input
+                      className="p-1 text-sm"
+                      label="Policy ID"
+                      value={policyId}
+                      onChange={handlePolicyChange}
+                    />
+                  </div>
+                  <div className="flex w-full flex-col">
+                    <Input
+                      className="p-1 text-sm"
+                      label="Asset Name (not encoded)"
+                      value={assetName}
+                      onChange={handleAssetChange}
+                    />
+                  </div>
+                </div>
+                <span className="self-start">
+                  <b>Warning:</b> Some tokens might not be listed
+                </span>
+                {error && (
+                  <span className="self-start text-m-red">
+                    <b>Error:</b> {error}
+                  </span>
+                )}
               </div>
-              <div className="flex w-full flex-col">
-                <Input
-                  className="p-1 text-sm"
-                  label="Asset Name (not encoded)"
-                  value={assetName}
-                  onChange={handleAssetChange}
-                />
+              <div className="w-fit self-end">
+                <Button size={SIZE.XSMALL} onClick={searchToken}>
+                  Search token
+                </Button>
               </div>
-            </div>
-            <span className="self-start">
-              <b>Warning:</b> Some tokens might not be listed
-            </span>
-            {error && (
-              <span className="self-start text-m-red">
-                <b>Error:</b> {error}
-              </span>
-            )}
-          </div>
-          <div className="w-fit self-end">
-            <Button size={SIZE.XSMALL} onClick={searchToken} type="button">
-              Search token
-            </Button>
-          </div>
+            </>
+          )}
         </div>
       </Modal>
     </>
