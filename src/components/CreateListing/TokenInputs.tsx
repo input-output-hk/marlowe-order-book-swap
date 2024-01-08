@@ -10,7 +10,7 @@ import {
   type SetStateAction,
 } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { ADA, ICON_SIZES, textToHexa } from "~/utils";
+import { ADA, ICON_SIZES, intToDecimal, textToHexa } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
 import { type Asset } from "~/utils/tokens";
 import { Input } from "../Input/Input";
@@ -47,41 +47,64 @@ export const TokenInputs = ({
       if (ownTokens) {
         const tokens = await Promise.all(
           ownTokens.map(async (token) => {
-            let tokenMetadata = null;
             try {
-              tokenMetadata = await lookupTokenMetadata(
+              const tokenMetadata = await lookupTokenMetadata(
                 unPolicyId(token.assetId.policyId),
                 token.assetId.assetName === ADA
                   ? ""
                   : textToHexa(token.assetId.assetName),
                 "preprod",
               );
+              return {
+                tokenName:
+                  tokenMetadata?.ticker ??
+                  tokenMetadata?.name ??
+                  token.assetId.assetName,
+                assetName:
+                  token.assetId.assetName === ""
+                    ? ADA
+                    : token.assetId.assetName,
+                decimals: tokenMetadata?.decimals ?? -1,
+                icon: (
+                  <Image
+                    src={
+                      tokenMetadata?.logo
+                        ? "data:image/png;base64," + tokenMetadata.logo
+                        : (CardanoIcon as string)
+                    }
+                    alt={tokenMetadata?.logo ? tokenMetadata.name : "C"}
+                    height={ICON_SIZES.S}
+                    width={ICON_SIZES.S}
+                  />
+                ),
+                amount: tokenMetadata?.decimals
+                  ? (intToDecimal(
+                      token.quantity,
+                      tokenMetadata?.decimals,
+                    ) as bigint)
+                  : token.quantity,
+                policyId: unPolicyId(token.assetId.policyId),
+              };
             } catch (e) {
-              console.error(e);
+              return {
+                tokenName: token.assetId.assetName,
+                assetName:
+                  token.assetId.assetName === ""
+                    ? ADA
+                    : token.assetId.assetName,
+                decimals: -1,
+                icon: (
+                  <Image
+                    src={CardanoIcon as string}
+                    alt={"C"}
+                    height={ICON_SIZES.S}
+                    width={ICON_SIZES.S}
+                  />
+                ),
+                amount: token.quantity,
+                policyId: unPolicyId(token.assetId.policyId),
+              };
             }
-            return {
-              tokenName:
-                tokenMetadata?.ticker ??
-                tokenMetadata?.name ??
-                token.assetId.assetName,
-              assetName:
-                token.assetId.assetName === "" ? ADA : token.assetId.assetName,
-              decimals: tokenMetadata?.decimals ?? -1,
-              icon: (
-                <Image
-                  src={
-                    tokenMetadata?.logo
-                      ? "data:image/png;base64," + tokenMetadata.logo
-                      : (CardanoIcon as string)
-                  }
-                  alt={tokenMetadata?.logo ? tokenMetadata.name : "C"}
-                  height={ICON_SIZES.S}
-                  width={ICON_SIZES.S}
-                />
-              ),
-              amount: token.quantity,
-              policyId: unPolicyId(token.assetId.policyId),
-            };
           }),
         );
         setOwnTokens(tokens);

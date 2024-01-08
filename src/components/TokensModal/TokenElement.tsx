@@ -1,13 +1,7 @@
 import Image from "next/image";
 import InfoIcon from "public/info.svg";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import {
-  ADA,
-  ICON_SIZES,
-  adaToLovelace,
-  lovelaceToAda,
-  truncateString,
-} from "~/utils";
+import { ADA, ICON_SIZES, truncateString } from "~/utils";
 import { TOKENS, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 
@@ -24,16 +18,11 @@ export const TokenElement = ({
 }: TokenElementProps) => {
   const [hiddenPolicy, setHiddenPolicy] = useState(true);
   const changeVisibility = () => setHiddenPolicy(!hiddenPolicy);
-  const balanceInt = Math.floor(Number(lovelaceToAda(token.amount ?? 0)));
-
-  const balanceDecimals = Number(
-    (token.amount ?? BigInt(0)) - (adaToLovelace(BigInt(balanceInt)) as bigint),
-  );
 
   const handleSelect = () => {
     setSelectedOffered({
       ...token,
-      assetName: token.assetName === "" ? TOKENS.ADA : token.assetName,
+      tokenName: token.tokenName === "t₳" ? ADA : token.assetName,
     });
     closeModal();
   };
@@ -46,9 +35,9 @@ export const TokenElement = ({
           <div className="flex flex-col">
             <div className="flex flex-col items-baseline xl:flex-row xl:gap-3">
               <span className="text-sm font-bold text-black">
-                {token.assetName === ""
+                {token.tokenName === "t₳"
                   ? TOKENS.ADA
-                  : truncateString(token.assetName, 15)}
+                  : truncateString(token.tokenName, 15)}
               </span>
               {token.assetName !== TOKENS.ADA && (
                 <div className="flex">
@@ -69,14 +58,8 @@ export const TokenElement = ({
             {token.amount !== undefined && (
               <p className="text-xs font-medium">
                 Amount:&nbsp;
-                {token.assetName === ADA ? (
-                  <>
-                    {balanceInt}.
-                    <span className="text-xs">{balanceDecimals}</span>
-                  </>
-                ) : (
-                  String(token.amount)
-                )}
+                {token.assetName === ADA && "~"}
+                {String(token.amount)}
               </p>
             )}
           </div>
