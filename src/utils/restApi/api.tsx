@@ -27,6 +27,7 @@ import {
 import {
   ADA,
   ICON_SIZES,
+  intToDecimal,
   lovelaceToAda,
   parseState,
   textToHexa,
@@ -47,16 +48,20 @@ export const getAddress = async (
 const getOffered = async (data: OfferedType) => {
   const token =
     data.of_token.token_name === "" ? ADA : data.of_token.token_name;
-  const amount =
-    data.of_token.token_name === ""
-      ? (lovelaceToAda(Number(data.deposits)) as number)
-      : Number(data.deposits);
 
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) => tokenData.assetName === data.of_token.token_name,
   );
 
   if (tokenFromLocal) {
+    const amount =
+      data.of_token.token_name === ""
+        ? (lovelaceToAda(Number(data.deposits)) as number)
+        : (intToDecimal(
+            Number(data.deposits),
+            tokenFromLocal.decimals,
+          ) as number);
+
     return {
       token: tokenFromLocal.tokenName,
       amount,
@@ -71,6 +76,14 @@ const getOffered = async (data: OfferedType) => {
       );
 
       if (tokenInfo) {
+        const amount =
+          data.of_token.token_name === ""
+            ? (lovelaceToAda(Number(data.deposits)) as number)
+            : (intToDecimal(
+                Number(data.deposits),
+                tokenInfo.decimals!,
+              ) as number);
+
         return {
           token: tokenInfo.ticker ?? tokenInfo.name,
           amount,
@@ -93,7 +106,7 @@ const getOffered = async (data: OfferedType) => {
     } catch (err) {
       return {
         token,
-        amount,
+        amount: 0,
         icon: (
           <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
         ),
@@ -107,10 +120,6 @@ const getDesired = async (data: DesiredType) => {
     data.when[0].case.of_token.token_name === ""
       ? ADA
       : data.when[0].case.of_token.token_name;
-  const amount =
-    data.when[0].case.of_token.token_name === ""
-      ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
-      : Number(data.when[0].case.deposits);
 
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) =>
@@ -118,6 +127,14 @@ const getDesired = async (data: DesiredType) => {
   );
 
   if (tokenFromLocal) {
+    const amount =
+      data.when[0].case.of_token.token_name === ""
+        ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
+        : (intToDecimal(
+            Number(data.when[0].case.deposits),
+            tokenFromLocal.decimals,
+          ) as number);
+
     return {
       token: tokenFromLocal.tokenName,
       amount,
@@ -132,6 +149,14 @@ const getDesired = async (data: DesiredType) => {
       );
 
       if (tokenInfo) {
+        const amount =
+          data.when[0].case.of_token.token_name === ""
+            ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
+            : (intToDecimal(
+                Number(data.when[0].case.deposits),
+                tokenInfo.decimals!,
+              ) as number);
+
         return {
           token: tokenInfo.ticker ?? tokenInfo.name,
           amount,
@@ -154,7 +179,7 @@ const getDesired = async (data: DesiredType) => {
     } catch (err) {
       return {
         token,
-        amount,
+        amount: 0,
         icon: (
           <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
         ),

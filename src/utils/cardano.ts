@@ -15,7 +15,7 @@ import type {
   DataRowProps,
   IStateData,
 } from "~/components/Table/table.interface";
-import { COLORS, adaToLovelace } from ".";
+import { COLORS, adaToLovelace, decimalToInt } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
@@ -62,11 +62,17 @@ export const getSwapContract = ({
   const parsedValueOffered =
     selectedOffered.assetName === ADA
       ? (adaToLovelace(BigInt(valueOffered)) as bigint)
-      : BigInt(valueOffered);
+      : (decimalToInt(
+          BigInt(valueOffered),
+          selectedOffered.decimals,
+        ) as bigint);
   const parsedValueDesired =
     selectedDesired.assetName === ADA
       ? (adaToLovelace(BigInt(valueDesired)) as bigint)
-      : BigInt(valueDesired);
+      : (decimalToInt(
+          BigInt(valueDesired),
+          selectedDesired.decimals,
+        ) as bigint);
 
   const tokenOffered: TokenSwap = {
     currency_symbol: selectedOffered.policyId,

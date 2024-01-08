@@ -26,16 +26,24 @@ export const humanReadable = (num: number, digits: number) => {
     : "0";
 };
 
-export const adaToLovelace = (ada: number | bigint) => {
-  if (typeof ada === "number") {
-    return ada * 1e6;
+export const decimalToInt = (decimal: number | bigint, decimals: number) => {
+  if (typeof decimal === "number") {
+    return decimal * 10 ** decimals;
   }
-  return ada * BigInt(1e6);
+  return decimal * BigInt(10 ** decimals);
+};
+
+export const intToDecimal = (int: number | bigint, decimals: number) => {
+  if (typeof int === "number") {
+    return int / 10 ** decimals;
+  }
+  return int / BigInt(10 ** decimals);
+};
+
+export const adaToLovelace = (ada: number | bigint) => {
+  return decimalToInt(ada, 6);
 };
 
 export const lovelaceToAda = (lovelace: number | bigint) => {
-  if (typeof lovelace === "number") {
-    return lovelace / 1e6;
-  }
-  return lovelace / BigInt(1e6);
+  return intToDecimal(lovelace, 6);
 };

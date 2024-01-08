@@ -17,6 +17,7 @@ import {
   COLORS,
   ICON_SIZES,
   PAGES,
+  decimalToInt,
   getAddress,
   getSwapContract,
   tokenToTag,
@@ -85,9 +86,19 @@ export const CreateListing = () => {
         query: {
           id: createLoading.contractConfirmed,
           offeredToken: selectedOffered.assetName,
-          offeredAmount: valueOffered,
+          offeredAmount: (
+            decimalToInt(
+              BigInt(valueOffered),
+              selectedOffered.decimals,
+            ) as bigint
+          ).toString(),
           desiredToken: selectedDesired.assetName,
-          desiredAmount: valueDesired,
+          desiredAmount: (
+            decimalToInt(
+              BigInt(valueDesired),
+              selectedDesired.decimals,
+            ) as bigint
+          ).toString(),
           expiryDate: expiryDate,
         },
       });
