@@ -404,11 +404,24 @@ export function mkContract(scheme: Scheme): Contract {
         choice_owner: scheme.offer.seller,
       },
     };
+    const payToParties = {
+      pay: scheme.offer.asset.amount,
+      token: scheme.offer.asset.token,
+      from_account: scheme.offer.seller,
+      to: { party: scheme.ask.buyer },
+      then: {
+        pay: scheme.ask.asset.amount,
+        token: scheme.ask.asset.token,
+        from_account: scheme.ask.buyer,
+        to: { party: scheme.offer.seller },
+        then: confirmSwap,
+      },
+    };
     return {
       when: [
         {
           case: depositAsk,
-          then: confirmSwap,
+          then: payToParties,
         },
         {
           case: chooseToRetract,
