@@ -31,14 +31,18 @@ export const Deposit = () => {
     id,
     offeredToken,
     offeredAmount,
+    offeredDecimals,
     desiredToken,
     desiredAmount,
+    desiredDecimals,
     expiryDate,
   } = router.query as {
     offeredToken: string;
     offeredAmount: string;
+    offeredDecimals: string;
     desiredToken: string;
     desiredAmount: string;
+    desiredDecimals: string;
     id: string;
     expiryDate: string;
   };
@@ -65,7 +69,7 @@ export const Deposit = () => {
                     ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
                     : (decimalToInt(
                         BigInt(offeredAmount),
-                        tokensData[offeredToken as TOKENS].decimals,
+                        Number(offeredDecimals),
                       ) as bigint),
                 of_token: {
                   currency_symbol: tokensData[offeredToken as TOKENS].policyId,
