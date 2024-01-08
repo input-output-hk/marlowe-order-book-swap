@@ -317,7 +317,7 @@ export const getContracts = async (
   }
 };
 
-const getInitialContract = (contract: ContractDetails) => {
+const getInitialContract = async (contract: ContractDetails) => {
   const parsedPayout = initialContractSchema.safeParse(
     contract.initialContract,
   );
@@ -327,6 +327,19 @@ const getInitialContract = (contract: ContractDetails) => {
   let providerToken = "";
   let swapperToken = "";
   if (parsedPayout.success) {
+    const tokenOfferedInfo = await lookupTokenMetadata(
+      parsedPayout.data.when[0].case.of_token.currency_symbol,
+      textToHexa(parsedPayout.data.when[0].case.of_token.token_name),
+      "preprod",
+    );
+    const tokenDesiredInfo = await lookupTokenMetadata(
+      parsedPayout.data.when[0].then.when[0].case.of_token.currency_symbol,
+      textToHexa(
+        parsedPayout.data.when[0].then.when[0].case.of_token.token_name,
+      ),
+      "preprod",
+    );
+
     providerToken =
       parsedPayout.data.when[0].case.of_token.token_name === ""
         ? ADA
@@ -338,13 +351,19 @@ const getInitialContract = (contract: ContractDetails) => {
     providerAmount =
       providerToken === ADA
         ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
-        : parsedPayout.data.when[0].case.deposits;
+        : (intToDecimal(
+            parsedPayout.data.when[0].case.deposits,
+            tokenOfferedInfo.decimals!,
+          ) as bigint);
     swapperAmount =
       swapperToken === ADA
         ? (lovelaceToAda(
             parsedPayout.data.when[0].then.when[0].case.deposits,
           ) as bigint)
-        : parsedPayout.data.when[0].then.when[0].case.deposits;
+        : (intToDecimal(
+            parsedPayout.data.when[0].then.when[0].case.deposits,
+            tokenDesiredInfo.decimals!,
+          ) as bigint);
   } else {
     error = "Error obtaining amount";
   }
@@ -374,9 +393,11 @@ export const getPayouts = async (
       return client.getContractById(contract.contractId);
     });
     const contractsList = await Promise.all(contractsListPromise);
-    setPossibleWithdraws(
-      contractsList.map((contract) => getInitialContract(contract)),
+    const contractsPromises = contractsList.map((contract) =>
+      getInitialContract(contract),
     );
+    const contracts = await Promise.all(contractsPromises);
+    setPossibleWithdraws(contracts);
   }
 
   const walletInfo = window.localStorage.getItem("walletInfo");
