@@ -41,24 +41,29 @@ export const TokenElement = ({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex w-4/5 items-center gap-3">
           {token.icon}
           <div className="flex flex-col">
-            <div className="flex items-baseline gap-3">
+            <div className="flex flex-col items-baseline xl:flex-row xl:gap-3">
               <span className="text-sm font-bold text-black">
                 {token.assetName === ""
                   ? TOKENS.ADA
                   : truncateString(token.assetName, 15)}
               </span>
               {token.assetName !== TOKENS.ADA && (
-                <span
-                  className="cursor-pointer text-xs font-medium"
-                  onClick={changeVisibility}
-                >
-                  {hiddenPolicy
-                    ? truncateString(token.policyId, 20)
-                    : token.policyId}
-                </span>
+                <div className="flex">
+                  <span
+                    className="cursor-pointer break-all text-xs font-medium"
+                    onClick={changeVisibility}
+                  >
+                    <span className="text-xs font-medium xl:hidden">
+                      Policy ID:&nbsp;
+                    </span>
+                    {hiddenPolicy
+                      ? truncateString(token.policyId, 20)
+                      : token.policyId}
+                  </span>
+                </div>
               )}
             </div>
             {token.amount !== undefined && (
@@ -76,7 +81,7 @@ export const TokenElement = ({
             )}
           </div>
         </div>
-        <div className="flex w-fit items-center gap-2">
+        <div className="flex w-28 items-center justify-end gap-2">
           {token.decimals < 0 && (
             <abbr title="This token is not supported">
               <Image
@@ -87,7 +92,7 @@ export const TokenElement = ({
               />
             </abbr>
           )}
-          <div className="w-28">
+          <div>
             <Button
               size={SIZE.XSMALL}
               onClick={handleSelect}

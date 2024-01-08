@@ -60,6 +60,10 @@ export const TokenInputs = ({
               console.error(e);
             }
             return {
+              tokenName:
+                tokenMetadata?.ticker ??
+                tokenMetadata?.name ??
+                token.assetId.assetName,
               assetName:
                 token.assetId.assetName === "" ? ADA : token.assetId.assetName,
               decimals: tokenMetadata?.decimals ?? -1,
@@ -72,6 +76,7 @@ export const TokenInputs = ({
                   }
                   alt={tokenMetadata?.logo ? tokenMetadata.name : "C"}
                   height={ICON_SIZES.S}
+                  width={ICON_SIZES.S}
                 />
               ),
               amount: token.quantity,

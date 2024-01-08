@@ -12,6 +12,7 @@ import {
   PAGES,
   adaToLovelace,
   dateTimeOptions,
+  decimalToInt,
   getAddress,
   waitTxConfirmation,
 } from "~/utils";
@@ -31,6 +32,7 @@ export const Deposit = () => {
     offeredToken,
     offeredAmount,
     offeredPolicyId,
+    offeredDecimals,
     desiredToken,
     desiredAmount,
     expiryDate,
@@ -38,6 +40,7 @@ export const Deposit = () => {
     offeredToken: string;
     offeredAmount: string;
     offeredPolicyId: string;
+    offeredDecimals: string;
     desiredToken: string;
     desiredAmount: string;
     id: string;
@@ -64,7 +67,10 @@ export const Deposit = () => {
                 that_deposits:
                   offeredToken === ADA
                     ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
-                    : BigInt(offeredAmount),
+                    : (decimalToInt(
+                        BigInt(offeredAmount),
+                        Number(offeredDecimals),
+                      ) as bigint),
                 of_token: {
                   currency_symbol: offeredPolicyId,
                   token_name: offeredToken === ADA ? "" : offeredToken,

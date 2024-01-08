@@ -52,6 +52,7 @@ export const CreateListing = () => {
 
   const [valueOffered, setValueOffered] = useState<string>("");
   const [selectedOffered, setSelectedOffered] = useState<Asset>({
+    tokenName: "",
     assetName: "",
     policyId: "",
     decimals: 0,
@@ -60,6 +61,7 @@ export const CreateListing = () => {
   const [startDate, setStartDate] = useState<string>("");
   const [valueDesired, setValueDesired] = useState<string>("");
   const [selectedDesired, setSelectedDesired] = useState<Asset>({
+    tokenName: "",
     assetName: "",
     policyId: "",
     decimals: 0,
@@ -83,6 +85,7 @@ export const CreateListing = () => {
           offeredToken: selectedOffered.assetName,
           offeredAmount: valueOffered,
           offeredPolicyId: selectedOffered.policyId,
+          offeredDecimals: selectedOffered.decimals,
           desiredToken: selectedDesired.assetName,
           desiredAmount: valueDesired,
           expiryDate: expiryDate,

@@ -15,7 +15,7 @@ import type {
   DataRowProps,
   IStateData,
 } from "~/components/Table/table.interface";
-import { COLORS, adaToLovelace } from ".";
+import { COLORS, adaToLovelace, decimalToInt } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
@@ -59,14 +59,14 @@ export const getSwapContract = ({
   expiryDate,
   providerAddress,
 }: ISwapRequest) => {
-  const parsedValueOffered =
-    selectedOffered.assetName === ADA
-      ? (adaToLovelace(BigInt(valueOffered)) as bigint)
-      : BigInt(valueOffered);
-  const parsedValueDesired =
-    selectedDesired.assetName === ADA
-      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
-      : BigInt(valueDesired);
+  const parsedValueOffered = decimalToInt(
+    BigInt(valueOffered),
+    selectedOffered.decimals,
+  ) as bigint;
+  const parsedValueDesired = decimalToInt(
+    BigInt(valueDesired),
+    selectedDesired.decimals,
+  ) as bigint;
 
   const tokenOffered: TokenSwap = {
     currency_symbol: selectedOffered.policyId,
@@ -75,8 +75,9 @@ export const getSwapContract = ({
   };
 
   const tokenDesired: TokenSwap = {
-    currency_symbol: tokensData[selectedDesired.assetName as TOKENS].policyId,
-    token_name: tokensData[selectedDesired.assetName as TOKENS].assetName,
+    currency_symbol: selectedDesired.policyId,
+    token_name:
+      selectedDesired.assetName === ADA ? "" : selectedDesired.assetName,
   };
 
   const swapSchema: Scheme = {
