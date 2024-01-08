@@ -1,15 +1,14 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
-import { ADA, type IOptions } from "~/utils";
-import { tokensData } from "~/utils/tokens";
-import { DropDown } from "../DropDown/DropDown";
+import type { Asset } from "~/utils/tokens";
 import { Input } from "../Input/Input";
+import { TokensModal } from "../TokensModal/TokensModal";
 
 interface TokenInputsProps {
   label: string;
   valueOffered: string;
   setValueOffered: Dispatch<SetStateAction<string>>;
-  selectedOffered: IOptions;
-  setSelectedOffered: Dispatch<SetStateAction<IOptions>>;
+  selectedOffered: Asset;
+  setSelectedOffered: Dispatch<SetStateAction<Asset>>;
   errors: (string | undefined)[];
 }
 
@@ -21,13 +20,6 @@ export const TokenInputs = ({
   setValueOffered,
   errors = [],
 }: TokenInputsProps) => {
-  const dropDownOptions = Object.entries(tokensData).map(([_, token]) => {
-    return {
-      option: token.assetName === "" ? ADA : token.assetName,
-      icon: token.icon,
-    };
-  });
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValueOffered(e.target.value || "");
   };
@@ -42,10 +34,9 @@ export const TokenInputs = ({
       placeholder="0"
       error={errors}
       endContent={
-        <DropDown
-          options={dropDownOptions}
-          selected={selectedOffered}
-          setSelected={setSelectedOffered}
+        <TokensModal
+          selectedOffered={selectedOffered}
+          setSelectedOffered={setSelectedOffered}
         />
       }
     />

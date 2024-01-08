@@ -12,6 +12,7 @@ import {
   PAGES,
   adaToLovelace,
   dateTimeOptions,
+  decimalToInt,
   getAddress,
   waitTxConfirmation,
 } from "~/utils";
@@ -30,12 +31,14 @@ export const Deposit = () => {
     id,
     offeredToken,
     offeredAmount,
+    offeredDecimals,
     desiredToken,
     desiredAmount,
     expiryDate,
   } = router.query as {
     offeredToken: string;
     offeredAmount: string;
+    offeredDecimals: string;
     desiredToken: string;
     desiredAmount: string;
     id: string;
@@ -62,7 +65,10 @@ export const Deposit = () => {
                 that_deposits:
                   offeredToken === ADA
                     ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
-                    : BigInt(offeredAmount),
+                    : (decimalToInt(
+                        BigInt(offeredAmount),
+                        Number(offeredDecimals),
+                      ) as bigint),
                 of_token: {
                   currency_symbol: tokensData[offeredToken as TOKENS].policyId,
                   token_name: offeredToken === ADA ? "" : offeredToken,

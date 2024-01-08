@@ -18,11 +18,14 @@ import {
   PAGES,
   adaToLovelace,
   checkIfIsToken,
+  contractDetailsSchema,
+  decimalToInt,
   isEnoughBalance,
+  textToHexa,
   waitTxConfirmation,
-  type AssetAndAmount,
 } from "~/utils";
-import { TOKENS, tokensData } from "~/utils/tokens";
+import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
+import { TOKENS, tokensData, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -85,41 +88,57 @@ export const SwapModal = ({
     try {
       setLoading(true);
       if (client && runtimeLifecycle) {
-        const txId = await runtimeLifecycle.contracts.applyInputs(
-          contractId(id),
-          {
-            inputs: [
-              {
-                input_from_party: { role_token: "buyer" },
-                that_deposits:
-                  desired.token === ADA
-                    ? (adaToLovelace(BigInt(desired.amount)) as bigint)
-                    : BigInt(desired.amount),
-                of_token: {
-                  currency_symbol: tokensData[desired.token as TOKENS].policyId,
-                  token_name: desired.token === ADA ? "" : desired.token,
-                },
-                into_account: { role_token: "buyer" },
-              },
-            ],
-          },
-        );
-
-        waitTxConfirmation(contractId(id), txId, client);
-
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        const nextStepInterval = setInterval(async () => {
-          const nextStep = await runtimeLifecycle.contracts.getApplicableInputs(
-            contractId(id),
-            mkEnvironment(new Date())(new Date()),
+        const contract = await client.getContractById(contractId(id));
+        const parsedContract = contractDetailsSchema.safeParse(contract);
+        if (parsedContract.success) {
+          const { initialContract } = parsedContract.data;
+          const tokenData = await lookupTokenMetadata(
+            initialContract.when[0].case.of_token.currency_symbol,
+            textToHexa(initialContract.when[0].case.of_token.token_name),
+            "preprod",
           );
 
-          if (nextStep.applicable_inputs.notify._tag === "Some") {
-            clearInterval(nextStepInterval);
-            setNextStep(true);
-            return;
-          }
-        }, 2000);
+          const txId = await runtimeLifecycle.contracts.applyInputs(
+            contractId(id),
+            {
+              inputs: [
+                {
+                  input_from_party: { role_token: "buyer" },
+                  that_deposits:
+                    desired.token === ADA
+                      ? (adaToLovelace(BigInt(desired.amount)) as bigint)
+                      : (decimalToInt(
+                          BigInt(desired.amount),
+                          tokenData.decimals!,
+                        ) as bigint),
+                  of_token: {
+                    currency_symbol:
+                      tokensData[desired.token as TOKENS].policyId,
+                    token_name: desired.token === ADA ? "" : desired.token,
+                  },
+                  into_account: { role_token: "buyer" },
+                },
+              ],
+            },
+          );
+
+          waitTxConfirmation(contractId(id), txId, client);
+
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          const nextStepInterval = setInterval(async () => {
+            const nextStep =
+              await runtimeLifecycle.contracts.getApplicableInputs(
+                contractId(id),
+                mkEnvironment(new Date())(new Date()),
+              );
+
+            if (nextStep.applicable_inputs.notify._tag === "Some") {
+              clearInterval(nextStepInterval);
+              setNextStep(true);
+              return;
+            }
+          }, 2000);
+        }
       }
     } catch (e) {
       setLoading(false);
@@ -128,13 +147,13 @@ export const SwapModal = ({
     }
   };
 
-  const getAssetDesired = (): AssetAndAmount | undefined => {
+  const getAssetDesired = (): Asset | undefined => {
     if (checkIfIsToken(desired.token))
       return {
         ...tokensData[
           String(desired.token) === "" ? TOKENS.ADA : desired.token
         ],
-        amount: desired.amount,
+        amount: BigInt(desired.amount),
       };
   };
   const assetDesired = getAssetDesired();

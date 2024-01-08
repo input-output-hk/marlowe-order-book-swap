@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { type IOptions } from "~/utils";
+import { type Asset } from "~/utils/tokens";
 
 export interface ICreateErrors {
   valueOffered: string | undefined;
@@ -22,8 +22,8 @@ export interface ICreateLoading {
 interface ICheckFields {
   valueOffered: string;
   valueDesired: string;
-  selectedOffered: IOptions;
-  selectedDesired: IOptions;
+  selectedOffered: Asset;
+  selectedDesired: Asset;
   expiryDate: string;
   startDate: string;
 }
@@ -58,11 +58,11 @@ export const checkValidity = ({
           ? "Value must be greater than 0"
           : undefined,
       dropOffered:
-        selectedOffered.option === "Token Select"
+        selectedOffered.assetName === "Token Select"
           ? "You must select an offered token"
           : undefined,
       dropDesired:
-        selectedDesired.option === "Token Select"
+        selectedDesired.assetName === "Token Select"
           ? "You must select a desired token"
           : undefined,
       expiryDate:
@@ -97,8 +97,8 @@ export const isEveryFieldValid = ({
   return (
     Number(valueOffered) > 0 &&
     Number(valueDesired) > 0 &&
-    selectedOffered.option !== "Token Select" &&
-    selectedDesired.option !== "Token Select" &&
+    selectedOffered.assetName !== "Token Select" &&
+    selectedDesired.assetName !== "Token Select" &&
     expiryDate !== "" &&
     expiryDate !== "" &&
     startDateObj < expiryDateObj

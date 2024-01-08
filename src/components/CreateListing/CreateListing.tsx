@@ -20,8 +20,8 @@ import {
   getAddress,
   getSwapContract,
   tokenToTag,
-  type IOptions,
 } from "~/utils";
+import { type Asset } from "~/utils/tokens";
 import { Loading } from "../Loading/Loading";
 import { CalendarInput } from "./CalendarInput";
 import { TokenInputs } from "./TokenInputs";
@@ -51,14 +51,20 @@ export const CreateListing = () => {
   });
 
   const [valueOffered, setValueOffered] = useState<string>("");
-  const [selectedOffered, setSelectedOffered] = useState<IOptions>({
-    option: "Token Select",
+  const [selectedOffered, setSelectedOffered] = useState<Asset>({
+    tokenName: "",
+    assetName: "",
+    policyId: "",
+    decimals: 0,
     icon: <></>,
   });
   const [startDate, setStartDate] = useState<string>("");
   const [valueDesired, setValueDesired] = useState<string>("");
-  const [selectedDesired, setSelectedDesired] = useState<IOptions>({
-    option: "Token Select",
+  const [selectedDesired, setSelectedDesired] = useState<Asset>({
+    tokenName: "",
+    assetName: "",
+    policyId: "",
+    decimals: 0,
     icon: <></>,
   });
   const [expiryDate, setExpiryDate] = useState<string>("");
@@ -78,9 +84,10 @@ export const CreateListing = () => {
         pathname: PAGES.DEPOSIT,
         query: {
           id: createLoading.contractConfirmed,
-          offeredToken: selectedOffered.option,
+          offeredToken: selectedOffered.assetName,
           offeredAmount: valueOffered,
-          desiredToken: selectedDesired.option,
+          offeredDecimals: selectedOffered.decimals,
+          desiredToken: selectedDesired.assetName,
           desiredAmount: valueDesired,
           expiryDate: expiryDate,
         },
@@ -159,8 +166,8 @@ export const CreateListing = () => {
             startDate: startDate !== "" ? startDate : new Date().toISOString(),
             expiryDate,
           },
-          [tokenToTag(selectedOffered.option)]: "",
-          [tokenToTag(selectedDesired.option)]: "",
+          [tokenToTag(selectedOffered.assetName)]: "",
+          [tokenToTag(selectedDesired.assetName)]: "",
         };
 
         const contract = await runtimeLifecycle.contracts.createContract({
