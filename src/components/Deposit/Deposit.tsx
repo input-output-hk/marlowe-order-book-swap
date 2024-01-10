@@ -31,6 +31,7 @@ export const Deposit = () => {
     id,
     offeredToken,
     offeredAmount,
+    offeredPolicyId,
     offeredDecimals,
     desiredToken,
     desiredAmount,
@@ -38,6 +39,7 @@ export const Deposit = () => {
   } = router.query as {
     offeredToken: string;
     offeredAmount: string;
+    offeredPolicyId: string;
     offeredDecimals: string;
     desiredToken: string;
     desiredAmount: string;
@@ -70,7 +72,7 @@ export const Deposit = () => {
                         Number(offeredDecimals),
                       ) as bigint),
                 of_token: {
-                  currency_symbol: tokensData[offeredToken as TOKENS].policyId,
+                  currency_symbol: offeredPolicyId,
                   token_name: offeredToken === ADA ? "" : offeredToken,
                 },
                 into_account: { address: myAddress },

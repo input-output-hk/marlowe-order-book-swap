@@ -41,8 +41,8 @@ export const CreateListing = () => {
   const [errors, setErrors] = useState<ICreateErrors>({
     valueOffered: undefined,
     valueDesired: undefined,
-    dropOffered: undefined,
-    dropDesired: undefined,
+    tokenOffered: undefined,
+    tokenDesired: undefined,
     expiryDate: undefined,
     startDate: undefined,
     beforeTodayStartError: undefined,
@@ -74,11 +74,9 @@ export const CreateListing = () => {
   const { runtimeLifecycle, setRuntime, client } = useContext(TSSDKContext);
 
   useEffect(() => {
-    if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runtimeLifecycle]);
-
-  useEffect(() => {
+    if (runtimeLifecycle) {
+      void getAddress(runtimeLifecycle, setMyAddress);
+    }
     if (createLoading.contractConfirmed !== "") {
       void router.push({
         pathname: PAGES.DEPOSIT,
@@ -86,6 +84,7 @@ export const CreateListing = () => {
           id: createLoading.contractConfirmed,
           offeredToken: selectedOffered.assetName,
           offeredAmount: valueOffered,
+          offeredPolicyId: selectedOffered.policyId,
           offeredDecimals: selectedOffered.decimals,
           desiredToken: selectedDesired.assetName,
           desiredAmount: valueDesired,
@@ -94,7 +93,7 @@ export const CreateListing = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createLoading.contractConfirmed]);
+  }, [createLoading.contractConfirmed, runtimeLifecycle]);
 
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;
@@ -216,7 +215,7 @@ export const CreateListing = () => {
             setValueOffered={setValueOffered}
             selectedOffered={selectedOffered}
             setSelectedOffered={setSelectedOffered}
-            errors={[errors.dropOffered, errors.valueOffered]}
+            errors={[errors.tokenOffered, errors.valueOffered]}
           />
           <Image
             src={DownIcon as string}
@@ -230,7 +229,7 @@ export const CreateListing = () => {
             setValueOffered={setValueDesired}
             selectedOffered={selectedDesired}
             setSelectedOffered={setSelectedDesired}
-            errors={[errors.dropDesired, errors.valueDesired]}
+            errors={[errors.tokenDesired, errors.valueDesired]}
           />
         </div>
         <div className="flex w-full flex-col content-start items-start gap-4">

@@ -59,20 +59,14 @@ export const getSwapContract = ({
   expiryDate,
   providerAddress,
 }: ISwapRequest) => {
-  const parsedValueOffered =
-    selectedOffered.assetName === ADA
-      ? (adaToLovelace(BigInt(valueOffered)) as bigint)
-      : (decimalToInt(
-          BigInt(valueOffered),
-          selectedOffered.decimals,
-        ) as bigint);
-  const parsedValueDesired =
-    selectedDesired.assetName === ADA
-      ? (adaToLovelace(BigInt(valueDesired)) as bigint)
-      : (decimalToInt(
-          BigInt(valueDesired),
-          selectedDesired.decimals,
-        ) as bigint);
+  const parsedValueOffered = decimalToInt(
+    BigInt(valueOffered),
+    selectedOffered.decimals,
+  ) as bigint;
+  const parsedValueDesired = decimalToInt(
+    BigInt(valueDesired),
+    selectedDesired.decimals,
+  ) as bigint;
 
   const tokenOffered: TokenSwap = {
     currency_symbol: selectedOffered.policyId,

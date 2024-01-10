@@ -1,13 +1,22 @@
 import Image from "next/image";
 import CardanoIcon from "public/cardano.svg";
 import FullscreenIcon from "public/fullscreen.svg";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import SearchNoneIcon from "public/search-none.svg";
+import SearchIcon from "public/search.svg";
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { COLORS, ICON_SIZES, textToHexa } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
 import { tokensData, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
+import { Switch } from "../Switch/Switch";
 
 import { TokenElement } from "./TokenElement";
 
@@ -23,9 +32,47 @@ export const TokensModal = ({
   assets,
 }: TokensModalProps) => {
   const [open, setOpen] = useState(false);
+
   const [error, setError] = useState<string | undefined>(undefined);
   const [policyId, setPolicyId] = useState("");
   const [assetName, setAssetName] = useState("");
+
+  const [query, setQuery] = useState("");
+  const [options, setOptions] = useState(assets);
+  const [switchEnabled, setSwitchEnabled] = useState(false);
+
+  useEffect(() => {
+    setOptions(
+      assets?.filter(
+        (option) =>
+          option.assetName.toLowerCase().includes(query.toLocaleLowerCase()) ||
+          option.policyId?.toLowerCase().includes(query.toLocaleLowerCase()),
+      ),
+    );
+  }, [query, assets]);
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const changeSwitch = () => {
+    setSwitchEnabled(!switchEnabled);
+    if (!switchEnabled) {
+      setOptions(options?.filter((token) => token.decimals > 0));
+    } else if (query !== "") {
+      setOptions(
+        assets?.filter(
+          (option) =>
+            option.assetName
+              .toLowerCase()
+              .includes(query.toLocaleLowerCase()) ||
+            option.policyId?.toLowerCase().includes(query.toLocaleLowerCase()),
+        ),
+      );
+    } else {
+      setOptions(assets);
+    }
+  };
 
   const closeModal = () => setOpen(false);
   const openModal = () => {
@@ -97,7 +144,7 @@ export const TokensModal = ({
                 </span>
                 <Image
                   src={FullscreenIcon as string}
-                  alt=""
+                  alt="[ ]"
                   height={ICON_SIZES.S}
                 />
               </div>
@@ -116,58 +163,105 @@ export const TokensModal = ({
       <Modal closeModal={closeModal} open={open} title="Token Select">
         <div className="flex flex-col gap-6 pb-4">
           <div className="flex flex-col gap-4 pt-2">
-            {assets
-              ? //TODO add own tokens instead of null
-                null
-              : Object.values(tokensData).map((token) => {
-                  return (
+            {assets && (
+              <div className="flex items-center justify-between gap-4 ">
+                <div className="w-5/6">
+                  <Input
+                    value={query}
+                    onChange={handleSearch}
+                    startContent={
+                      <Image
+                        src={SearchIcon as string}
+                        height={ICON_SIZES.S}
+                        alt="Search"
+                      />
+                    }
+                    placeholder="Search by Token Name or Policy ID"
+                  />
+                </div>
+                <div className="flex flex-col items-stretch gap-1 text-center">
+                  <label className="text-xs text-black" onClick={changeSwitch}>
+                    Supported tokens
+                  </label>
+                  <Switch enabled={switchEnabled} setEnabled={changeSwitch} />
+                </div>
+              </div>
+            )}
+            {options !== undefined ? (
+              <div className="flex h-96 flex-col gap-4 overflow-auto overscroll-contain pr-2">
+                {options.length > 0 ? (
+                  options.map((token) => (
                     <TokenElement
-                      key={token.policyId}
+                      key={token.policyId + token.assetName}
+                      token={token}
                       setSelectedOffered={setSelectedOffered}
                       closeModal={closeModal}
-                      token={token}
                     />
-                  );
-                })}
-          </div>
-
-          {!assets && (
-            <>
-              <div className="flex flex-col items-start justify-between gap-2 md:grid md:grid-cols-1">
-                <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
-                  <div className="flex w-full flex-col">
-                    <Input
-                      className="p-1 text-sm"
-                      label="Policy ID"
-                      value={policyId}
-                      onChange={handlePolicyChange}
+                  ))
+                ) : (
+                  <div className="flex h-96 flex-col items-center justify-center gap-4">
+                    <Image
+                      src={SearchNoneIcon as string}
+                      alt="X"
+                      height={ICON_SIZES.XXXL}
                     />
+                    <div className="text-2xl font-bold text-m-dark-gray">
+                      No results found
+                    </div>
                   </div>
-                  <div className="flex w-full flex-col">
-                    <Input
-                      className="p-1 text-sm"
-                      label="Asset Name (not encoded)"
-                      value={assetName}
-                      onChange={handleAssetChange}
-                    />
-                  </div>
-                </div>
-                <span className="self-start">
-                  <b>Warning:</b> Some tokens might not be listed
-                </span>
-                {error && (
-                  <span className="self-start text-m-red">
-                    <b>Error:</b> {error}
-                  </span>
                 )}
               </div>
-              <div className="w-fit self-end">
-                <Button size={SIZE.XSMALL} onClick={searchToken}>
-                  Search token
-                </Button>
-              </div>
-            </>
-          )}
+            ) : (
+              Object.values(tokensData).map((token) => {
+                return (
+                  <TokenElement
+                    key={token.policyId}
+                    setSelectedOffered={setSelectedOffered}
+                    closeModal={closeModal}
+                    token={token}
+                  />
+                );
+              })
+            )}
+
+            {!assets && (
+              <>
+                <div className="flex flex-col items-start justify-between gap-2 md:grid md:grid-cols-1">
+                  <div className="flex w-full flex-col justify-between gap-2 lg:flex-row">
+                    <div className="flex w-full flex-col">
+                      <Input
+                        className="p-1 text-sm"
+                        label="Policy ID"
+                        value={policyId}
+                        onChange={handlePolicyChange}
+                      />
+                    </div>
+                    <div className="flex w-full flex-col">
+                      <Input
+                        className="p-1 text-sm"
+                        label="Asset Name (not encoded)"
+                        value={assetName}
+                        onChange={handleAssetChange}
+                      />
+                    </div>
+                    <div className="w-fit pt-2 lg:pt-7">
+                      <Button size={SIZE.XSMALL} onClick={searchToken}>
+                        Search token
+                      </Button>
+                    </div>
+                  </div>
+                  <span className="self-start">
+                    <b>Warning:</b> Some tokens might not be found
+                  </span>
+                  {error && (
+                    <span className="self-start text-m-red">
+                      <b>Error:</b> {error}
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </Modal>
     </>

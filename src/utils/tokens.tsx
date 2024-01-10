@@ -29,7 +29,7 @@ export interface Asset {
 
 export const tokensData: Record<TOKENS, Asset> = {
   [TOKENS.ADA]: {
-    tokenName: "ADA",
+    tokenName: TOKENS.ADA,
     policyId: "",
     assetName: "",
     decimals: 6,
@@ -38,12 +38,12 @@ export const tokensData: Record<TOKENS, Asset> = {
         src={CardanoIcon as string}
         height={ICON_SIZES.S}
         width={ICON_SIZES.S}
-        alt="ADA"
+        alt={TOKENS.ADA}
       />
     ),
   },
   [TOKENS.TGENS]: {
-    tokenName: "tGENS",
+    tokenName: TOKENS.TGENS,
     policyId: "c6e65ba7878b2f8ea0ad39287d3e2fd256dc5c4160fc19bdf4c4d87e",
     assetName: "tGENS",
     decimals: 6,
@@ -52,12 +52,12 @@ export const tokensData: Record<TOKENS, Asset> = {
         src={tGensIcon}
         height={ICON_SIZES.S}
         width={ICON_SIZES.S}
-        alt="tGens"
+        alt={TOKENS.TGENS}
       />
     ),
   },
   [TOKENS.TMIN]: {
-    tokenName: "tMIN",
+    tokenName: TOKENS.TMIN,
     policyId: "f6f49b186751e61f1fb8c64e7504e771f968cea9f4d11f5222b169e3",
     assetName: "tMIN",
     decimals: 6,
@@ -66,12 +66,12 @@ export const tokensData: Record<TOKENS, Asset> = {
         src={tMINIcon}
         height={ICON_SIZES.S}
         width={ICON_SIZES.S}
-        alt="tMIN"
+        alt={TOKENS.TMIN}
       />
     ),
   },
   [TOKENS.TDRIP]: {
-    tokenName: "tDRIP",
+    tokenName: TOKENS.TDRIP,
     policyId: "698a6ea0ca99f315034072af31eaac6ec11fe8558d3f48e9775aab9d",
     assetName: "tDRIP",
     decimals: 6,
@@ -80,12 +80,12 @@ export const tokensData: Record<TOKENS, Asset> = {
         src={tDripIcon}
         height={ICON_SIZES.S}
         width={ICON_SIZES.S}
-        alt="tDRIP"
+        alt={TOKENS.TDRIP}
       />
     ),
   },
   [TOKENS.DTU]: {
-    tokenName: "DTU",
+    tokenName: TOKENS.DTU,
     policyId: "9772ff715b691c0444f333ba1db93b055c0864bec48fff92d1f2a7fe",
     assetName: "Djed_testMicroUSD",
     decimals: 6,
@@ -94,12 +94,12 @@ export const tokensData: Record<TOKENS, Asset> = {
         src={dtuIcon}
         height={ICON_SIZES.S}
         width={ICON_SIZES.S}
-        alt="DTU"
+        alt={TOKENS.DTU}
       />
     ),
   },
   [TOKENS.TWRT]: {
-    tokenName: "tWRT",
+    tokenName: TOKENS.TWRT,
     policyId: "659ab0b5658687c2e74cd10dba8244015b713bf503b90557769d77a7",
     assetName: "WingRiders",
     decimals: 6,
@@ -108,7 +108,7 @@ export const tokensData: Record<TOKENS, Asset> = {
         src={tWrtIcon}
         height={ICON_SIZES.S}
         width={ICON_SIZES.S}
-        alt="tWRT"
+        alt={TOKENS.TWRT}
       />
     ),
   },

@@ -1,5 +1,7 @@
+import Image from "next/image";
+import InfoIcon from "public/info.svg";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { truncateString } from "~/utils";
+import { ADA, ICON_SIZES, intToDecimal, truncateString } from "~/utils";
 import { TOKENS, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 
@@ -20,45 +22,80 @@ export const TokenElement = ({
   const handleSelect = () => {
     setSelectedOffered({
       ...token,
-      assetName: token.assetName === "" ? TOKENS.ADA : token.assetName,
+      tokenName:
+        token.tokenName === "t₳" || token.tokenName === ADA
+          ? ADA
+          : token.tokenName,
     });
     closeModal();
   };
 
+  const IntAmount =
+    token.decimals > 0 && token.amount
+      ? (intToDecimal(token.amount, token.decimals) as bigint)
+      : token.amount;
+
+  const DecimalAmount =
+    token.decimals > 0 ? "." + String(token.amount).slice(-token.decimals) : "";
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex w-4/5 items-center gap-3">
           {token.icon}
-          <span className="text-sm font-bold text-black">
-            {token.assetName === ""
-              ? TOKENS.ADA
-              : truncateString(token.tokenName, 7)}
-          </span>
-          {token.assetName !== TOKENS.ADA && (
-            <span
-              className="cursor-pointer text-xs font-medium"
-              onClick={changeVisibility}
-            >
-              {hiddenPolicy
-                ? truncateString(token.policyId, 10)
-                : token.policyId}
-            </span>
-          )}
+          <div className="flex flex-col">
+            <div className="flex flex-col items-baseline xl:flex-row xl:gap-3">
+              <span className="text-sm font-bold text-black">
+                {token.tokenName === "t₳"
+                  ? TOKENS.ADA
+                  : truncateString(token.tokenName, 15)}
+              </span>
+              {token.assetName !== TOKENS.ADA && (
+                <div className="flex">
+                  <span
+                    className="cursor-pointer break-all text-xs font-medium"
+                    onClick={changeVisibility}
+                  >
+                    <span className="text-xs font-medium xl:hidden">
+                      Policy ID:&nbsp;
+                    </span>
+                    {hiddenPolicy
+                      ? truncateString(token.policyId, 20)
+                      : token.policyId}
+                  </span>
+                </div>
+              )}
+            </div>
+            {token.amount !== undefined && (
+              <p className="text-xs font-medium">
+                Amount:&nbsp;
+                {String(IntAmount) + DecimalAmount}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="w-fit">
-            <Button size={SIZE.XSMALL} onClick={handleSelect}>
+        <div className="flex w-28 items-center justify-end gap-2">
+          {token.decimals < 0 && (
+            <abbr title="This token is not supported">
+              <Image
+                src={InfoIcon as string}
+                alt="i"
+                height={ICON_SIZES.L}
+                className="cursor-pointer"
+              />
+            </abbr>
+          )}
+          <div>
+            <Button
+              size={SIZE.XSMALL}
+              onClick={handleSelect}
+              disabled={token.decimals < 0}
+            >
               Select
             </Button>
           </div>
         </div>
       </div>
-      {!token.amount && (
-        <div className="pl-10">
-          <p className="text-xs font-medium">Amount: 10</p>
-        </div>
-      )}
     </div>
   );
 };
