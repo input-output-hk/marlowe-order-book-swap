@@ -22,15 +22,15 @@ import { Loading } from "../Loading/Loading";
 import { TokenElement } from "./TokenElement";
 
 interface TokensModalProps {
-  selectedOffered: Asset;
-  setSelectedOffered: Dispatch<SetStateAction<Asset>>;
+  selected: Asset;
+  setSelected: Dispatch<SetStateAction<Asset>>;
   assets?: Asset[];
   loading: boolean;
 }
 
 export const TokensModal = ({
-  selectedOffered,
-  setSelectedOffered,
+  selected,
+  setSelected,
   assets,
   loading,
 }: TokensModalProps) => {
@@ -94,9 +94,9 @@ export const TokensModal = ({
       if (token) {
         if (!token.decimals) throw new Error("Token not found");
         setError(undefined);
-        setSelectedOffered({
+        setSelected({
           tokenName: token.ticker ?? token.name,
-          assetName: assetName,
+          assetName,
           policyId: policyId,
           icon: (
             <Image
@@ -140,7 +140,7 @@ export const TokensModal = ({
           filled
         >
           <div className="flex items-center justify-center gap-1">
-            {isEmpty(selectedOffered.tokenName) ? (
+            {isEmpty(selected.tokenName) ? (
               <div className="flex items-center justify-center gap-2">
                 <span className="text-xs font-medium text-m-dark-gray">
                   Token Select
@@ -153,9 +153,9 @@ export const TokensModal = ({
               </div>
             ) : (
               <div className="flex items-center justify-center gap-2">
-                {selectedOffered.icon}
+                {selected.icon}
                 <span className="text-xs font-medium text-m-dark-gray">
-                  {selectedOffered.tokenName}
+                  {selected.tokenName}
                 </span>
               </div>
             )}
@@ -204,7 +204,7 @@ export const TokensModal = ({
                     <TokenElement
                       key={token.policyId + token.assetName}
                       token={token}
-                      setSelectedOffered={setSelectedOffered}
+                      setSelected={setSelected}
                       closeModal={closeModal}
                     />
                   ))
@@ -226,7 +226,7 @@ export const TokensModal = ({
                 return (
                   <TokenElement
                     key={token.policyId}
-                    setSelectedOffered={setSelectedOffered}
+                    setSelected={setSelected}
                     closeModal={closeModal}
                     token={token}
                   />

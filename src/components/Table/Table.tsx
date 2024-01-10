@@ -69,7 +69,8 @@ export const Table = ({
         offeredAmount: row.offered.amount,
         offeredPolicyId: row.offered.policyId,
         desiredToken: row.desired.token,
-        desiredAmount: row.desired.amount,
+        desiredAmount: String(row.desired.amount),
+        desiredPolicyId: row.desired.policyId,
         expiryDate: row.expiry,
       },
     });

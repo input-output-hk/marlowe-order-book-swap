@@ -7,20 +7,20 @@ import { Button, SIZE } from "../Button/Button";
 
 interface TokenElementProps {
   token: Asset;
-  setSelectedOffered: Dispatch<SetStateAction<Asset>>;
+  setSelected: Dispatch<SetStateAction<Asset>>;
   closeModal: () => void;
 }
 
 export const TokenElement = ({
   token,
-  setSelectedOffered,
+  setSelected,
   closeModal,
 }: TokenElementProps) => {
   const [hiddenPolicy, setHiddenPolicy] = useState(true);
   const changeVisibility = () => setHiddenPolicy(!hiddenPolicy);
 
   const handleSelect = () => {
-    setSelectedOffered({
+    setSelected({
       ...token,
       tokenName: token.tokenName,
     });

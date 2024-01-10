@@ -91,12 +91,13 @@ export const CreateListing = () => {
           offeredDecimals: selectedOffered.decimals,
           desiredToken: parseTokenName(selectedDesired.assetName),
           desiredAmount: valueDesired,
+          desiredPolicyId: selectedDesired.policyId,
           expiryDate: expiryDate,
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createLoading.contractConfirmed, runtimeLifecycle]);
+  }, [createLoading.contractConfirmed, runtimeLifecycle, selectedDesired]);
 
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;
@@ -216,10 +217,10 @@ export const CreateListing = () => {
           <div className="font-bold">Details</div>
           <TokenInputs
             label="You will swap *"
-            valueOffered={valueOffered}
-            setValueOffered={setValueOffered}
-            selectedOffered={selectedOffered}
-            setSelectedOffered={setSelectedOffered}
+            value={valueOffered}
+            setValue={setValueOffered}
+            selected={selectedOffered}
+            setSelected={setSelectedOffered}
             errors={[errors.tokenOffered, errors.valueOffered]}
           />
           <Image
@@ -230,10 +231,10 @@ export const CreateListing = () => {
           />
           <TokenInputs
             label="You will receive *"
-            valueOffered={valueDesired}
-            setValueOffered={setValueDesired}
-            selectedOffered={selectedDesired}
-            setSelectedOffered={setSelectedDesired}
+            value={valueDesired}
+            setValue={setValueDesired}
+            selected={selectedDesired}
+            setSelected={setSelectedDesired}
             errors={[errors.tokenDesired, errors.valueDesired]}
           />
         </div>

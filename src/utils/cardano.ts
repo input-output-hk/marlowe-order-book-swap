@@ -15,7 +15,6 @@ import type {
   DataRowProps,
   IStateData,
 } from "~/components/Table/table.interface";
-import { parseTokenName } from "~/utils";
 import { COLORS, adaToLovelace, decimalToInt, isADA, isEmpty } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
@@ -71,12 +70,12 @@ export const getSwapContract = ({
 
   const tokenOffered: TokenSwap = {
     currency_symbol: selectedOffered.policyId,
-    token_name: parseTokenName(selectedOffered.assetName),
+    token_name: selectedOffered.assetName,
   };
 
   const tokenDesired: TokenSwap = {
     currency_symbol: selectedDesired.policyId,
-    token_name: parseTokenName(selectedDesired.assetName),
+    token_name: selectedDesired.assetName,
   };
 
   const swapSchema: Scheme = {
