@@ -61,14 +61,12 @@ export const checkValidity = ({
         Number(valueDesired) <= 0 || isEmpty(valueDesired)
           ? "Value must be greater than 0"
           : undefined,
-      tokenOffered:
-        selectedOffered.assetName === "Token Select"
-          ? "You must select an offered token"
-          : undefined,
-      tokenDesired:
-        selectedDesired.assetName === "Token Select"
-          ? "You must select a desired token"
-          : undefined,
+      tokenOffered: isEmpty(selectedOffered.tokenName)
+        ? "You must select an offered token"
+        : undefined,
+      tokenDesired: isEmpty(selectedDesired.tokenName)
+        ? "You must select a desired token"
+        : undefined,
       expiryDate: isEmpty(expiryDate)
         ? "You must select an expiry date"
         : undefined,
@@ -102,8 +100,8 @@ export const isEveryFieldValid = ({
   return (
     Number(valueOffered) > 0 &&
     Number(valueDesired) > 0 &&
-    selectedOffered.assetName !== "Token Select" &&
-    selectedDesired.assetName !== "Token Select" &&
+    !isEmpty(selectedOffered.tokenName) &&
+    !isEmpty(selectedDesired.tokenName) &&
     !isEmpty(expiryDate) &&
     !isEmpty(expiryDate) &&
     startDateObj < expiryDateObj
