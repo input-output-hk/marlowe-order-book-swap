@@ -96,7 +96,7 @@ export const ContractsList = ({
                         id: payout.contractId,
                         toAdd: !payout.added,
                       })}
-                      disabled={isEmpty(payout.error) || loadingWithdrawal}
+                      disabled={!isEmpty(payout.error) || loadingWithdrawal}
                     >
                       {payout.added ? "✓" : "+"}
                     </Button>
