@@ -48,24 +48,25 @@ export const getAddress = async (
 };
 
 const getOffered = async (data: OfferedType) => {
-  const token = parseTokenName(data.of_token.token_name);
-
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) => tokenData.assetName === data.of_token.token_name,
   );
 
   if (tokenFromLocal) {
     const amount = isEmpty(data.of_token.token_name)
-      ? (lovelaceToAda(Number(data.deposits)) as number)
+      ? (lovelaceToAda(Number(data.deposits)) as bigint)
       : (intToDecimal(
           Number(data.deposits),
           tokenFromLocal.decimals,
-        ) as number);
+        ) as bigint);
 
     return {
-      token: tokenFromLocal.tokenName,
+      tokenName: tokenFromLocal.tokenName,
       amount,
+      policyId: tokenFromLocal.policyId,
+      assetName: tokenFromLocal.assetName,
       icon: tokenFromLocal.icon,
+      decimals: tokenFromLocal.decimals,
     };
   } else {
     try {
@@ -84,7 +85,7 @@ const getOffered = async (data: OfferedType) => {
             ) as number);
 
         return {
-          token: tokenInfo.ticker ?? tokenInfo.name,
+          tokenName: tokenInfo.ticker ?? tokenInfo.name,
           amount,
           icon: (
             <Image
@@ -98,25 +99,30 @@ const getOffered = async (data: OfferedType) => {
               width={ICON_SIZES.S}
             />
           ),
+          decimals: tokenInfo.decimals,
+          policyId: tokenInfo.policy,
+          assetName: "",
         };
       } else {
         throw new Error("Token not found");
       }
     } catch (err) {
       return {
-        token,
-        amount: 0,
+        tokenName: parseTokenName(data.of_token.token_name),
+        amount: BigInt(0),
         icon: (
           <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
         ),
+
+        decimals: -1,
+        policyId: "",
+        assetName: "",
       };
     }
   }
 };
 
 const getDesired = async (data: DesiredType) => {
-  const token = parseTokenName(data.when[0].case.of_token.token_name);
-
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) =>
       tokenData.tokenName === data.when[0].case.of_token.token_name,
@@ -124,16 +130,19 @@ const getDesired = async (data: DesiredType) => {
 
   if (tokenFromLocal) {
     const amount = isADA(data.when[0].case.of_token.token_name)
-      ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
+      ? (lovelaceToAda(Number(data.when[0].case.deposits)) as bigint)
       : (intToDecimal(
           Number(data.when[0].case.deposits),
           tokenFromLocal.decimals,
-        ) as number);
+        ) as bigint);
 
     return {
-      token: tokenFromLocal.tokenName,
+      tokenName: tokenFromLocal.tokenName,
       amount,
       icon: tokenFromLocal.icon,
+      decimals: tokenFromLocal.decimals,
+      policyId: tokenFromLocal.policyId,
+      assetName: tokenFromLocal.assetName,
     };
   } else {
     try {
@@ -144,7 +153,9 @@ const getDesired = async (data: DesiredType) => {
       );
 
       if (tokenInfo) {
-        const tokenName = isADA(tokenInfo.ticker) ?? tokenInfo.name;
+        const tokenName = tokenInfo.ticker
+          ? parseTokenName(tokenInfo.ticker)
+          : tokenInfo.name;
 
         const amount = isADA(data.when[0].case.of_token.token_name)
           ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
@@ -154,7 +165,7 @@ const getDesired = async (data: DesiredType) => {
             ) as number);
 
         return {
-          token: tokenName,
+          tokenName,
           amount,
           icon: (
             <Image
@@ -168,17 +179,24 @@ const getDesired = async (data: DesiredType) => {
               width={ICON_SIZES.S}
             />
           ),
+
+          decimals: tokenInfo.decimals!,
+          policyId: tokenInfo.policy,
+          assetName: "",
         };
       } else {
         throw new Error("Token not found");
       }
     } catch (err) {
       return {
-        token,
-        amount: 0,
+        tokenName: parseTokenName(data.when[0].case.of_token.token_name),
+        amount: BigInt(0),
         icon: (
           <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
         ),
+        decimals: -1,
+        policyId: "",
+        assetName: "",
       };
     }
   }

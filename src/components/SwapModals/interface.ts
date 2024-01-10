@@ -1,11 +1,11 @@
 import { type Dispatch, type SetStateAction } from "react";
-import { type ITokenAmount } from "~/utils";
+import { type Asset } from "~/utils";
 
 export interface ModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
-  offered: ITokenAmount;
-  desired: ITokenAmount;
+  offered: Asset;
+  desired: Asset;
   id: string;
 }

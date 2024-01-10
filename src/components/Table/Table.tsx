@@ -3,7 +3,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import SearchNoneIcon from "public/search-none.svg";
 import { useState } from "react";
-import { ICON_SIZES, PAGES, type ITableData, type ITokenAmount } from "~/utils";
+import { ICON_SIZES, PAGES, type ITableData } from "~/utils";
+import { type Asset } from "~/utils/tokens";
 import { RetractModal } from "../SwapModals/RetractModal";
 import { SwapModal } from "../SwapModals/SwapModal";
 import { TableFooterDesktop } from "./Footer/TableFooterDesktop";
@@ -30,18 +31,20 @@ export const Table = ({
   const [openRetract, setOpenRetract] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
   const [contractId, setContractId] = useState<string>("");
-  const [desired, setDesired] = useState<ITokenAmount>({
-    token: "",
+  const [desired, setDesired] = useState<Asset>({
+    tokenName: "",
     icon: <></>,
-    amount: 0,
-    currency: "",
+    amount: BigInt(0),
+    assetName: "",
+    decimals: 0,
     policyId: "",
   });
-  const [offered, setOffered] = useState<ITokenAmount>({
-    token: "",
+  const [offered, setOffered] = useState<Asset>({
+    tokenName: "",
     icon: <></>,
-    amount: 0,
-    currency: "",
+    amount: BigInt(0),
+    assetName: "",
+    decimals: 0,
     policyId: "",
   });
   const router = useRouter();
@@ -65,11 +68,11 @@ export const Table = ({
       pathname: PAGES.DEPOSIT,
       query: {
         id: row.id,
-        offeredToken: row.offered.token,
-        offeredAmount: row.offered.amount,
+        offeredToken: row.offered.tokenName,
+        offeredAmount: String(row.offered.amount),
         offeredPolicyId: row.offered.policyId,
-        desiredToken: row.desired.token,
-        desiredAmount: row.desired.amount,
+        desiredToken: row.desired.tokenName,
+        desiredAmount: String(row.desired.amount),
         expiryDate: row.expiry,
       },
     });

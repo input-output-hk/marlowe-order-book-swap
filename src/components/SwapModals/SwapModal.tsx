@@ -16,7 +16,6 @@ import {
   ICON_SIZES,
   PAGES,
   adaToLovelace,
-  checkIfIsToken,
   contractDetailsSchema,
   decimalToInt,
   isADA,
@@ -26,7 +25,7 @@ import {
   waitTxConfirmation,
 } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
-import { tokensData, type Asset, type TOKENS } from "~/utils/tokens";
+import { tokensData, type TOKENS } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -91,7 +90,7 @@ export const SwapModal = ({
       if (client && runtimeLifecycle) {
         const contract = await client.getContractById(contractId(id));
         const parsedContract = contractDetailsSchema.safeParse(contract);
-        if (parsedContract.success) {
+        if (parsedContract.success && desired.amount) {
           const { initialContract } = parsedContract.data;
           const tokenData = await lookupTokenMetadata(
             initialContract.when[0].case.of_token.currency_symbol,
@@ -105,16 +104,16 @@ export const SwapModal = ({
               inputs: [
                 {
                   input_from_party: { role_token: "buyer" },
-                  that_deposits: isADA(desired.token)
-                    ? (adaToLovelace(BigInt(desired.amount)) as bigint)
+                  that_deposits: isADA(desired.tokenName)
+                    ? (adaToLovelace(desired.amount) as bigint)
                     : (decimalToInt(
-                        BigInt(desired.amount),
+                        desired.amount,
                         tokenData.decimals!,
                       ) as bigint),
                   of_token: {
                     currency_symbol:
-                      tokensData[desired.token as TOKENS].policyId,
-                    token_name: parseTokenName(desired.token),
+                      tokensData[desired.tokenName as TOKENS].policyId,
+                    token_name: parseTokenName(desired.tokenName),
                   },
                   into_account: { role_token: "buyer" },
                 },
@@ -147,15 +146,6 @@ export const SwapModal = ({
     }
   };
 
-  const getAssetDesired = (): Asset | undefined => {
-    if (checkIfIsToken(desired.token))
-      return {
-        ...tokensData[parseTokenName(desired.token) as TOKENS],
-        amount: BigInt(desired.amount),
-      };
-  };
-  const assetDesired = getAssetDesired();
-
   return (
     <Modal open={open} closeModal={closeModal} title="Swap Offer">
       {!balance ? (
@@ -170,16 +160,18 @@ export const SwapModal = ({
                 label="You will swap"
                 type="number"
                 disabled
-                placeholder={desired.amount.toString()}
+                placeholder={desired.amount!.toString()}
                 endContent={
                   <DropDown
-                    options={[{ option: desired.token, icon: desired.icon }]}
+                    options={[
+                      { option: desired.tokenName, icon: desired.icon },
+                    ]}
                     disabled
                   />
                 }
                 className="py-4"
               />
-              {assetDesired && isEnoughBalance(balance, assetDesired) ? (
+              {isEnoughBalance(balance, desired) ? (
                 <div className="flex gap-2 pb-11 text-sm text-m-green">
                   <Image
                     src={CheckIcon as string}
@@ -208,10 +200,12 @@ export const SwapModal = ({
                 label="You will receive"
                 type="number"
                 disabled
-                placeholder={offered.amount.toString()}
+                placeholder={offered.amount!.toString()}
                 endContent={
                   <DropDown
-                    options={[{ option: offered.token, icon: offered.icon }]}
+                    options={[
+                      { option: offered.tokenName, icon: offered.icon },
+                    ]}
                     disabled
                   />
                 }
@@ -249,9 +243,7 @@ export const SwapModal = ({
                   size={SIZE.SMALL}
                   filled
                   onClick={acceptSwap}
-                  disabled={
-                    assetDesired && !isEnoughBalance(balance, assetDesired)
-                  }
+                  disabled={!isEnoughBalance(balance, desired)}
                 >
                   Confirm Swap
                 </Button>

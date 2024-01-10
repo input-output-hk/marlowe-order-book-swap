@@ -1,22 +1,12 @@
 import { type MarloweState } from "@marlowe.io/language-core-v1";
 import type { SupportedWalletName } from "@marlowe.io/wallet/browser";
-
-export interface IToken {
-  token: string;
-  icon: JSX.Element;
-  currency: string;
-  policyId: string;
-}
-
-export interface ITokenAmount extends IToken {
-  amount: number;
-}
+import { type Asset } from "./tokens";
 
 export interface ITableData {
   id: string;
   createdBy: string;
-  offered: ITokenAmount;
-  desired: ITokenAmount;
+  offered: Asset;
+  desired: Asset;
   expiry: string;
   start: string;
   state: MarloweState;
