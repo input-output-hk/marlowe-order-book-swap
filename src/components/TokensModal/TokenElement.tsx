@@ -22,7 +22,10 @@ export const TokenElement = ({
   const handleSelect = () => {
     setSelectedOffered({
       ...token,
-      tokenName: token.tokenName === "t₳" ? ADA : token.assetName,
+      tokenName:
+        token.tokenName === "t₳" || token.tokenName === ADA
+          ? ADA
+          : token.tokenName,
     });
     closeModal();
   };
