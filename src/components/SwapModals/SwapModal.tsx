@@ -12,7 +12,6 @@ import DownArrowIcon from "public/down_arrow.svg";
 import { useContext, useEffect, useState } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
-  ADA,
   COLORS,
   ICON_SIZES,
   PAGES,
@@ -20,12 +19,14 @@ import {
   checkIfIsToken,
   contractDetailsSchema,
   decimalToInt,
+  isADA,
   isEnoughBalance,
+  parseTokenName,
   textToHexa,
   waitTxConfirmation,
 } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
-import { TOKENS, tokensData, type Asset } from "~/utils/tokens";
+import { tokensData, type Asset, type TOKENS } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -104,17 +105,16 @@ export const SwapModal = ({
               inputs: [
                 {
                   input_from_party: { role_token: "buyer" },
-                  that_deposits:
-                    desired.token === ADA
-                      ? (adaToLovelace(BigInt(desired.amount)) as bigint)
-                      : (decimalToInt(
-                          BigInt(desired.amount),
-                          tokenData.decimals!,
-                        ) as bigint),
+                  that_deposits: isADA(desired.token)
+                    ? (adaToLovelace(BigInt(desired.amount)) as bigint)
+                    : (decimalToInt(
+                        BigInt(desired.amount),
+                        tokenData.decimals!,
+                      ) as bigint),
                   of_token: {
                     currency_symbol:
                       tokensData[desired.token as TOKENS].policyId,
-                    token_name: desired.token === ADA ? "" : desired.token,
+                    token_name: parseTokenName(desired.token),
                   },
                   into_account: { role_token: "buyer" },
                 },
@@ -150,9 +150,7 @@ export const SwapModal = ({
   const getAssetDesired = (): Asset | undefined => {
     if (checkIfIsToken(desired.token))
       return {
-        ...tokensData[
-          String(desired.token) === "" ? TOKENS.ADA : desired.token
-        ],
+        ...tokensData[parseTokenName(desired.token) as TOKENS],
         amount: BigInt(desired.amount),
       };
   };

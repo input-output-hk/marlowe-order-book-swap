@@ -19,6 +19,8 @@ import {
   PAGES,
   getAddress,
   getSwapContract,
+  isEmpty,
+  parseTokenName,
   tokenToTag,
 } from "~/utils";
 import { type Asset } from "~/utils/tokens";
@@ -77,23 +79,25 @@ export const CreateListing = () => {
     if (runtimeLifecycle) {
       void getAddress(runtimeLifecycle, setMyAddress);
     }
-    if (createLoading.contractConfirmed !== "") {
+    if (!isEmpty(createLoading.contractConfirmed)) {
       void router.push({
         pathname: PAGES.DEPOSIT,
         query: {
           id: createLoading.contractConfirmed,
-          offeredToken: selectedOffered.assetName,
+          // Convert "" into ADA
+          offeredToken: parseTokenName(selectedOffered.assetName),
           offeredAmount: valueOffered,
           offeredPolicyId: selectedOffered.policyId,
           offeredDecimals: selectedOffered.decimals,
-          desiredToken: selectedDesired.assetName,
+          desiredToken: parseTokenName(selectedDesired.assetName),
           desiredAmount: valueDesired,
+          desiredPolicyId: selectedDesired.policyId,
           expiryDate: expiryDate,
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createLoading.contractConfirmed, runtimeLifecycle]);
+  }, [createLoading.contractConfirmed, runtimeLifecycle, selectedDesired]);
 
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;
@@ -162,7 +166,9 @@ export const CreateListing = () => {
 
         const tags = {
           [env.NEXT_PUBLIC_DAPP_ID]: {
-            startDate: startDate !== "" ? startDate : new Date().toISOString(),
+            startDate: !isEmpty(startDate)
+              ? startDate
+              : new Date().toISOString(),
             expiryDate,
           },
           [tokenToTag(selectedOffered.assetName)]: "",
@@ -211,10 +217,10 @@ export const CreateListing = () => {
           <div className="font-bold">Details</div>
           <TokenInputs
             label="You will swap *"
-            valueOffered={valueOffered}
-            setValueOffered={setValueOffered}
-            selectedOffered={selectedOffered}
-            setSelectedOffered={setSelectedOffered}
+            value={valueOffered}
+            setValue={setValueOffered}
+            selected={selectedOffered}
+            setSelected={setSelectedOffered}
             errors={[errors.tokenOffered, errors.valueOffered]}
           />
           <Image
@@ -225,10 +231,10 @@ export const CreateListing = () => {
           />
           <TokenInputs
             label="You will receive *"
-            valueOffered={valueDesired}
-            setValueOffered={setValueDesired}
-            selectedOffered={selectedDesired}
-            setSelectedOffered={setSelectedDesired}
+            value={valueDesired}
+            setValue={setValueDesired}
+            selected={selectedDesired}
+            setSelected={setSelectedDesired}
             errors={[errors.tokenDesired, errors.valueDesired]}
           />
         </div>

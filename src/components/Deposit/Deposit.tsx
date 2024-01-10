@@ -1,21 +1,26 @@
 import { contractId } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import CardanoIcon from "public/cardano.svg";
 import SwapCircleIcon from "public/swap_circle.svg";
 import SwapIcon from "public/swap_vert.svg";
 import { useContext, useEffect, useState } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
+
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
-  ADA,
   ICON_SIZES,
   PAGES,
   adaToLovelace,
   dateTimeOptions,
   decimalToInt,
   getAddress,
+  isADA,
+  parseTokenName,
+  textToHexa,
   waitTxConfirmation,
 } from "~/utils";
+import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
 import { tokensData, type TOKENS } from "~/utils/tokens";
 import { Loading } from "../Loading/Loading";
 
@@ -24,6 +29,14 @@ export const Deposit = () => {
   const [finished, setFinished] = useState(false);
   const [showError, setShowError] = useState(false);
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
+  const [offeredIcon, setOfferedIcon] = useState<JSX.Element>(
+    <Image
+      src={CardanoIcon as string}
+      alt="C"
+      height={ICON_SIZES.S}
+      width={ICON_SIZES.S}
+    />,
+  );
   const router = useRouter();
   const { runtimeLifecycle, client } = useContext(TSSDKContext);
 
@@ -35,6 +48,7 @@ export const Deposit = () => {
     offeredDecimals,
     desiredToken,
     desiredAmount,
+    desiredPolicyId,
     expiryDate,
   } = router.query as {
     offeredToken: string;
@@ -43,15 +57,65 @@ export const Deposit = () => {
     offeredDecimals: string;
     desiredToken: string;
     desiredAmount: string;
+    desiredPolicyId: string;
     id: string;
     expiryDate: string;
   };
+  const [desiredIcon, setDesiredIcon] = useState<JSX.Element>(
+    tokensData[desiredToken as TOKENS]?.icon,
+  );
 
   useEffect(() => {
     if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
     if (finished) void router.push(PAGES.LISTING);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runtimeLifecycle, finished]);
+    const getIcons = async () => {
+      const offeredMetadata = await lookupTokenMetadata(
+        offeredPolicyId,
+        textToHexa(parseTokenName(offeredToken)),
+        "preprod",
+      );
+      offeredMetadata.logo &&
+        setOfferedIcon(
+          <Image
+            src={"data:image/png;base64," + offeredMetadata.logo}
+            alt={offeredMetadata.logo ? offeredMetadata.name : "C"}
+            height={ICON_SIZES.S}
+            width={ICON_SIZES.S}
+          />,
+        );
+
+      if (tokensData[desiredToken as TOKENS]?.icon === <></>) {
+        const desiredMetadata = await lookupTokenMetadata(
+          desiredPolicyId,
+          textToHexa(parseTokenName(desiredToken)),
+          "preprod",
+        );
+        desiredMetadata.logo &&
+          setDesiredIcon(
+            <Image
+              src={
+                desiredMetadata.logo
+                  ? "data:image/png;base64," + desiredMetadata.logo
+                  : (CardanoIcon as string)
+              }
+              alt={desiredMetadata.logo ? desiredMetadata.name : "C"}
+              height={ICON_SIZES.S}
+              width={ICON_SIZES.S}
+            />,
+          );
+      }
+    };
+    getIcons().catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    runtimeLifecycle,
+    finished,
+    offeredPolicyId,
+    offeredToken,
+    desiredToken,
+    desiredPolicyId,
+  ]);
 
   async function handleApplyInput() {
     setShowError(false);
@@ -64,16 +128,15 @@ export const Deposit = () => {
             inputs: [
               {
                 input_from_party: { address: myAddress },
-                that_deposits:
-                  offeredToken === ADA
-                    ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
-                    : (decimalToInt(
-                        BigInt(offeredAmount),
-                        Number(offeredDecimals),
-                      ) as bigint),
+                that_deposits: isADA(offeredToken)
+                  ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
+                  : (decimalToInt(
+                      BigInt(offeredAmount),
+                      Number(offeredDecimals),
+                    ) as bigint),
                 of_token: {
                   currency_symbol: offeredPolicyId,
-                  token_name: offeredToken === ADA ? "" : offeredToken,
+                  token_name: parseTokenName(offeredToken),
                 },
                 into_account: { address: myAddress },
               },
@@ -99,7 +162,7 @@ export const Deposit = () => {
       <div className="flex flex-col items-center gap-4 p-5">
         <div className="flex flex-col items-center justify-center gap-5 md:flex-row md:items-start">
           <div className="flex gap-3 text-xl font-semibold">
-            {tokensData[offeredToken as TOKENS]?.icon}
+            {offeredIcon}
             {offeredAmount}&nbsp;&nbsp;{offeredToken}
           </div>
           <Image
@@ -109,7 +172,7 @@ export const Deposit = () => {
             className="md:rotate-90"
           />
           <div className="flex gap-3 text-xl font-semibold">
-            {tokensData[desiredToken as TOKENS]?.icon}
+            {desiredIcon}
             {desiredAmount}&nbsp;&nbsp;{desiredToken}
           </div>
         </div>

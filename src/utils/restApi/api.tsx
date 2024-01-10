@@ -25,11 +25,13 @@ import {
   type OfferedType,
 } from ".";
 import {
-  ADA,
   ICON_SIZES,
   intToDecimal,
+  isADA,
+  isEmpty,
   lovelaceToAda,
   parseState,
+  parseTokenName,
   textToHexa,
   type ITableData,
 } from "..";
@@ -46,21 +48,19 @@ export const getAddress = async (
 };
 
 const getOffered = async (data: OfferedType) => {
-  const token =
-    data.of_token.token_name === "" ? ADA : data.of_token.token_name;
+  const token = parseTokenName(data.of_token.token_name);
 
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) => tokenData.assetName === data.of_token.token_name,
   );
 
   if (tokenFromLocal) {
-    const amount =
-      data.of_token.token_name === ""
-        ? (lovelaceToAda(Number(data.deposits)) as number)
-        : (intToDecimal(
-            Number(data.deposits),
-            tokenFromLocal.decimals,
-          ) as number);
+    const amount = isEmpty(data.of_token.token_name)
+      ? (lovelaceToAda(Number(data.deposits)) as number)
+      : (intToDecimal(
+          Number(data.deposits),
+          tokenFromLocal.decimals,
+        ) as number);
 
     return {
       token: tokenFromLocal.tokenName,
@@ -76,13 +76,12 @@ const getOffered = async (data: OfferedType) => {
       );
 
       if (tokenInfo) {
-        const amount =
-          data.of_token.token_name === ""
-            ? (lovelaceToAda(Number(data.deposits)) as number)
-            : (intToDecimal(
-                Number(data.deposits),
-                tokenInfo.decimals!,
-              ) as number);
+        const amount = isEmpty(data.of_token.token_name)
+          ? (lovelaceToAda(Number(data.deposits)) as number)
+          : (intToDecimal(
+              Number(data.deposits),
+              tokenInfo.decimals!,
+            ) as number);
 
         return {
           token: tokenInfo.ticker ?? tokenInfo.name,
@@ -116,10 +115,7 @@ const getOffered = async (data: OfferedType) => {
 };
 
 const getDesired = async (data: DesiredType) => {
-  const token =
-    data.when[0].case.of_token.token_name === ""
-      ? ADA
-      : data.when[0].case.of_token.token_name;
+  const token = parseTokenName(data.when[0].case.of_token.token_name);
 
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) =>
@@ -127,13 +123,12 @@ const getDesired = async (data: DesiredType) => {
   );
 
   if (tokenFromLocal) {
-    const amount =
-      data.when[0].case.of_token.token_name === ADA
-        ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
-        : (intToDecimal(
-            Number(data.when[0].case.deposits),
-            tokenFromLocal.decimals,
-          ) as number);
+    const amount = isADA(data.when[0].case.of_token.token_name)
+      ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
+      : (intToDecimal(
+          Number(data.when[0].case.deposits),
+          tokenFromLocal.decimals,
+        ) as number);
 
     return {
       token: tokenFromLocal.tokenName,
@@ -149,16 +144,14 @@ const getDesired = async (data: DesiredType) => {
       );
 
       if (tokenInfo) {
-        const tokenName =
-          tokenInfo.ticker === "t₳" ? ADA : tokenInfo.ticker ?? tokenInfo.name;
+        const tokenName = isADA(tokenInfo.ticker) ?? tokenInfo.name;
 
-        const amount =
-          data.when[0].case.of_token.token_name === ADA
-            ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
-            : (intToDecimal(
-                Number(data.when[0].case.deposits),
-                tokenInfo.decimals!,
-              ) as number);
+        const amount = isADA(data.when[0].case.of_token.token_name)
+          ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
+          : (intToDecimal(
+              Number(data.when[0].case.deposits),
+              tokenInfo.decimals!,
+            ) as number);
 
         return {
           token: tokenName,
@@ -212,25 +205,24 @@ export const getContracts = async (
       };order desc`,
     );
 
-    const tags =
-      searchQuery !== ""
-        ? [tokenToTag(searchQuery)]
-        : [env.NEXT_PUBLIC_DAPP_ID];
+    const tags = !isEmpty(searchQuery)
+      ? [tokenToTag(searchQuery)]
+      : [env.NEXT_PUBLIC_DAPP_ID];
 
     const allContracts = await client.getContracts({ tags, range });
 
-    const succededContracts: ContractId[] = [];
+    const succeededContracts: ContractId[] = [];
     allContracts.headers.map((header) => {
       const parsedHeader = contractHeaderSchema.safeParse(header);
-      if (parsedHeader.success) succededContracts.push(header.contractId);
+      if (parsedHeader.success) succeededContracts.push(header.contractId);
     });
 
-    if (succededContracts.length === PAGINATION_LIMIT + 1) {
-      succededContracts.pop();
+    if (succeededContracts.length === PAGINATION_LIMIT + 1) {
+      succeededContracts.pop();
     }
 
     const filteredContracts = allContracts.headers.filter((contract) => {
-      return succededContracts.includes(contract.contractId);
+      return succeededContracts.includes(contract.contractId);
     });
 
     const parsedContracts = contractSchema.safeParse(filteredContracts);
@@ -343,30 +335,26 @@ const getInitialContract = async (contract: ContractDetails) => {
       "preprod",
     );
 
-    providerToken =
-      parsedPayout.data.when[0].case.of_token.token_name === ""
-        ? ADA
-        : parsedPayout.data.when[0].case.of_token.token_name;
-    swapperToken =
-      parsedPayout.data.when[0].then.when[0].case.of_token.token_name === ""
-        ? ADA
-        : parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
-    providerAmount =
-      providerToken === ADA
-        ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
-        : (intToDecimal(
-            parsedPayout.data.when[0].case.deposits,
-            tokenOfferedInfo.decimals!,
-          ) as bigint);
-    swapperAmount =
-      swapperToken === ADA
-        ? (lovelaceToAda(
-            parsedPayout.data.when[0].then.when[0].case.deposits,
-          ) as bigint)
-        : (intToDecimal(
-            parsedPayout.data.when[0].then.when[0].case.deposits,
-            tokenDesiredInfo.decimals!,
-          ) as bigint);
+    providerToken = parseTokenName(
+      parsedPayout.data.when[0].case.of_token.token_name,
+    );
+    swapperToken = parseTokenName(
+      parsedPayout.data.when[0].then.when[0].case.of_token.token_name,
+    );
+    providerAmount = isADA(providerToken)
+      ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
+      : (intToDecimal(
+          parsedPayout.data.when[0].case.deposits,
+          tokenOfferedInfo.decimals!,
+        ) as bigint);
+    swapperAmount = isADA(swapperToken)
+      ? (lovelaceToAda(
+          parsedPayout.data.when[0].then.when[0].case.deposits,
+        ) as bigint)
+      : (intToDecimal(
+          parsedPayout.data.when[0].then.when[0].case.deposits,
+          tokenDesiredInfo.decimals!,
+        ) as bigint);
   } else {
     error = "Error obtaining amount";
   }
