@@ -1,7 +1,7 @@
 import Image from "next/image";
 import InfoIcon from "public/info.svg";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { ADA, ICON_SIZES, truncateString } from "~/utils";
+import { ADA, ICON_SIZES, intToDecimal, truncateString } from "~/utils";
 import { TOKENS, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 
@@ -26,6 +26,14 @@ export const TokenElement = ({
     });
     closeModal();
   };
+
+  const IntAmount =
+    token.decimals > 0 && token.amount
+      ? (intToDecimal(token.amount, token.decimals) as bigint)
+      : token.amount;
+
+  const DecimalAmount =
+    token.decimals > 0 ? "." + String(token.amount).slice(-token.decimals) : "";
 
   return (
     <div className="flex flex-col">
@@ -58,8 +66,7 @@ export const TokenElement = ({
             {token.amount !== undefined && (
               <p className="text-xs font-medium">
                 Amount:&nbsp;
-                {token.assetName === ADA && "~"}
-                {String(token.amount)}
+                {String(IntAmount) + DecimalAmount}
               </p>
             )}
           </div>

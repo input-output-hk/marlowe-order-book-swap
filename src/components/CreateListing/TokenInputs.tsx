@@ -10,7 +10,7 @@ import {
   type SetStateAction,
 } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { ADA, ICON_SIZES, intToDecimal, textToHexa } from "~/utils";
+import { ADA, ICON_SIZES, textToHexa } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
 import { type Asset } from "~/utils/tokens";
 import { Input } from "../Input/Input";
@@ -77,12 +77,7 @@ export const TokenInputs = ({
                     width={ICON_SIZES.S}
                   />
                 ),
-                amount: tokenMetadata?.decimals
-                  ? (intToDecimal(
-                      token.quantity,
-                      tokenMetadata?.decimals,
-                    ) as bigint)
-                  : token.quantity,
+                amount: token.quantity,
                 policyId: unPolicyId(token.assetId.policyId),
               };
             } catch (e) {
