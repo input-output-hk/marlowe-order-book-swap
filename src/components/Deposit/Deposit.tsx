@@ -14,7 +14,6 @@ import {
   decimalToInt,
   getAddress,
   isADA,
-  parseTokenName,
   waitTxConfirmation,
 } from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
@@ -73,7 +72,7 @@ export const Deposit = () => {
                     ) as bigint),
                 of_token: {
                   currency_symbol: offeredPolicyId,
-                  token_name: parseTokenName(offeredToken),
+                  token_name: offeredToken,
                 },
                 into_account: { address: myAddress },
               },

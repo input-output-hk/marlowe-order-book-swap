@@ -100,8 +100,8 @@ const getOffered = async (data: OfferedType) => {
             />
           ),
           decimals: tokenInfo.decimals,
-          policyId: tokenInfo.policy,
-          assetName: "",
+          policyId: data.of_token.currency_symbol,
+          assetName: data.of_token.token_name,
         };
       } else {
         throw new Error("Token not found");
@@ -115,8 +115,8 @@ const getOffered = async (data: OfferedType) => {
         ),
 
         decimals: -1,
-        policyId: "",
-        assetName: "",
+        policyId: data.of_token.currency_symbol,
+        assetName: data.of_token.token_name,
       };
     }
   }
@@ -181,8 +181,8 @@ const getDesired = async (data: DesiredType) => {
           ),
 
           decimals: tokenInfo.decimals!,
-          policyId: tokenInfo.policy,
-          assetName: "",
+          policyId: data.when[0].case.of_token.currency_symbol,
+          assetName: data.when[0].case.of_token.token_name,
         };
       } else {
         throw new Error("Token not found");
@@ -195,8 +195,8 @@ const getDesired = async (data: DesiredType) => {
           <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
         ),
         decimals: -1,
-        policyId: "",
-        assetName: "",
+        policyId: data.when[0].case.of_token.currency_symbol,
+        assetName: data.when[0].case.of_token.token_name,
       };
     }
   }
