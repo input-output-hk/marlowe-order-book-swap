@@ -58,15 +58,15 @@ export const DataRowMobile = ({
         <div className="flex gap-2">
           {row.offered.icon}
           <p className="font-bold">
-            {humanReadable(row.offered.amount, 2)}&nbsp;
-            {truncateString(row.offered.token, 7)}
+            {humanReadable(Number(row.offered.amount), 2)}&nbsp;
+            {truncateString(row.offered.tokenName, 7)}
           </p>
         </div>
         <div className="flex gap-2">
           {row.desired.icon}
           <p className="font-bold">
-            {humanReadable(row.desired.amount, 2)}&nbsp;
-            {truncateString(row.desired.token, 7)}
+            {humanReadable(Number(row.desired.amount), 2)}&nbsp;
+            {truncateString(row.desired.tokenName, 7)}
           </p>
         </div>
       </div>

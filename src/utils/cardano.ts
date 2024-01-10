@@ -15,7 +15,8 @@ import type {
   DataRowProps,
   IStateData,
 } from "~/components/Table/table.interface";
-import { COLORS, adaToLovelace, decimalToInt, isADA, isEmpty } from ".";
+import { intToDecimal } from "~/utils";
+import { COLORS, decimalToInt, isADA } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
@@ -35,11 +36,10 @@ export const isEnoughBalance = (balance: Token[], assetToCompare: Asset) => {
 
   if (!asset) return false;
 
-  if (isEmpty(asset.assetId.assetName)) {
-    return asset.quantity >= adaToLovelace(assetToCompare.amount ?? 0);
-  } else {
-    return asset.quantity >= (assetToCompare.amount ?? 0);
-  }
+  return (
+    asset.quantity >=
+    intToDecimal(assetToCompare.amount ?? 0, assetToCompare.decimals)
+  );
 };
 
 interface ISwapRequest {
