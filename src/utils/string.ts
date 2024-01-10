@@ -30,11 +30,7 @@ export const isADA = (tokenName: string | undefined) => {
   return tokenName === ADA;
 };
 
-export const parseTokenName = (
-  tokenName: string | undefined,
-  elseString?: string,
-) => {
-  if (tokenName === undefined) return String(tokenName);
+export const parseTokenName = (tokenName: string, elseString?: string) => {
   if (isEmpty(tokenName) || tokenName === "t₳") return ADA;
   if (isADA(tokenName)) return "";
   return elseString ?? tokenName;

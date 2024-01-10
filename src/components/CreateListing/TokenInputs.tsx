@@ -55,10 +55,9 @@ export const TokenInputs = ({
                 "preprod",
               );
               return {
-                tokenName:
-                  parseTokenName(tokenMetadata?.ticker) ??
-                  tokenMetadata?.name ??
-                  token.assetId.assetName,
+                tokenName: tokenMetadata?.ticker
+                  ? parseTokenName(tokenMetadata.ticker)
+                  : tokenMetadata?.name ?? token.assetId.assetName,
                 assetName: parseTokenName(token.assetId.assetName),
                 decimals: tokenMetadata?.decimals ?? -1,
                 icon: (
