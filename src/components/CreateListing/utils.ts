@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
+import { isEmpty } from "~/utils";
 import { type Asset } from "~/utils/tokens";
 
 export interface ICreateErrors {
@@ -41,7 +42,7 @@ export const checkValidity = ({
   expiryDate,
   startDate,
 }: ICheckErrors) => {
-  const startDateObj = startDate === "" ? new Date() : new Date(startDate);
+  const startDateObj = isEmpty(startDate) ? new Date() : new Date(startDate);
   const expiryDateObj = new Date(expiryDate);
   const today = new Date();
 
@@ -50,14 +51,14 @@ export const checkValidity = ({
       ...prev,
       transactionError: undefined,
       valueOffered:
-        Number(valueOffered) <= 0 || valueOffered === ""
+        Number(valueOffered) <= 0 || isEmpty(valueOffered)
           ? "Value must be greater than 0"
           : selectedOffered.amount &&
             Number(valueOffered) > selectedOffered.amount
           ? "Value must be lower or equal than owned amount"
           : undefined,
       valueDesired:
-        Number(valueDesired) <= 0 || valueDesired === ""
+        Number(valueDesired) <= 0 || isEmpty(valueDesired)
           ? "Value must be greater than 0"
           : undefined,
       tokenOffered:
@@ -68,10 +69,11 @@ export const checkValidity = ({
         selectedDesired.assetName === "Token Select"
           ? "You must select a desired token"
           : undefined,
-      expiryDate:
-        expiryDate === "" ? "You must select an expiry date" : undefined,
+      expiryDate: isEmpty(expiryDate)
+        ? "You must select an expiry date"
+        : undefined,
       startDate:
-        startDate !== "" && startDateObj > expiryDateObj
+        !isEmpty(startDate) && startDateObj > expiryDateObj
           ? "Start date must be before expiry date"
           : undefined,
       beforeTodayStartError:
@@ -94,7 +96,7 @@ export const isEveryFieldValid = ({
   startDate,
   expiryDate,
 }: ICheckFields) => {
-  const startDateObj = startDate === "" ? new Date() : new Date(startDate);
+  const startDateObj = isEmpty(startDate) ? new Date() : new Date(startDate);
   const expiryDateObj = new Date(expiryDate);
 
   return (
@@ -102,8 +104,8 @@ export const isEveryFieldValid = ({
     Number(valueDesired) > 0 &&
     selectedOffered.assetName !== "Token Select" &&
     selectedDesired.assetName !== "Token Select" &&
-    expiryDate !== "" &&
-    expiryDate !== "" &&
+    !isEmpty(expiryDate) &&
+    !isEmpty(expiryDate) &&
     startDateObj < expiryDateObj
   );
 };

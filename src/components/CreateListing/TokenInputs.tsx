@@ -10,7 +10,7 @@ import {
   type SetStateAction,
 } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { ADA, ICON_SIZES, textToHexa } from "~/utils";
+import { ICON_SIZES, parseTokenName, textToHexa } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
 import { type Asset } from "~/utils/tokens";
 import { Input } from "../Input/Input";
@@ -36,6 +36,7 @@ export const TokenInputs = ({
   const { runtimeLifecycle } = useContext(TSSDKContext);
 
   const [ownTokens, setOwnTokens] = useState<Asset[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValueOffered(e.target.value || "");
@@ -50,20 +51,15 @@ export const TokenInputs = ({
             try {
               const tokenMetadata = await lookupTokenMetadata(
                 unPolicyId(token.assetId.policyId),
-                token.assetId.assetName === ADA
-                  ? ""
-                  : textToHexa(token.assetId.assetName),
+                textToHexa(token.assetId.assetName),
                 "preprod",
               );
               return {
                 tokenName:
-                  tokenMetadata?.ticker ??
+                  parseTokenName(tokenMetadata?.ticker) ??
                   tokenMetadata?.name ??
                   token.assetId.assetName,
-                assetName:
-                  token.assetId.assetName === ""
-                    ? ADA
-                    : token.assetId.assetName,
+                assetName: parseTokenName(token.assetId.assetName),
                 decimals: tokenMetadata?.decimals ?? -1,
                 icon: (
                   <Image
@@ -83,10 +79,7 @@ export const TokenInputs = ({
             } catch (e) {
               return {
                 tokenName: token.assetId.assetName,
-                assetName:
-                  token.assetId.assetName === ""
-                    ? ADA
-                    : token.assetId.assetName,
+                assetName: parseTokenName(token.assetId.assetName),
                 decimals: -1,
                 icon: (
                   <Image
@@ -104,6 +97,7 @@ export const TokenInputs = ({
         );
         setOwnTokens(tokens);
       }
+      setLoading(false);
     };
     if (runtimeLifecycle) {
       void getOwnTokens();
@@ -125,6 +119,7 @@ export const TokenInputs = ({
           assets={label === "You will swap *" ? ownTokens : undefined}
           selectedOffered={selectedOffered}
           setSelectedOffered={setSelectedOffered}
+          loading={loading}
         />
       }
     />

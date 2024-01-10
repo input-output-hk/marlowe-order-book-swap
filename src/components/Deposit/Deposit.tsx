@@ -7,13 +7,14 @@ import { useContext, useEffect, useState } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
-  ADA,
   ICON_SIZES,
   PAGES,
   adaToLovelace,
   dateTimeOptions,
   decimalToInt,
   getAddress,
+  isADA,
+  parseTokenName,
   waitTxConfirmation,
 } from "~/utils";
 import { tokensData, type TOKENS } from "~/utils/tokens";
@@ -64,16 +65,15 @@ export const Deposit = () => {
             inputs: [
               {
                 input_from_party: { address: myAddress },
-                that_deposits:
-                  offeredToken === ADA
-                    ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
-                    : (decimalToInt(
-                        BigInt(offeredAmount),
-                        Number(offeredDecimals),
-                      ) as bigint),
+                that_deposits: isADA(offeredToken)
+                  ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
+                  : (decimalToInt(
+                      BigInt(offeredAmount),
+                      Number(offeredDecimals),
+                    ) as bigint),
                 of_token: {
                   currency_symbol: offeredPolicyId,
-                  token_name: offeredToken === ADA ? "" : offeredToken,
+                  token_name: parseTokenName(offeredToken),
                 },
                 into_account: { address: myAddress },
               },

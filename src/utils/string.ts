@@ -1,3 +1,5 @@
+import { ADA } from ".";
+
 export const truncateString = (string: string, letters: number) => {
   return string.length > letters
     ? string.substring(0, letters) + "..."
@@ -18,4 +20,22 @@ export const textToHexa = (text: string) => {
     hexa += text.charCodeAt(i).toString(16);
   }
   return hexa;
+};
+
+export const isEmpty = (text: string) => {
+  return text === "";
+};
+
+export const isADA = (tokenName: string | undefined) => {
+  return tokenName === ADA;
+};
+
+export const parseTokenName = (
+  tokenName: string | undefined,
+  elseString?: string,
+) => {
+  if (tokenName === undefined) return String(tokenName);
+  if (isEmpty(tokenName) || tokenName === "t₳") return ADA;
+  if (isADA(tokenName)) return "";
+  return elseString ?? tokenName;
 };

@@ -1,5 +1,5 @@
 import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
-import { COLORS, truncateString } from "~/utils";
+import { COLORS, isEmpty, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { type IMoreContractDetails } from "./WithdrawPage";
 
@@ -23,7 +23,7 @@ export const ContractsList = ({
   loadingWithdrawal,
 }: ContractListProps) => {
   const noContractAvailable = possibleWithdraws.reduce((acc, curr) => {
-    return acc && curr.error !== "";
+    return acc && !isEmpty(curr.error);
   }, true);
 
   const isAdding = possibleWithdraws.reduce((acc, curr) => {
@@ -61,7 +61,7 @@ export const ContractsList = ({
                   </div>
                   <div className="flex flex-col lg:flex-row">
                     <b>Withdraw amount for provider:&nbsp;</b>
-                    {payout.error === ""
+                    {isEmpty(payout.error)
                       ? Number(payout.amount.provider) +
                         " " +
                         payout.token.provider
@@ -69,7 +69,7 @@ export const ContractsList = ({
                   </div>
                   <div className="flex flex-col lg:flex-row">
                     <b>Withdraw amount for swapper:&nbsp;</b>
-                    {payout.error === ""
+                    {isEmpty(payout.error)
                       ? Number(payout.amount.swapper) +
                         " " +
                         payout.token.swapper
@@ -96,7 +96,7 @@ export const ContractsList = ({
                         id: payout.contractId,
                         toAdd: !payout.added,
                       })}
-                      disabled={payout.error !== "" || loadingWithdrawal}
+                      disabled={isEmpty(payout.error) || loadingWithdrawal}
                     >
                       {payout.added ? "✓" : "+"}
                     </Button>

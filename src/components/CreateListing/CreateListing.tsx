@@ -19,6 +19,8 @@ import {
   PAGES,
   getAddress,
   getSwapContract,
+  isEmpty,
+  parseTokenName,
   tokenToTag,
 } from "~/utils";
 import { type Asset } from "~/utils/tokens";
@@ -77,16 +79,17 @@ export const CreateListing = () => {
     if (runtimeLifecycle) {
       void getAddress(runtimeLifecycle, setMyAddress);
     }
-    if (createLoading.contractConfirmed !== "") {
+    if (!isEmpty(createLoading.contractConfirmed)) {
       void router.push({
         pathname: PAGES.DEPOSIT,
         query: {
           id: createLoading.contractConfirmed,
-          offeredToken: selectedOffered.assetName,
+          // Convert "" into ADA
+          offeredToken: parseTokenName(selectedOffered.assetName),
           offeredAmount: valueOffered,
           offeredPolicyId: selectedOffered.policyId,
           offeredDecimals: selectedOffered.decimals,
-          desiredToken: selectedDesired.assetName,
+          desiredToken: parseTokenName(selectedDesired.assetName),
           desiredAmount: valueDesired,
           expiryDate: expiryDate,
         },
@@ -162,7 +165,9 @@ export const CreateListing = () => {
 
         const tags = {
           [env.NEXT_PUBLIC_DAPP_ID]: {
-            startDate: startDate !== "" ? startDate : new Date().toISOString(),
+            startDate: !isEmpty(startDate)
+              ? startDate
+              : new Date().toISOString(),
             expiryDate,
           },
           [tokenToTag(selectedOffered.assetName)]: "",
