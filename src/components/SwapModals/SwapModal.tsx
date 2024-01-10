@@ -25,7 +25,6 @@ import {
   waitTxConfirmation,
 } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
-import { tokensData, type TOKENS } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -105,15 +104,14 @@ export const SwapModal = ({
                 {
                   input_from_party: { role_token: "buyer" },
                   that_deposits: isADA(desired.tokenName)
-                    ? (adaToLovelace(desired.amount) as bigint)
+                    ? (adaToLovelace(BigInt(desired.amount)) as bigint)
                     : (decimalToInt(
-                        desired.amount,
+                        BigInt(desired.amount),
                         tokenData.decimals!,
                       ) as bigint),
                   of_token: {
-                    currency_symbol:
-                      tokensData[desired.tokenName as TOKENS].policyId,
-                    token_name: parseTokenName(desired.tokenName),
+                    currency_symbol: desired.policyId,
+                    token_name: parseTokenName(desired.assetName),
                   },
                   into_account: { role_token: "buyer" },
                 },

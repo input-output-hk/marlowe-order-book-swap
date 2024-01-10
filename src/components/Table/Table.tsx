@@ -73,6 +73,7 @@ export const Table = ({
         offeredPolicyId: row.offered.policyId,
         desiredToken: row.desired.tokenName,
         desiredAmount: String(row.desired.amount),
+        desiredPolicyId: row.desired.policyId,
         expiryDate: row.expiry,
       },
     });
