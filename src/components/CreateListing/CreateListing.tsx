@@ -216,7 +216,13 @@ export const CreateListing = () => {
         <div className="flex w-full flex-col content-start items-start gap-2">
           <div className="font-bold">Details</div>
           <TokenInputs
-            label="You will swap *"
+            label={
+              "You will swap " +
+              (Number(selectedOffered.decimals) > 0
+                ? `(only ${selectedOffered.decimals} decimals allowed)`
+                : "") +
+              " *"
+            }
             value={valueOffered}
             setValue={setValueOffered}
             selected={selectedOffered}
@@ -230,7 +236,13 @@ export const CreateListing = () => {
             className="flex justify-center self-center"
           />
           <TokenInputs
-            label="You will receive *"
+            label={
+              "You will receive " +
+              (Number(selectedDesired.decimals) > 0
+                ? `(only ${selectedDesired.decimals} decimals allowed)`
+                : "") +
+              " *"
+            }
             value={valueDesired}
             setValue={setValueDesired}
             selected={selectedDesired}

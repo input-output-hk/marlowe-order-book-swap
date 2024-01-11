@@ -15,12 +15,9 @@ import {
   COLORS,
   ICON_SIZES,
   PAGES,
-  adaToLovelace,
   contractDetailsSchema,
   decimalToInt,
-  isADA,
   isEnoughBalance,
-  parseTokenName,
   textToHexa,
   waitTxConfirmation,
 } from "~/utils";
@@ -103,15 +100,13 @@ export const SwapModal = ({
               inputs: [
                 {
                   input_from_party: { role_token: "buyer" },
-                  that_deposits: isADA(desired.tokenName)
-                    ? (adaToLovelace(BigInt(desired.amount)) as bigint)
-                    : (decimalToInt(
-                        BigInt(desired.amount),
-                        tokenData.decimals!,
-                      ) as bigint),
+                  that_deposits: decimalToInt(
+                    Number(desired.amount),
+                    tokenData.decimals!,
+                  ) as bigint,
                   of_token: {
                     currency_symbol: desired.policyId,
-                    token_name: parseTokenName(desired.assetName),
+                    token_name: desired.assetName,
                   },
                   into_account: { role_token: "buyer" },
                 },
@@ -232,6 +227,7 @@ export const SwapModal = ({
                   size={SIZE.SMALL}
                   color={COLORS.BLACK}
                   onClick={closeModal}
+                  disabled={loading}
                 >
                   Cancel
                 </Button>
@@ -241,7 +237,7 @@ export const SwapModal = ({
                   size={SIZE.SMALL}
                   filled
                   onClick={acceptSwap}
-                  disabled={!isEnoughBalance(balance, desired)}
+                  disabled={!isEnoughBalance(balance, desired) || loading}
                 >
                   Confirm Swap
                 </Button>

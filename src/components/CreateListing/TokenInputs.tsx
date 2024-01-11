@@ -39,7 +39,10 @@ export const TokenInputs = ({
   const [loading, setLoading] = useState(true);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value || "");
+    const inputSections = e.target.value.split(".");
+    const decimals = inputSections[1]?.substring(0, selected.decimals);
+    if (selected.decimals > 0) setValue(inputSections[0] + "." + decimals);
+    else setValue(e.target.value || "");
   };
 
   useEffect(() => {
@@ -101,8 +104,16 @@ export const TokenInputs = ({
     if (runtimeLifecycle) {
       void getOwnTokens();
     }
+    const valueSections = value.split(".");
+    if (selected.decimals > 0 && valueSections.length > 1) {
+      setValue(
+        valueSections[0] +
+          "." +
+          valueSections[1]?.substring(0, selected.decimals),
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runtimeLifecycle]);
+  }, [runtimeLifecycle, selected]);
 
   return (
     <Input
@@ -113,9 +124,10 @@ export const TokenInputs = ({
       pointerEvents
       placeholder="0"
       error={errors}
+      step={selected.decimals > 0 ? String(1 / 10 ** selected.decimals) : "any"}
       endContent={
         <TokensModal
-          assets={label === "You will swap *" ? ownTokens : undefined}
+          assets={label.startsWith("You will swap *") ? ownTokens : undefined}
           selected={selected}
           setSelected={setSelected}
           loading={loading}
