@@ -18,10 +18,12 @@ export const Balance = () => {
     }
   };
 
-  const balanceInt = Math.floor(Number(intToDecimal(balance, 6)));
+  const decimals: string = 6;
+
+  const balanceInt = Math.floor(Number(intToDecimal(balance, decimals)));
 
   const balanceDecimals = Number(
-    balance - (decimalToInt(BigInt(balanceInt), 6) as bigint),
+    balance - (decimalToInt(BigInt(balanceInt), decimals) as bigint),
   );
 
   return (
