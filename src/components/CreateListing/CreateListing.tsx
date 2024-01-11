@@ -1,6 +1,9 @@
 import { type Address } from "@marlowe.io/language-core-v1";
-import { addressBech32, type ContractId } from "@marlowe.io/runtime-core";
-import { type RolesConfiguration } from "@marlowe.io/runtime-rest-client/contract";
+import { type ContractId } from "@marlowe.io/runtime-core";
+import {
+  mintRole,
+  type RolesConfiguration,
+} from "@marlowe.io/runtime-rest-client/contract";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -153,7 +156,7 @@ export const CreateListing = () => {
         });
 
         const roles: RolesConfiguration = {
-          buyer: addressBech32(myAddress),
+          buyer: mintRole("OpenRole"),
         };
 
         const tags = {
@@ -166,7 +169,6 @@ export const CreateListing = () => {
         };
 
         const contract = await runtimeLifecycle.contracts.createContract({
-          minimumLovelaceUTxODeposit: 3000000,
           contract: swapContract,
           roles,
           tags,
