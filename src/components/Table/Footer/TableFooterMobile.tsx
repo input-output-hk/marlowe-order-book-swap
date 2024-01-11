@@ -45,7 +45,8 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
         <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-m-purple p-2 text-white">
           <p>{page}</p>
         </div>
-        {pagination.fetchMore && page && (
+        {/* FIX: Disabled for now */}
+        {/* {pagination.fetchMore && page && (
           <Link
             href={{
               pathname: PAGES.LISTING,
@@ -56,7 +57,7 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
               <p>{page + 1}</p>
             </div>
           </Link>
-        )}
+        )} */}
       </div>
       <Link
         href={{
@@ -66,7 +67,8 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
       >
         <button
           className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
-          disabled={!pagination.fetchMore}
+          // FIX: Disabled for now
+          // disabled={!pagination.fetchMore}
         >
           <p>Next</p>
           <Image
