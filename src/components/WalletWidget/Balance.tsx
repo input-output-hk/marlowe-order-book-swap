@@ -18,7 +18,7 @@ export const Balance = () => {
     }
   };
 
-  const decimals: string = 6;
+  const decimals = 6;
 
   const balanceInt = Math.floor(Number(intToDecimal(balance, decimals)));
 
