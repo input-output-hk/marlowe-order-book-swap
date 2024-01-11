@@ -67,15 +67,12 @@ export const WithdrawPage = () => {
 
   const selectAll = async () => {
     const remainingWithdraws = possibleWithdraws
-      .filter((contract) => !contract.added)
+      .filter((contract) => !contract.added && isEmpty(contract.error))
       .map((contract) => contract.contractId);
 
     setPossibleWithdraws((prev) =>
       prev.map((contract) => {
-        if (
-          remainingWithdraws.includes(contract.contractId) &&
-          isEmpty(contract.error)
-        ) {
+        if (remainingWithdraws.includes(contract.contractId)) {
           return { ...contract, adding: true };
         }
         return contract;
@@ -90,10 +87,7 @@ export const WithdrawPage = () => {
     if (payoutIds) {
       setPossibleWithdraws((prev) =>
         prev.map((contract) => {
-          if (
-            remainingWithdraws.includes(contract.contractId) &&
-            isEmpty(contract.error)
-          ) {
+          if (remainingWithdraws.includes(contract.contractId)) {
             return {
               ...contract,
               added: true,

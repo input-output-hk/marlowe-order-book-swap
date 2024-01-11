@@ -83,7 +83,7 @@ export const Deposit = () => {
           />,
         );
 
-      if (tokensData[desiredToken as TOKENS]?.icon === <></>) {
+      if (desiredIcon === <></> || !desiredIcon) {
         const desiredMetadata = await lookupTokenMetadata(
           desiredPolicyId,
           textToHexa(parseTokenName(desiredToken)),
@@ -192,7 +192,11 @@ export const Deposit = () => {
 
         <div className="flex flex-col items-center gap-3 pt-5 text-center text-sm text-m-blue">
           <div className="w-36 text-base">
-            <Button size={SIZE.SMALL} onClick={handleApplyInput}>
+            <Button
+              size={SIZE.SMALL}
+              onClick={handleApplyInput}
+              disabled={loading}
+            >
               Deposit
             </Button>
           </div>
