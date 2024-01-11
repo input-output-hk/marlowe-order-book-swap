@@ -1,4 +1,3 @@
-import { unPolicyId } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import CardanoIcon from "public/cardano.svg";
 import {
@@ -49,7 +48,7 @@ export const TokenInputs = ({
           ownTokens.map(async (token) => {
             try {
               const tokenMetadata = await lookupTokenMetadata(
-                unPolicyId(token.assetId.policyId),
+                String(token.assetId.policyId),
                 token.assetId.assetName === ADA
                   ? ""
                   : textToHexa(token.assetId.assetName),
@@ -78,7 +77,7 @@ export const TokenInputs = ({
                   />
                 ),
                 amount: token.quantity,
-                policyId: unPolicyId(token.assetId.policyId),
+                policyId: String(token.assetId.policyId),
               };
             } catch (e) {
               return {
@@ -97,7 +96,7 @@ export const TokenInputs = ({
                   />
                 ),
                 amount: token.quantity,
-                policyId: unPolicyId(token.assetId.policyId),
+                policyId: String(token.assetId.policyId),
               };
             }
           }),

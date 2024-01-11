@@ -1,15 +1,10 @@
 import { datetoTimeout } from "@marlowe.io/language-core-v1";
-import {
-  contractId,
-  unAddressBech32,
-  unContractId,
-  type ContractId,
-} from "@marlowe.io/runtime-core";
+import { contractId, type ContractId } from "@marlowe.io/runtime-core";
 import type { RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
-import type { ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
-import { contractsRange } from "@marlowe.io/runtime-rest-client/contract/endpoints/collection";
+import type { ContractDetails } from "@marlowe.io/runtime-rest-client/contract";
 import Image from "next/image";
+import { itemRanged } from "node_modules/@marlowe.io/runtime-rest-client/dist/esm/pagination";
 import CardanoIcon from "public/cardano.svg";
 import type { Dispatch, SetStateAction } from "react";
 import type { IStateData } from "~/components/Table/table.interface";
@@ -42,7 +37,7 @@ export const getAddress = async (
   setAddress: Dispatch<SetStateAction<string | undefined>>,
 ) => {
   const walletAddress = await runtime.wallet.getChangeAddress();
-  if (walletAddress) setAddress(unAddressBech32(walletAddress));
+  if (walletAddress) setAddress(String(walletAddress));
 };
 
 const getOffered = async (data: OfferedType) => {
@@ -206,7 +201,7 @@ export const getContracts = async (
   page: number,
 ) => {
   try {
-    const range = contractsRange(
+    const range = itemRanged(
       `contractId;limit ${PAGINATION_LIMIT + 1};offset ${
         (page - 1) * PAGINATION_LIMIT
       };order desc`,
@@ -220,16 +215,16 @@ export const getContracts = async (
     const allContracts = await client.getContracts({ tags, range });
 
     const succededContracts: ContractId[] = [];
-    allContracts.headers.map((header) => {
-      const parsedHeader = contractHeaderSchema.safeParse(header);
-      if (parsedHeader.success) succededContracts.push(header.contractId);
+    allContracts.contracts.map((contract) => {
+      const parsedHeader = contractHeaderSchema.safeParse(contract);
+      if (parsedHeader.success) succededContracts.push(contract.contractId);
     });
 
     if (succededContracts.length === PAGINATION_LIMIT + 1) {
       succededContracts.pop();
     }
 
-    const filteredContracts = allContracts.headers.filter((contract) => {
+    const filteredContracts = allContracts.contracts.filter((contract) => {
       return succededContracts.includes(contract.contractId);
     });
 
@@ -285,7 +280,7 @@ export const getContracts = async (
           }
 
           return {
-            id: unContractId(contractId),
+            id: String(contractId),
             createdBy:
               parsedContract.data.initialContract.when[0].case.into_account
                 .address,
@@ -305,14 +300,10 @@ export const getContracts = async (
       ) as ITableData[];
 
       setData(filteredData);
-      if (
-        allContracts.nextRange._tag === "None" ||
-        allContracts.headers.length < PAGINATION_LIMIT
-      ) {
-        setPagination((prev) => ({ ...prev, fetchMore: false }));
-      } else {
-        setPagination((prev) => ({ ...prev, fetchMore: true }));
-      }
+      setPagination((prev) => ({
+        ...prev,
+        totalPages: Math.ceil(allContracts.page.total / PAGINATION_LIMIT),
+      }));
     }
   } catch (err) {
     console.log(err);
@@ -420,7 +411,7 @@ export const getTransactionDetails = async (
   const transactions = await client.getTransactionsForContract(
     contractId(row.id),
   );
-  const txIds = transactions.headers.map((tx) => tx.transactionId);
+  const txIds = transactions.transactions.map((tx) => tx.transactionId);
   const txsPromises = txIds.map((txId) =>
     client.getContractTransactionById(contractId(row.id), txId),
   );
@@ -452,12 +443,8 @@ export const getTransactionDetails = async (
     },
   };
 
-  const contractStateFromData = Object.keys(row.state).length
-    ? row.state
-    : undefined;
-
   try {
-    const contractState = getState(scheme, inputs, contractStateFromData);
+    const contractState = getState(scheme, inputs, row.state);
     parseState(
       {
         row,

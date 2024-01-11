@@ -1,10 +1,6 @@
 import { type Address } from "@marlowe.io/language-core-v1";
-import {
-  addressBech32,
-  unContractId,
-  type ContractId,
-} from "@marlowe.io/runtime-core";
-import { type RolesConfig } from "@marlowe.io/runtime-rest-client";
+import { addressBech32, type ContractId } from "@marlowe.io/runtime-core";
+import { type RolesConfiguration } from "@marlowe.io/runtime-rest-client/contract";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -15,10 +11,10 @@ import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
 import {
   COLORS,
-  ICON_SIZES,
-  PAGES,
   getAddress,
   getSwapContract,
+  ICON_SIZES,
+  PAGES,
   tokenToTag,
 } from "~/utils";
 import { type Asset } from "~/utils/tokens";
@@ -105,7 +101,7 @@ export const CreateListing = () => {
         setCreateLoading((prev) => ({
           ...prev,
           confirmation: false,
-          contractConfirmed: unContractId(contractId),
+          contractConfirmed: String(contractId),
         }));
         return;
       }
@@ -156,7 +152,7 @@ export const CreateListing = () => {
           providerAddress,
         });
 
-        const roles: RolesConfig = {
+        const roles: RolesConfiguration = {
           buyer: addressBech32(myAddress),
         };
 
@@ -165,11 +161,12 @@ export const CreateListing = () => {
             startDate: startDate !== "" ? startDate : new Date().toISOString(),
             expiryDate,
           },
-          [tokenToTag(selectedOffered.assetName)]: "",
-          [tokenToTag(selectedDesired.assetName)]: "",
+          [tokenToTag(selectedOffered.tokenName)]: "",
+          [tokenToTag(selectedDesired.tokenName)]: "",
         };
 
         const contract = await runtimeLifecycle.contracts.createContract({
+          minimumLovelaceUTxODeposit: 3000000,
           contract: swapContract,
           roles,
           tags,

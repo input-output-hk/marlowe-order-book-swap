@@ -4,11 +4,7 @@ import {
   type Address,
   type Token as TokenSwap,
 } from "@marlowe.io/language-core-v1";
-import {
-  unPolicyId,
-  type ContractId,
-  type Token,
-} from "@marlowe.io/runtime-core";
+import { type ContractId, type Token } from "@marlowe.io/runtime-core";
 import { type RestClient } from "@marlowe.io/runtime-rest-client";
 import { type Dispatch, type SetStateAction } from "react";
 import type {
@@ -30,7 +26,7 @@ export const checkIfIsToken = (token: string): token is TOKENS => {
 
 export const isEnoughBalance = (balance: Token[], assetToCompare: Asset) => {
   const asset = balance.find(
-    (a) => unPolicyId(a.assetId.policyId) === assetToCompare.policyId,
+    (a) => String(a.assetId.policyId) === assetToCompare.policyId,
   );
 
   if (!asset) return false;

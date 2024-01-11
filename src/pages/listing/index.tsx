@@ -1,4 +1,3 @@
-import { unAddressBech32 } from "@marlowe.io/runtime-core";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
@@ -16,7 +15,7 @@ import {
 
 export interface IPagination {
   page?: number;
-  fetchMore: boolean;
+  totalPages: number;
 }
 
 interface IQueryParams {
@@ -35,7 +34,7 @@ export default function Listing() {
   });
   const [pagination, setPagination] = useState<IPagination>({
     page: undefined,
-    fetchMore: false,
+    totalPages: 0,
   });
 
   const { client, runtimeLifecycle } = useContext(TSSDKContext);
@@ -61,7 +60,7 @@ export default function Listing() {
     if (walletAddress)
       setFilters((prev) => ({
         ...prev,
-        owner: unAddressBech32(walletAddress),
+        owner: String(walletAddress),
       }));
   };
 

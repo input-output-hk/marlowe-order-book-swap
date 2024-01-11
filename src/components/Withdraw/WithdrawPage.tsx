@@ -1,5 +1,5 @@
 import { type ContractId, type PayoutId } from "@marlowe.io/runtime-core";
-import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract/details";
+import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import NoWithdrawalIcon from "public/no-withdrawal.svg";
