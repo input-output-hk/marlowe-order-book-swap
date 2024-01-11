@@ -12,7 +12,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@marlowe.io/adapter": "@marlowe.io/adapter@0.3.0-beta-rc2",
+    "@marlowe.io/adapter": "^0.3.0-beta-rc2",
     "@marlowe.io/language-core-v1": "^0.3.0-beta-rc2",
     "@marlowe.io/language-examples": "^0.3.0-beta-rc2",
     "@marlowe.io/runtime-core": "^0.3.0-beta-rc2",
