@@ -41,7 +41,8 @@ export const TokenInputs = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const inputSections = e.target.value.split(".");
     const decimals = inputSections[1]?.substring(0, selected.decimals);
-    if (selected.decimals > 0) setValue(inputSections[0] + "." + decimals);
+    if (selected.decimals > 0 && decimals)
+      setValue(inputSections[0] + "." + decimals);
     else setValue(e.target.value || "");
   };
 
@@ -127,7 +128,7 @@ export const TokenInputs = ({
       step={selected.decimals > 0 ? String(1 / 10 ** selected.decimals) : "any"}
       endContent={
         <TokensModal
-          assets={label.startsWith("You will swap *") ? ownTokens : undefined}
+          assets={label.startsWith("You will swap") ? ownTokens : undefined}
           selected={selected}
           setSelected={setSelected}
           loading={loading}
