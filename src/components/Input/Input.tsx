@@ -25,6 +25,7 @@ export const Input = ({
   value,
   onChange,
   className: customClassName,
+  step,
 }: InputProps) => {
   const shadow = useShadow ? "shadow-md" : "";
   const paddingLeftX = startContent ? "pl-12" : "pl-4";
@@ -57,6 +58,7 @@ export const Input = ({
           onChange={onChange}
           disabled={disabled}
           required={required}
+          step={step}
           className={`m-dark-grey w-full flex-grow rounded-md border p-3 focus:border-m-purple focus:ring-m-purple ${paddingLeftX} ${paddingRightX} ${shadow} focus:outline-none focus:ring-1 ${customClassName} ${errorStyle}`}
         />
         <div className={`${pointerEvents} absolute right-0 p-4`}>

@@ -11,11 +11,9 @@ import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ICON_SIZES,
   PAGES,
-  adaToLovelace,
   dateTimeOptions,
   decimalToInt,
   getAddress,
-  isADA,
   parseTokenName,
   textToHexa,
   waitTxConfirmation,
@@ -85,7 +83,7 @@ export const Deposit = () => {
           />,
         );
 
-      if (tokensData[desiredToken as TOKENS]?.icon === <></>) {
+      if (desiredIcon === <></> || !desiredIcon) {
         const desiredMetadata = await lookupTokenMetadata(
           desiredPolicyId,
           textToHexa(parseTokenName(desiredToken)),
@@ -128,12 +126,10 @@ export const Deposit = () => {
             inputs: [
               {
                 input_from_party: { address: myAddress },
-                that_deposits: isADA(offeredToken)
-                  ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
-                  : (decimalToInt(
-                      BigInt(offeredAmount),
-                      Number(offeredDecimals),
-                    ) as bigint),
+                that_deposits: decimalToInt(
+                  Number(offeredAmount),
+                  Number(offeredDecimals),
+                ) as bigint,
                 of_token: {
                   currency_symbol: offeredPolicyId,
                   token_name: parseTokenName(offeredToken),
@@ -196,7 +192,11 @@ export const Deposit = () => {
 
         <div className="flex flex-col items-center gap-3 pt-5 text-center text-sm text-m-blue">
           <div className="w-36 text-base">
-            <Button size={SIZE.SMALL} onClick={handleApplyInput}>
+            <Button
+              size={SIZE.SMALL}
+              onClick={handleApplyInput}
+              disabled={loading}
+            >
               Deposit
             </Button>
           </div>

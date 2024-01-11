@@ -60,11 +60,11 @@ export const getSwapContract = ({
   providerAddress,
 }: ISwapRequest) => {
   const parsedValueOffered = decimalToInt(
-    BigInt(valueOffered),
+    Number(valueOffered),
     selectedOffered.decimals,
   ) as bigint;
   const parsedValueDesired = decimalToInt(
-    BigInt(valueDesired),
+    Number(valueDesired),
     selectedDesired.decimals,
   ) as bigint;
 
