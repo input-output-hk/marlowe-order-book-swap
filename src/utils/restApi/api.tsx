@@ -27,9 +27,7 @@ import {
 import {
   ICON_SIZES,
   intToDecimal,
-  isADA,
   isEmpty,
-  lovelaceToAda,
   parseState,
   parseTokenName,
   textToHexa,
@@ -53,12 +51,10 @@ const getOffered = async (data: OfferedType) => {
   );
 
   if (tokenFromLocal) {
-    const amount = isEmpty(data.of_token.token_name)
-      ? (lovelaceToAda(Number(data.deposits)) as bigint)
-      : (intToDecimal(
-          Number(data.deposits),
-          tokenFromLocal.decimals,
-        ) as bigint);
+    const amount = intToDecimal(
+      Number(data.deposits),
+      tokenFromLocal.decimals,
+    ) as bigint;
 
     return {
       tokenName: tokenFromLocal.tokenName,
@@ -77,12 +73,10 @@ const getOffered = async (data: OfferedType) => {
       );
 
       if (tokenInfo) {
-        const amount = isEmpty(data.of_token.token_name)
-          ? (lovelaceToAda(Number(data.deposits)) as number)
-          : (intToDecimal(
-              Number(data.deposits),
-              tokenInfo.decimals!,
-            ) as number);
+        const amount = intToDecimal(
+          Number(data.deposits),
+          tokenInfo.decimals!,
+        ) as number;
 
         return {
           tokenName: tokenInfo.ticker ?? tokenInfo.name,
@@ -129,12 +123,10 @@ const getDesired = async (data: DesiredType) => {
   );
 
   if (tokenFromLocal) {
-    const amount = isADA(data.when[0].case.of_token.token_name)
-      ? (lovelaceToAda(Number(data.when[0].case.deposits)) as bigint)
-      : (intToDecimal(
-          Number(data.when[0].case.deposits),
-          tokenFromLocal.decimals,
-        ) as bigint);
+    const amount = intToDecimal(
+      Number(data.when[0].case.deposits),
+      tokenFromLocal.decimals,
+    ) as bigint;
 
     return {
       tokenName: tokenFromLocal.tokenName,
@@ -157,12 +149,10 @@ const getDesired = async (data: DesiredType) => {
           ? parseTokenName(tokenInfo.ticker)
           : tokenInfo.name;
 
-        const amount = isADA(data.when[0].case.of_token.token_name)
-          ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
-          : (intToDecimal(
-              Number(data.when[0].case.deposits),
-              tokenInfo.decimals!,
-            ) as number);
+        const amount = intToDecimal(
+          Number(data.when[0].case.deposits),
+          tokenInfo.decimals!,
+        ) as number;
 
         return {
           tokenName,
@@ -359,20 +349,14 @@ const getInitialContract = async (contract: ContractDetails) => {
     swapperToken = parseTokenName(
       parsedPayout.data.when[0].then.when[0].case.of_token.token_name,
     );
-    providerAmount = isADA(providerToken)
-      ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
-      : (intToDecimal(
-          parsedPayout.data.when[0].case.deposits,
-          tokenOfferedInfo.decimals!,
-        ) as bigint);
-    swapperAmount = isADA(swapperToken)
-      ? (lovelaceToAda(
-          parsedPayout.data.when[0].then.when[0].case.deposits,
-        ) as bigint)
-      : (intToDecimal(
-          parsedPayout.data.when[0].then.when[0].case.deposits,
-          tokenDesiredInfo.decimals!,
-        ) as bigint);
+    providerAmount = intToDecimal(
+      parsedPayout.data.when[0].case.deposits,
+      tokenOfferedInfo.decimals!,
+    ) as bigint;
+    swapperAmount = intToDecimal(
+      parsedPayout.data.when[0].then.when[0].case.deposits,
+      tokenDesiredInfo.decimals!,
+    ) as bigint;
   } else {
     error = "Error obtaining amount";
   }

@@ -11,11 +11,9 @@ import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ICON_SIZES,
   PAGES,
-  adaToLovelace,
   dateTimeOptions,
   decimalToInt,
   getAddress,
-  isADA,
   parseTokenName,
   textToHexa,
   waitTxConfirmation,
@@ -128,12 +126,10 @@ export const Deposit = () => {
             inputs: [
               {
                 input_from_party: { address: myAddress },
-                that_deposits: isADA(offeredToken)
-                  ? (adaToLovelace(BigInt(offeredAmount)) as bigint)
-                  : (decimalToInt(
-                      BigInt(offeredAmount),
-                      Number(offeredDecimals),
-                    ) as bigint),
+                that_deposits: decimalToInt(
+                  Number(offeredAmount),
+                  Number(offeredDecimals),
+                ) as bigint,
                 of_token: {
                   currency_symbol: offeredPolicyId,
                   token_name: parseTokenName(offeredToken),
