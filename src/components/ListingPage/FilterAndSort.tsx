@@ -1,14 +1,7 @@
 import Image from "next/image";
 import FilterIcon from "public/filter.svg";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import {
-  ICON_SIZES,
-  SortOrder,
-  type IFilters,
-  type IOptions,
-  type ISort,
-} from "~/utils";
-import { DropDown } from "../DropDown/DropDown";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { ICON_SIZES, type IFilters, type ISort } from "~/utils";
 import { Modal } from "../Modal/Modal";
 import { Switch } from "../Switch/Switch";
 
@@ -22,19 +15,19 @@ interface FiltersAndSortProps {
 export const FiltersAndSort = ({
   filters,
   setFilters,
-  sort,
-  setSort,
-}: FiltersAndSortProps) => {
+} // sort,
+// setSort,
+: FiltersAndSortProps) => {
   const [open, setOpen] = useState(false);
-  const [selectedSortByDate, setSelectedSortByDate] = useState({
-    option: sort.sortOrder,
-    icon: <></>,
-  });
+  // const [selectedSortByDate, setSelectedSortByDate] = useState({
+  //   option: sort.sortOrder,
+  //   icon: <></>,
+  // });
 
-  const sortOptions: IOptions[] = [
-    { option: SortOrder.ASC, icon: <></> },
-    { option: SortOrder.DESC, icon: <></> },
-  ];
+  // const sortOptions: IOptions[] = [
+  //   { option: SortOrder.ASC, icon: <></> },
+  //   { option: SortOrder.DESC, icon: <></> },
+  // ];
 
   const setEnabledSwitch = () =>
     setFilters((prev) => {
@@ -45,11 +38,11 @@ export const FiltersAndSort = ({
     setOpen(true);
   };
 
-  useEffect(() => {
-    setSort((prev) => {
-      return { ...prev, sortOrder: selectedSortByDate.option };
-    });
-  }, [selectedSortByDate, setSort]);
+  // useEffect(() => {
+  //   setSort((prev) => {
+  //     return { ...prev, sortOrder: selectedSortByDate.option };
+  //   });
+  // }, [selectedSortByDate, setSort]);
 
   const closeModal = () => {
     setOpen(false);
@@ -67,9 +60,11 @@ export const FiltersAndSort = ({
           height={ICON_SIZES.M}
           className="h-auto w-auto"
         />
-        <p>Filters & Sort</p>
+        {/* <p>Filters & Sort</p> */}
+        <p>Filters</p>
       </div>
-      <Modal open={open} closeModal={closeModal} title="Filters & Sort">
+      {/* <Modal open={open} closeModal={closeModal} title="Filters & Sort"> */}
+      <Modal open={open} closeModal={closeModal} title="Filters">
         <p className="font-semibold text-black">Filters</p>
         <hr className="mb-6" />
         <div className="mb-6 flex justify-between">
@@ -82,7 +77,7 @@ export const FiltersAndSort = ({
           />
         </div>
 
-        <p className="font-semibold text-black">Sort</p>
+        {/* <p className="font-semibold text-black">Sort</p>
         <hr className="mb-6" />
         <div className="flex justify-between gap-8">
           <label className="text-black">Expiry date</label>
@@ -93,7 +88,7 @@ export const FiltersAndSort = ({
               setSelected={setSelectedSortByDate}
             />
           </div>
-        </div>
+        </div> */}
       </Modal>
     </>
   );
