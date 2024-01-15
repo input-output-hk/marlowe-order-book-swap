@@ -61,10 +61,18 @@ export const SwapModal = ({
   };
 
   useEffect(() => {
-    if (nextStep && runtimeLifecycle)
-      void router.push(PAGES.COMPLETE + `/${id}`);
+    if (nextStep && runtimeLifecycle) void makeNotify();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextStep]);
+
+  const makeNotify = async () => {
+    if (!runtimeLifecycle) return;
+    await runtimeLifecycle.contracts.applyInputs(contractId(id), {
+      inputs: ["input_notify"],
+    });
+
+    void router.push(PAGES.COMPLETE + `/${id}`);
+  };
 
   const acceptSwap = async () => {
     setShowError(false);
@@ -102,7 +110,21 @@ export const SwapModal = ({
           );
 
           waitTxConfirmation(contractId(id), txId, client);
-          setNextStep(true);
+
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          const nextStepInterval = setInterval(async () => {
+            const nextStep = await client.getNextStepsForContract({
+              contractId: contractId(id),
+              validityStart: BigInt(Date.now()),
+              validityEnd: BigInt(Date.now()),
+            });
+
+            if (nextStep.applicable_inputs.notify._tag === "Some") {
+              clearInterval(nextStepInterval);
+              setNextStep(true);
+              return;
+            }
+          }, 2000);
         }
       }
     } catch (e) {
