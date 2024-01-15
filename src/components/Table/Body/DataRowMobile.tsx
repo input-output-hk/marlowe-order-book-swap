@@ -46,6 +46,9 @@ export const DataRowMobile = ({
 
   const hasStarted =
     new Date(row.start).toISOString() < new Date().toISOString();
+  const expiration = getExpiration(row.expiry);
+  const expiredText =
+    expiration === "Expired" ? "Expired" : `Expires in ${expiration}`;
 
   return (
     <div key={row.id} className="flex flex-col gap-2 rounded-lg bg-white py-2">
@@ -70,8 +73,8 @@ export const DataRowMobile = ({
           </p>
         </div>
       </div>
-      <div className="flex items-center justify-between px-4 pt-2">
-        <div>Expires in {getExpiration(row.expiry)}</div>
+      <div className="flex w-full items-center justify-between px-4 pt-2">
+        {<div>{expiredText}</div>}
         <div className="w-1/3">
           <Button
             size={SIZE.SMALL}

@@ -1,9 +1,5 @@
 import { mkEnvironment } from "@marlowe.io/language-core-v1";
-import {
-  contractId,
-  unAddressBech32,
-  type Token,
-} from "@marlowe.io/runtime-core";
+import { contractId, type Token } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import CrossIcon from "public/cancel.svg";
@@ -13,11 +9,11 @@ import { useContext, useEffect, useState } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   COLORS,
-  ICON_SIZES,
-  PAGES,
   contractDetailsSchema,
   decimalToInt,
+  ICON_SIZES,
   isEnoughBalance,
+  PAGES,
   textToHexa,
   waitTxConfirmation,
 } from "~/utils";
@@ -53,7 +49,7 @@ export const SwapModal = ({
   const getBalanceAndAddress = async () => {
     if (runtimeLifecycle) {
       const address = await runtimeLifecycle?.wallet.getChangeAddress();
-      setMyAddress(unAddressBech32(address));
+      setMyAddress(String(address));
 
       const walletBalance = await runtimeLifecycle?.wallet.getTokens();
       setBalance(walletBalance);

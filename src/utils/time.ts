@@ -6,6 +6,7 @@ export const getExpiration = (expiry: string) => {
   );
   const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
 
+  if (difference < 0) return "Expired";
   return days > 0
     ? `${days} days ${hours}h`
     : hours > 0

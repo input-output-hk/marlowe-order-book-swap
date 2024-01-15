@@ -1,4 +1,4 @@
-import { unContractId, type ContractId } from "@marlowe.io/runtime-core";
+import { type ContractId } from "@marlowe.io/runtime-core";
 import { COLORS, isEmpty, truncateString } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { type IMoreContractDetails } from "./WithdrawPage";
@@ -53,10 +53,10 @@ export const ContractsList = ({
                   <div className="flex flex-col break-all md:flex-row lg:flex-col 2xl:flex-row">
                     <b>Contract Id:&nbsp;</b>
                     <div className="hidden lg:block">
-                      {unContractId(payout.contractId)}
+                      {String(payout.contractId)}
                     </div>
                     <div className="block lg:hidden">
-                      {truncateString(unContractId(payout.contractId), 20)}
+                      {truncateString(String(payout.contractId), 20)}
                     </div>
                   </div>
                   <div className="flex flex-col lg:flex-row">

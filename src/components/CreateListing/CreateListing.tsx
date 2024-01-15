@@ -1,10 +1,6 @@
 import { type Address } from "@marlowe.io/language-core-v1";
-import {
-  addressBech32,
-  unContractId,
-  type ContractId,
-} from "@marlowe.io/runtime-core";
-import { type RolesConfig } from "@marlowe.io/runtime-rest-client";
+import { addressBech32, type ContractId } from "@marlowe.io/runtime-core";
+import { type RolesConfiguration } from "@marlowe.io/runtime-rest-client/contract";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -15,11 +11,11 @@ import { TSSDKContext } from "~/contexts/tssdk.context";
 import { env } from "~/env.mjs";
 import {
   COLORS,
-  ICON_SIZES,
-  PAGES,
   getAddress,
   getSwapContract,
+  ICON_SIZES,
   isEmpty,
+  PAGES,
   parseTokenName,
   tokenToTag,
 } from "~/utils";
@@ -109,7 +105,7 @@ export const CreateListing = () => {
         setCreateLoading((prev) => ({
           ...prev,
           confirmation: false,
-          contractConfirmed: unContractId(contractId),
+          contractConfirmed: String(contractId),
         }));
         return;
       }
@@ -160,7 +156,7 @@ export const CreateListing = () => {
           providerAddress,
         });
 
-        const roles: RolesConfig = {
+        const roles: RolesConfiguration = {
           buyer: addressBech32(myAddress),
         };
 
