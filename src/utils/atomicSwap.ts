@@ -408,12 +408,12 @@ export function mkContract(scheme: Scheme): Contract {
       pay: scheme.offer.asset.amount,
       token: scheme.offer.asset.token,
       from_account: scheme.offer.seller,
-      to: { party: scheme.ask.buyer },
+      to: { account: scheme.ask.buyer },
       then: {
         pay: scheme.ask.asset.amount,
         token: scheme.ask.asset.token,
         from_account: scheme.ask.buyer,
-        to: { party: scheme.offer.seller },
+        to: { account: scheme.offer.seller },
         then: confirmSwap,
       },
     };
