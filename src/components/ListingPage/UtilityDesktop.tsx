@@ -1,14 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import SearchIcon from "public/search.svg";
-import { type ChangeEvent } from "react";
-import { ICON_SIZES, PAGES } from "~/utils";
+import { useEffect, useState, type ChangeEvent } from "react";
+import { ICON_SIZES, PAGES, type IWalletInStorage } from "~/utils";
 import { Button } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { Switch } from "../Switch/Switch";
 import type { UtilityProps } from "./listing.interface";
 
 export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
+  const [address, setAddress] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const walletInfo = window.localStorage.getItem("walletInfo");
+
+    if (walletInfo) {
+      const { address } = JSON.parse(walletInfo) as IWalletInStorage;
+
+      setAddress(address);
+    }
+  }, []);
   const setEnabledSwitch = () =>
     setFilters((prev) => {
       return { ...prev, filterOwnListings: !prev.filterOwnListings };
@@ -38,18 +49,20 @@ export const UtilityDesktop = ({ filters, setFilters }: UtilityProps) => {
       </div>
 
       <div className="flex w-1/2 items-center justify-end gap-4 lg:w-5/12 lg:gap-6 xl:w-1/3 xl:gap-8">
-        <div className="flex items-center gap-2">
-          <label
-            className="cursor-pointer font-bold"
-            onClick={setEnabledSwitch}
-          >
-            My listings
-          </label>
-          <Switch
-            enabled={filters.filterOwnListings}
-            setEnabled={setEnabledSwitch}
-          />
-        </div>
+        {address && (
+          <div className="flex items-center gap-2">
+            <label
+              className="cursor-pointer font-bold"
+              onClick={setEnabledSwitch}
+            >
+              My listings
+            </label>
+            <Switch
+              enabled={filters.filterOwnListings}
+              setEnabled={setEnabledSwitch}
+            />
+          </div>
+        )}
 
         <div className="flex w-fit">
           <Link href={PAGES.CREATE}>

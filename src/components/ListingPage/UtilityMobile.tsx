@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import PlusIcon from "public/add.svg";
 import SearchIcon from "public/search.svg";
-import { type ChangeEvent } from "react";
-import { ICON_SIZES, PAGES } from "~/utils";
+import { useEffect, useState, type ChangeEvent } from "react";
+import { ICON_SIZES, PAGES, type IWalletInStorage } from "~/utils";
 import { Input } from "../Input/Input";
 import { FiltersAndSort } from "./FilterAndSort";
 import type { UtilityPropsMobile } from "./listing.interface";
@@ -14,6 +14,18 @@ export const UtilityMobile = ({
   sort,
   setSort,
 }: UtilityPropsMobile) => {
+  const [address, setAddress] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const walletInfo = window.localStorage.getItem("walletInfo");
+
+    if (walletInfo) {
+      const { address } = JSON.parse(walletInfo) as IWalletInStorage;
+
+      setAddress(address);
+    }
+  }, []);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => {
       return { ...prev, searchQuery: e.target.value };
@@ -37,14 +49,16 @@ export const UtilityMobile = ({
             }
           />
         </div>
-        <div className="mr-4 flex items-center gap-2">
-          <FiltersAndSort
-            filters={filters}
-            setFilters={setFilters}
-            sort={sort}
-            setSort={setSort}
-          />
-        </div>
+        {address && (
+          <div className="mr-4 flex items-center gap-2">
+            <FiltersAndSort
+              filters={filters}
+              setFilters={setFilters}
+              sort={sort}
+              setSort={setSort}
+            />
+          </div>
+        )}
       </div>
       <Link
         href={PAGES.CREATE}
