@@ -12,13 +12,13 @@
     "start": "next start"
   },
   "dependencies": {
-    "@marlowe.io/adapter": "^0.2.0-beta",
-    "@marlowe.io/language-core-v1": "^0.2.0-beta",
-    "@marlowe.io/language-examples": "^0.2.0-beta",
-    "@marlowe.io/runtime-core": "^0.2.0-beta",
-    "@marlowe.io/runtime-lifecycle": "^0.2.0-beta",
-    "@marlowe.io/runtime-rest-client": "^0.2.0-beta",
-    "@marlowe.io/wallet": "^0.2.0-beta",
+    "@marlowe.io/adapter": "0.3.0-beta-rc2",
+    "@marlowe.io/language-core-v1": "^0.3.0-beta-rc2",
+    "@marlowe.io/language-examples": "^0.3.0-beta-rc2",
+    "@marlowe.io/runtime-core": "^0.3.0-beta-rc2",
+    "@marlowe.io/runtime-lifecycle": "^0.3.0-beta-rc2",
+    "@marlowe.io/runtime-rest-client": "^0.3.0-beta-rc2",
+    "@marlowe.io/wallet": "^0.3.0-beta-rc2",
     "@prisma/client": "^5.1.1",
     "@t3-oss/env-nextjs": "^0.7.0",
     "@tanstack/react-query": "^4.32.6",
@@ -29,6 +29,7 @@
     "next": "^13.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sharp": "^0.33.2",
     "superjson": "^1.13.1",
     "zod": "^3.22.4"
   },
