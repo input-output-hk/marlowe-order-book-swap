@@ -24,11 +24,12 @@ export const CompleteSwap = () => {
         <div className="text-3xl font-extrabold">
           Nice, you&apos;ve completed a swap! 🎉
         </div>
+
         <div>
           You can now view the transaction on the Marlowe Scanner using the
           button below,
         </div>
-        <div className="flex w-4/5 flex-col gap-7">
+        <div className="flex w-fit flex-col gap-7">
           <a
             target="_blank"
             // TODO: Change when networks are changed
@@ -68,6 +69,9 @@ export const CompleteSwap = () => {
               </div>
             </Button>
           </Link>
+          <div className="text-xl font-extrabold">
+            In a few moments you will be able to withdraw your tokens.
+          </div>
         </div>
       </div>
     </main>

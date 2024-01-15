@@ -1,4 +1,3 @@
-import { mkEnvironment } from "@marlowe.io/language-core-v1";
 import { contractId, type Token } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -62,18 +61,10 @@ export const SwapModal = ({
   };
 
   useEffect(() => {
-    if (nextStep && runtimeLifecycle) void makeNotify();
+    if (nextStep && runtimeLifecycle)
+      void router.push(PAGES.COMPLETE + `/${id}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextStep]);
-
-  const makeNotify = async () => {
-    if (!runtimeLifecycle) return;
-    await runtimeLifecycle.contracts.applyInputs(contractId(id), {
-      inputs: ["input_notify"],
-    });
-
-    void router.push(PAGES.COMPLETE + `/${id}`);
-  };
 
   const acceptSwap = async () => {
     setShowError(false);
@@ -111,21 +102,7 @@ export const SwapModal = ({
           );
 
           waitTxConfirmation(contractId(id), txId, client);
-
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          const nextStepInterval = setInterval(async () => {
-            const nextStep =
-              await runtimeLifecycle.contracts.getApplicableInputs(
-                contractId(id),
-                mkEnvironment(new Date())(new Date()),
-              );
-
-            if (nextStep.applicable_inputs.notify._tag === "Some") {
-              clearInterval(nextStepInterval);
-              setNextStep(true);
-              return;
-            }
-          }, 2000);
+          setNextStep(true);
         }
       }
     } catch (e) {
