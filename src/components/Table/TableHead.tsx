@@ -42,7 +42,8 @@ export const TableHead = ({ sort, setSort }: TableHeadProps) => {
           height={ICON_SIZES.S}
         />
       ),
-      sortable: true,
+      // sortable: true,
+      sortable: false,
     },
     {
       column: "Actions",
