@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { adaToLovelace, lovelaceToAda } from "~/utils";
+import { decimalToInt, intToDecimal } from "~/utils";
 
 export const Balance = () => {
   const [balance, setBalance] = useState(BigInt(0));
@@ -18,10 +18,10 @@ export const Balance = () => {
     }
   };
 
-  const balanceInt = Math.floor(Number(lovelaceToAda(balance)));
+  const balanceInt = Math.floor(Number(intToDecimal(balance, 6)));
 
   const balanceDecimals = Number(
-    balance - (adaToLovelace(BigInt(balanceInt)) as bigint),
+    balance - (decimalToInt(BigInt(balanceInt), 6) as bigint),
   );
 
   return (

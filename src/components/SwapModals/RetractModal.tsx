@@ -69,10 +69,10 @@ export const RetractModal = ({
               label="You will swap"
               type="number"
               disabled
-              placeholder={offered.amount.toString()}
+              placeholder={offered.amount!.toString()}
               endContent={
                 <DropDown
-                  options={[{ option: offered.token, icon: offered.icon }]}
+                  options={[{ option: offered.tokenName, icon: offered.icon }]}
                   disabled
                 />
               }
@@ -84,10 +84,10 @@ export const RetractModal = ({
               label="You will receive"
               type="number"
               disabled
-              placeholder={desired.amount.toString()}
+              placeholder={desired.amount!.toString()}
               endContent={
                 <DropDown
-                  options={[{ option: desired.token, icon: desired.icon }]}
+                  options={[{ option: desired.tokenName, icon: desired.icon }]}
                   disabled
                 />
               }

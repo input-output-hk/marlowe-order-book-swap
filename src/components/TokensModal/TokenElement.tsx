@@ -1,31 +1,28 @@
 import Image from "next/image";
 import InfoIcon from "public/info.svg";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { ADA, ICON_SIZES, intToDecimal, truncateString } from "~/utils";
-import { TOKENS, type Asset } from "~/utils/tokens";
+import { ICON_SIZES, intToDecimal, isADA, truncateString } from "~/utils";
+import { type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
 
 interface TokenElementProps {
   token: Asset;
-  setSelectedOffered: Dispatch<SetStateAction<Asset>>;
+  setSelected: Dispatch<SetStateAction<Asset>>;
   closeModal: () => void;
 }
 
 export const TokenElement = ({
   token,
-  setSelectedOffered,
+  setSelected,
   closeModal,
 }: TokenElementProps) => {
   const [hiddenPolicy, setHiddenPolicy] = useState(true);
   const changeVisibility = () => setHiddenPolicy(!hiddenPolicy);
 
   const handleSelect = () => {
-    setSelectedOffered({
+    setSelected({
       ...token,
-      tokenName:
-        token.tokenName === "t₳" || token.tokenName === ADA
-          ? ADA
-          : token.tokenName,
+      tokenName: token.tokenName,
     });
     closeModal();
   };
@@ -46,11 +43,9 @@ export const TokenElement = ({
           <div className="flex flex-col">
             <div className="flex flex-col items-baseline xl:flex-row xl:gap-3">
               <span className="text-sm font-bold text-black">
-                {token.tokenName === "t₳"
-                  ? TOKENS.ADA
-                  : truncateString(token.tokenName, 15)}
+                {truncateString(token.tokenName, 15)}
               </span>
-              {token.assetName !== TOKENS.ADA && (
+              {!isADA(token.assetName) && (
                 <div className="flex">
                   <span
                     className="cursor-pointer break-all text-xs font-medium"

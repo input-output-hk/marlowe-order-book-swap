@@ -10,7 +10,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { COLORS, ICON_SIZES, textToHexa } from "~/utils";
+import { COLORS, ICON_SIZES, isEmpty, textToHexa } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
 import { tokensData, type Asset } from "~/utils/tokens";
 import { Button, SIZE } from "../Button/Button";
@@ -18,18 +18,21 @@ import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
 import { Switch } from "../Switch/Switch";
 
+import { Loading } from "../Loading/Loading";
 import { TokenElement } from "./TokenElement";
 
 interface TokensModalProps {
-  selectedOffered: Asset;
-  setSelectedOffered: Dispatch<SetStateAction<Asset>>;
+  selected: Asset;
+  setSelected: Dispatch<SetStateAction<Asset>>;
   assets?: Asset[];
+  loading: boolean;
 }
 
 export const TokensModal = ({
-  selectedOffered,
-  setSelectedOffered,
+  selected,
+  setSelected,
   assets,
+  loading,
 }: TokensModalProps) => {
   const [open, setOpen] = useState(false);
 
@@ -59,7 +62,7 @@ export const TokensModal = ({
     setSwitchEnabled(!switchEnabled);
     if (!switchEnabled) {
       setOptions(options?.filter((token) => token.decimals > 0));
-    } else if (query !== "") {
+    } else if (!isEmpty(query)) {
       setOptions(
         assets?.filter(
           (option) =>
@@ -91,9 +94,9 @@ export const TokensModal = ({
       if (token) {
         if (!token.decimals) throw new Error("Token not found");
         setError(undefined);
-        setSelectedOffered({
+        setSelected({
           tokenName: token.ticker ?? token.name,
-          assetName: assetName,
+          assetName,
           policyId: policyId,
           icon: (
             <Image
@@ -137,7 +140,7 @@ export const TokensModal = ({
           filled
         >
           <div className="flex items-center justify-center gap-1">
-            {selectedOffered.tokenName === "" ? (
+            {isEmpty(selected.tokenName) ? (
               <div className="flex items-center justify-center gap-2">
                 <span className="text-xs font-medium text-m-dark-gray">
                   Token Select
@@ -150,9 +153,9 @@ export const TokensModal = ({
               </div>
             ) : (
               <div className="flex items-center justify-center gap-2">
-                {selectedOffered.icon}
+                {selected.icon}
                 <span className="text-xs font-medium text-m-dark-gray">
-                  {selectedOffered.tokenName}
+                  {selected.tokenName}
                 </span>
               </div>
             )}
@@ -189,12 +192,19 @@ export const TokensModal = ({
             )}
             {options !== undefined ? (
               <div className="flex h-96 flex-col gap-4 overflow-auto overscroll-contain pr-2">
-                {options.length > 0 ? (
+                {loading ? (
+                  <div className="flex flex-grow items-center justify-center">
+                    <Loading
+                      sizeDesktop={ICON_SIZES.XXL}
+                      sizeMobile={ICON_SIZES.L}
+                    />
+                  </div>
+                ) : options.length > 0 ? (
                   options.map((token) => (
                     <TokenElement
                       key={token.policyId + token.assetName}
                       token={token}
-                      setSelectedOffered={setSelectedOffered}
+                      setSelected={setSelected}
                       closeModal={closeModal}
                     />
                   ))
@@ -216,7 +226,7 @@ export const TokensModal = ({
                 return (
                   <TokenElement
                     key={token.policyId}
-                    setSelectedOffered={setSelectedOffered}
+                    setSelected={setSelected}
                     closeModal={closeModal}
                     token={token}
                   />

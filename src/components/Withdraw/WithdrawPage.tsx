@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import NoWithdrawalIcon from "public/no-withdrawal.svg";
 import { useContext, useEffect, useState } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { ICON_SIZES, PAGES, getPayouts } from "~/utils";
+import { ICON_SIZES, PAGES, getPayouts, isEmpty } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { Loading } from "../Loading/Loading";
 import { ContractsList } from "./ContractsList";
@@ -54,7 +54,7 @@ export const WithdrawPage = () => {
       try {
         const withdrawList = possibleWithdraws
           .filter((contract) => contract.added)
-          .filter((contract) => contract.error === "")
+          .filter((contract) => isEmpty(contract.error))
           .flatMap((contract) => contract.payoutId!);
         await runtimeLifecycle?.payouts.withdraw(withdrawList);
         void router.push(PAGES.LISTING);
@@ -67,15 +67,12 @@ export const WithdrawPage = () => {
 
   const selectAll = async () => {
     const remainingWithdraws = possibleWithdraws
-      .filter((contract) => !contract.added)
+      .filter((contract) => !contract.added && isEmpty(contract.error))
       .map((contract) => contract.contractId);
 
     setPossibleWithdraws((prev) =>
       prev.map((contract) => {
-        if (
-          remainingWithdraws.includes(contract.contractId) &&
-          contract.error === ""
-        ) {
+        if (remainingWithdraws.includes(contract.contractId)) {
           return { ...contract, adding: true };
         }
         return contract;
@@ -90,10 +87,7 @@ export const WithdrawPage = () => {
     if (payoutIds) {
       setPossibleWithdraws((prev) =>
         prev.map((contract) => {
-          if (
-            remainingWithdraws.includes(contract.contractId) &&
-            contract.error === ""
-          ) {
+          if (remainingWithdraws.includes(contract.contractId)) {
             return {
               ...contract,
               added: true,

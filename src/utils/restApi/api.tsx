@@ -2,7 +2,7 @@ import { datetoTimeout } from "@marlowe.io/language-core-v1";
 import { contractId, type ContractId } from "@marlowe.io/runtime-core";
 import type { RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
-import type { ContractDetails } from "@marlowe.io/runtime-rest-client/contract";
+import { type ContractDetails } from "@marlowe.io/runtime-rest-client/contract";
 import Image from "next/image";
 import { itemRanged } from "node_modules/@marlowe.io/runtime-rest-client/dist/esm/pagination";
 import CardanoIcon from "public/cardano.svg";
@@ -20,11 +20,11 @@ import {
   type OfferedType,
 } from ".";
 import {
-  ADA,
   ICON_SIZES,
   intToDecimal,
-  lovelaceToAda,
+  isEmpty,
   parseState,
+  parseTokenName,
   textToHexa,
   type ITableData,
 } from "..";
@@ -41,26 +41,23 @@ export const getAddress = async (
 };
 
 const getOffered = async (data: OfferedType) => {
-  const token =
-    data.of_token.token_name === "" ? ADA : data.of_token.token_name;
-
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) => tokenData.assetName === data.of_token.token_name,
   );
 
   if (tokenFromLocal) {
-    const amount =
-      data.of_token.token_name === ""
-        ? (lovelaceToAda(Number(data.deposits)) as number)
-        : (intToDecimal(
-            Number(data.deposits),
-            tokenFromLocal.decimals,
-          ) as number);
+    const amount = intToDecimal(
+      Number(data.deposits),
+      tokenFromLocal.decimals,
+    ) as bigint;
 
     return {
-      token: tokenFromLocal.tokenName,
+      tokenName: tokenFromLocal.tokenName,
       amount,
+      policyId: tokenFromLocal.policyId,
+      assetName: tokenFromLocal.assetName,
       icon: tokenFromLocal.icon,
+      decimals: tokenFromLocal.decimals,
     };
   } else {
     try {
@@ -71,16 +68,13 @@ const getOffered = async (data: OfferedType) => {
       );
 
       if (tokenInfo) {
-        const amount =
-          data.of_token.token_name === ""
-            ? (lovelaceToAda(Number(data.deposits)) as number)
-            : (intToDecimal(
-                Number(data.deposits),
-                tokenInfo.decimals!,
-              ) as number);
+        const amount = intToDecimal(
+          Number(data.deposits),
+          tokenInfo.decimals!,
+        ) as number;
 
         return {
-          token: tokenInfo.ticker ?? tokenInfo.name,
+          tokenName: tokenInfo.ticker ?? tokenInfo.name,
           amount,
           icon: (
             <Image
@@ -94,46 +88,48 @@ const getOffered = async (data: OfferedType) => {
               width={ICON_SIZES.S}
             />
           ),
+          decimals: tokenInfo.decimals,
+          policyId: data.of_token.currency_symbol,
+          assetName: data.of_token.token_name,
         };
       } else {
         throw new Error("Token not found");
       }
     } catch (err) {
       return {
-        token,
-        amount: 0,
+        tokenName: parseTokenName(data.of_token.token_name),
+        amount: BigInt(0),
         icon: (
           <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
         ),
+
+        decimals: -1,
+        policyId: data.of_token.currency_symbol,
+        assetName: data.of_token.token_name,
       };
     }
   }
 };
 
 const getDesired = async (data: DesiredType) => {
-  const token =
-    data.when[0].case.of_token.token_name === ""
-      ? ADA
-      : data.when[0].case.of_token.token_name;
-
   const tokenFromLocal = Object.values(tokensData).find(
     (tokenData) =>
       tokenData.tokenName === data.when[0].case.of_token.token_name,
   );
 
   if (tokenFromLocal) {
-    const amount =
-      data.when[0].case.of_token.token_name === ADA
-        ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
-        : (intToDecimal(
-            Number(data.when[0].case.deposits),
-            tokenFromLocal.decimals,
-          ) as number);
+    const amount = intToDecimal(
+      Number(data.when[0].case.deposits),
+      tokenFromLocal.decimals,
+    ) as bigint;
 
     return {
-      token: tokenFromLocal.tokenName,
+      tokenName: tokenFromLocal.tokenName,
       amount,
       icon: tokenFromLocal.icon,
+      decimals: tokenFromLocal.decimals,
+      policyId: tokenFromLocal.policyId,
+      assetName: tokenFromLocal.assetName,
     };
   } else {
     try {
@@ -144,19 +140,17 @@ const getDesired = async (data: DesiredType) => {
       );
 
       if (tokenInfo) {
-        const tokenName =
-          tokenInfo.ticker === "t₳" ? ADA : tokenInfo.ticker ?? tokenInfo.name;
+        const tokenName = tokenInfo.ticker
+          ? parseTokenName(tokenInfo.ticker)
+          : tokenInfo.name;
 
-        const amount =
-          data.when[0].case.of_token.token_name === ADA
-            ? (lovelaceToAda(Number(data.when[0].case.deposits)) as number)
-            : (intToDecimal(
-                Number(data.when[0].case.deposits),
-                tokenInfo.decimals!,
-              ) as number);
+        const amount = intToDecimal(
+          Number(data.when[0].case.deposits),
+          tokenInfo.decimals!,
+        ) as number;
 
         return {
-          token: tokenName,
+          tokenName,
           amount,
           icon: (
             <Image
@@ -170,17 +164,24 @@ const getDesired = async (data: DesiredType) => {
               width={ICON_SIZES.S}
             />
           ),
+
+          decimals: tokenInfo.decimals!,
+          policyId: data.when[0].case.of_token.currency_symbol,
+          assetName: data.when[0].case.of_token.token_name,
         };
       } else {
         throw new Error("Token not found");
       }
     } catch (err) {
       return {
-        token,
-        amount: 0,
+        tokenName: parseTokenName(data.when[0].case.of_token.token_name),
+        amount: BigInt(0),
         icon: (
           <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
         ),
+        decimals: -1,
+        policyId: data.when[0].case.of_token.currency_symbol,
+        assetName: data.when[0].case.of_token.token_name,
       };
     }
   }
@@ -207,25 +208,24 @@ export const getContracts = async (
       };order desc`,
     );
 
-    const tags =
-      searchQuery !== ""
-        ? [tokenToTag(searchQuery)]
-        : [env.NEXT_PUBLIC_DAPP_ID];
+    const tags = !isEmpty(searchQuery)
+      ? [tokenToTag(searchQuery)]
+      : [env.NEXT_PUBLIC_DAPP_ID];
 
     const allContracts = await client.getContracts({ tags, range });
 
-    const succededContracts: ContractId[] = [];
+    const succeededContracts: ContractId[] = [];
     allContracts.contracts.map((contract) => {
       const parsedHeader = contractHeaderSchema.safeParse(contract);
-      if (parsedHeader.success) succededContracts.push(contract.contractId);
+      if (parsedHeader.success) succeededContracts.push(contract.contractId);
     });
 
-    if (succededContracts.length === PAGINATION_LIMIT + 1) {
-      succededContracts.pop();
+    if (succeededContracts.length === PAGINATION_LIMIT + 1) {
+      succeededContracts.pop();
     }
 
     const filteredContracts = allContracts.contracts.filter((contract) => {
-      return succededContracts.includes(contract.contractId);
+      return succeededContracts.includes(contract.contractId);
     });
 
     const parsedContracts = contractSchema.safeParse(filteredContracts);
@@ -334,30 +334,20 @@ const getInitialContract = async (contract: ContractDetails) => {
       "preprod",
     );
 
-    providerToken =
-      parsedPayout.data.when[0].case.of_token.token_name === ""
-        ? ADA
-        : parsedPayout.data.when[0].case.of_token.token_name;
-    swapperToken =
-      parsedPayout.data.when[0].then.when[0].case.of_token.token_name === ""
-        ? ADA
-        : parsedPayout.data.when[0].then.when[0].case.of_token.token_name;
-    providerAmount =
-      providerToken === ADA
-        ? (lovelaceToAda(parsedPayout.data.when[0].case.deposits) as bigint)
-        : (intToDecimal(
-            parsedPayout.data.when[0].case.deposits,
-            tokenOfferedInfo.decimals!,
-          ) as bigint);
-    swapperAmount =
-      swapperToken === ADA
-        ? (lovelaceToAda(
-            parsedPayout.data.when[0].then.when[0].case.deposits,
-          ) as bigint)
-        : (intToDecimal(
-            parsedPayout.data.when[0].then.when[0].case.deposits,
-            tokenDesiredInfo.decimals!,
-          ) as bigint);
+    providerToken = parseTokenName(
+      parsedPayout.data.when[0].case.of_token.token_name,
+    );
+    swapperToken = parseTokenName(
+      parsedPayout.data.when[0].then.when[0].case.of_token.token_name,
+    );
+    providerAmount = intToDecimal(
+      parsedPayout.data.when[0].case.deposits,
+      tokenOfferedInfo.decimals!,
+    ) as bigint;
+    swapperAmount = intToDecimal(
+      parsedPayout.data.when[0].then.when[0].case.deposits,
+      tokenDesiredInfo.decimals!,
+    ) as bigint;
   } else {
     error = "Error obtaining amount";
   }

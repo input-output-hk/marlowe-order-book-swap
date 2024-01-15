@@ -39,11 +39,3 @@ export const intToDecimal = (int: number | bigint, decimals: number) => {
   }
   return int / BigInt(10 ** decimals);
 };
-
-export const adaToLovelace = (ada: number | bigint) => {
-  return decimalToInt(ada, 6);
-};
-
-export const lovelaceToAda = (lovelace: number | bigint) => {
-  return intToDecimal(lovelace, 6);
-};

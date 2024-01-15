@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import DoubleArrowIcon from "public/double-arrow.svg";
 import ArrowIcon from "public/open_input_black.svg";
-import { ICON_SIZES, PAGES } from "~/utils";
+import { ICON_SIZES, PAGES, getPagesToDisplay } from "~/utils";
 import type { ITableFooter } from "../table.interface";
 
 export const TableFooterMobile = ({ pagination }: ITableFooter) => {
@@ -9,76 +10,109 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
 
   return (
     <div className="flex w-full items-center justify-center gap-4 rounded-lg bg-white py-4 md:hidden">
-      <Link
-        href={{
-          pathname: PAGES.LISTING,
-          query: { page: page! - 1 },
-        }}
-      >
-        <button
-          disabled={page === 1}
-          className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
+      <div className="flex">
+        <Link
+          href={{
+            pathname: PAGES.LISTING,
+            query: { page: 1 },
+          }}
         >
-          <Image
-            src={ArrowIcon as string}
-            alt="<"
-            className="rotate-90"
-            height={ICON_SIZES.S}
-          />
-          <p>Previous</p>
-        </button>
-      </Link>
+          <button
+            className="flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-lg hover:ring-1 hover:ring-m-purple/10 disabled:cursor-not-allowed disabled:opacity-50 disabled:ring-0"
+            disabled={page === 1}
+          >
+            <Image
+              src={DoubleArrowIcon as string}
+              alt="<<"
+              height={ICON_SIZES.S}
+            />
+          </button>
+        </Link>
+        <Link
+          href={{
+            pathname: PAGES.LISTING,
+            query: { page: page! - 1 },
+          }}
+        >
+          <button
+            disabled={page === 1}
+            className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
+          >
+            <Image
+              src={ArrowIcon as string}
+              alt="<"
+              className="rotate-90"
+              height={ICON_SIZES.S}
+            />
+            <p>Prev</p>
+          </button>
+        </Link>
+      </div>
 
       <div className="flex gap-2">
-        {page && page >= 2 && (
-          <Link
-            href={{
-              pathname: PAGES.LISTING,
-              query: { page: page - 1 },
-            }}
-          >
-            <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10">
-              <p>{page - 1}</p>
-            </div>
-          </Link>
-        )}
-        <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-m-purple p-2 text-white">
-          <p>{page}</p>
-        </div>
-        {/* FIX: Disabled for now */}
-        {/* {pagination.fetchMore && page && (
-          <Link
-            href={{
-              pathname: PAGES.LISTING,
-              query: { page: page + 1 },
-            }}
-          >
-            <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10">
-              <p>{page + 1}</p>
-            </div>
-          </Link>
-        )} */}
+        {getPagesToDisplay(pagination, 1, page).map((pageNumber) => {
+          return (
+            <Link
+              href={{
+                pathname: PAGES.LISTING,
+                query: { page: pageNumber },
+              }}
+              key={pageNumber}
+            >
+              <button
+                className={`flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 ${
+                  page === pageNumber
+                    ? "bg-m-purple text-white"
+                    : "hover:ring-1 hover:ring-m-purple/10"
+                }`}
+                disabled={page === pageNumber}
+              >
+                <p>{pageNumber}</p>
+              </button>
+            </Link>
+          );
+        })}
       </div>
-      <Link
-        href={{
-          pathname: PAGES.LISTING,
-          query: { page: page! + 1 },
-        }}
-      >
-        <button
-          className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
-          // FIX: Disabled for now
-          // disabled={!pagination.fetchMore}
+
+      <div className="flex">
+        <Link
+          href={{
+            pathname: PAGES.LISTING,
+            query: { page: page! + 1 },
+          }}
         >
-          <p>Next</p>
-          <Image
-            src={ArrowIcon as string}
-            alt=">"
-            className="-rotate-90"
-            height={ICON_SIZES.S}
-          />
-        </button>
-      </Link>
+          <button
+            className="flex h-8 cursor-pointer select-none items-center justify-center rounded-lg p-2 hover:ring-1 hover:ring-m-purple/10 disabled:cursor-default disabled:opacity-50 disabled:ring-0"
+            disabled={page === pagination.totalPages}
+          >
+            <p>Next</p>
+            <Image
+              src={ArrowIcon as string}
+              alt=">"
+              className="-rotate-90"
+              height={ICON_SIZES.S}
+            />
+          </button>
+        </Link>
+        <Link
+          href={{
+            pathname: PAGES.LISTING,
+            query: { page: pagination.totalPages },
+          }}
+        >
+          <button
+            className="flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-lg hover:ring-1 hover:ring-m-purple/10 disabled:cursor-not-allowed disabled:opacity-50 disabled:ring-0"
+            disabled={page === pagination.totalPages}
+          >
+            <Image
+              src={DoubleArrowIcon as string}
+              alt=">>"
+              height={ICON_SIZES.S}
+              className="rotate-180"
+            />
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };

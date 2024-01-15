@@ -56,7 +56,7 @@ export const CompleteSwap = () => {
           </a>
           <Link href={PAGES.LISTING}>
             <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
-              <div className="flex justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
+              <div className="flex items-center justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
                 <div className="hidden sm:block">
                   <Image
                     src={LeftArrowIcon as string}

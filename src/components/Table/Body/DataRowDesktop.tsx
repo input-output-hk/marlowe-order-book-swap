@@ -50,9 +50,9 @@ export const DataRowDesktop = ({
         <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
           {row.offered.icon}
           <p className="font-bold">
-            <abbr title={row.offered.amount + " " + row.offered.token}>
-              {humanReadable(row.offered.amount, 2)}&nbsp;
-              {truncateString(row.offered.token, 7)}
+            <abbr title={row.offered.amount + " " + row.offered.tokenName}>
+              {humanReadable(Number(row.offered.amount), 2)}&nbsp;
+              {truncateString(row.offered.tokenName, 7)}
             </abbr>
           </p>
         </div>
@@ -61,9 +61,9 @@ export const DataRowDesktop = ({
         <div className="flex items-center gap-2 py-6 pl-[20%] xl:pl-[30%] 2xl:pl-[37%]">
           {row.desired.icon}
           <p className="font-bold">
-            <abbr title={row.desired.amount + " " + row.desired.token}>
-              {humanReadable(row.desired.amount, 2)}&nbsp;
-              {truncateString(row.desired.token, 7)}
+            <abbr title={row.desired.amount + " " + row.desired.tokenName}>
+              {humanReadable(Number(row.desired.amount), 2)}&nbsp;
+              {truncateString(row.desired.tokenName, 7)}
             </abbr>
           </p>
         </div>

@@ -2,6 +2,7 @@ import DiscordLogo from "public/discord.svg";
 import GithubLogo from "public/github.svg";
 import XLogo from "public/x-logo.svg";
 import YoutubeLogo from "public/youtube.svg";
+import { type IPagination } from "~/pages/listing";
 
 export const PAGES = {
   ABOUT: "/about",
@@ -83,3 +84,18 @@ export const footerLinks = [
     ],
   },
 ];
+
+export const getPagesToDisplay = (
+  pagination: IPagination,
+  pagesAfterCurrent: number,
+  currentPage?: number,
+) => {
+  if (!currentPage) return [currentPage];
+  const pagesToDisplay = Array.from(
+    { length: pagesAfterCurrent * 2 + 1 },
+    (_, i) => currentPage + i - pagesAfterCurrent,
+  );
+  return pagesToDisplay.filter(
+    (currentPage) => currentPage > 0 && currentPage <= pagination.totalPages,
+  );
+};

@@ -17,7 +17,9 @@ import {
   getAddress,
   getSwapContract,
   ICON_SIZES,
+  isEmpty,
   PAGES,
+  parseTokenName,
   tokenToTag,
 } from "~/utils";
 import { type Asset } from "~/utils/tokens";
@@ -76,23 +78,25 @@ export const CreateListing = () => {
     if (runtimeLifecycle) {
       void getAddress(runtimeLifecycle, setMyAddress);
     }
-    if (createLoading.contractConfirmed !== "") {
+    if (!isEmpty(createLoading.contractConfirmed)) {
       void router.push({
         pathname: PAGES.DEPOSIT,
         query: {
           id: createLoading.contractConfirmed,
-          offeredToken: selectedOffered.assetName,
+          // Convert "" into ADA
+          offeredToken: parseTokenName(selectedOffered.assetName),
           offeredAmount: valueOffered,
           offeredPolicyId: selectedOffered.policyId,
           offeredDecimals: selectedOffered.decimals,
-          desiredToken: selectedDesired.assetName,
+          desiredToken: parseTokenName(selectedDesired.assetName),
           desiredAmount: valueDesired,
+          desiredPolicyId: selectedDesired.policyId,
           expiryDate: expiryDate,
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createLoading.contractConfirmed, runtimeLifecycle]);
+  }, [createLoading.contractConfirmed, runtimeLifecycle, selectedDesired]);
 
   const waitConfirmation = (contractId: ContractId) => {
     if (!client) return;
@@ -161,7 +165,9 @@ export const CreateListing = () => {
 
         const tags = {
           [env.NEXT_PUBLIC_DAPP_ID]: {
-            startDate: startDate !== "" ? startDate : new Date().toISOString(),
+            startDate: !isEmpty(startDate)
+              ? startDate
+              : new Date().toISOString(),
             expiryDate,
           },
           [tokenToTag(selectedOffered.tokenName)]: "",
@@ -209,11 +215,17 @@ export const CreateListing = () => {
         <div className="flex w-full flex-col content-start items-start gap-2">
           <div className="font-bold">Details</div>
           <TokenInputs
-            label="You will swap *"
-            valueOffered={valueOffered}
-            setValueOffered={setValueOffered}
-            selectedOffered={selectedOffered}
-            setSelectedOffered={setSelectedOffered}
+            label={
+              "You will swap " +
+              (Number(selectedOffered.decimals) > 0
+                ? `(only ${selectedOffered.decimals} decimals allowed)`
+                : "") +
+              " *"
+            }
+            value={valueOffered}
+            setValue={setValueOffered}
+            selected={selectedOffered}
+            setSelected={setSelectedOffered}
             errors={[errors.tokenOffered, errors.valueOffered]}
           />
           <Image
@@ -223,11 +235,17 @@ export const CreateListing = () => {
             className="flex justify-center self-center"
           />
           <TokenInputs
-            label="You will receive *"
-            valueOffered={valueDesired}
-            setValueOffered={setValueDesired}
-            selectedOffered={selectedDesired}
-            setSelectedOffered={setSelectedDesired}
+            label={
+              "You will receive " +
+              (Number(selectedDesired.decimals) > 0
+                ? `(only ${selectedDesired.decimals} decimals allowed)`
+                : "") +
+              " *"
+            }
+            value={valueDesired}
+            setValue={setValueDesired}
+            selected={selectedDesired}
+            setSelected={setSelectedDesired}
             errors={[errors.tokenDesired, errors.valueDesired]}
           />
         </div>

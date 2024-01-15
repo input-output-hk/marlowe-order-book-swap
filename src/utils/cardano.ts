@@ -11,7 +11,8 @@ import type {
   DataRowProps,
   IStateData,
 } from "~/components/Table/table.interface";
-import { COLORS, adaToLovelace, decimalToInt } from ".";
+import { intToDecimal } from "~/utils";
+import { COLORS, decimalToInt, isADA } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
@@ -20,7 +21,7 @@ export const ADA = "ADA";
 export const LOVELACE = "Lovelace";
 
 export const checkIfIsToken = (token: string): token is TOKENS => {
-  if (token === ADA) return true;
+  if (isADA(token)) return true;
   return Object.values(tokensData).some((t) => t.assetName === token);
 };
 
@@ -31,11 +32,10 @@ export const isEnoughBalance = (balance: Token[], assetToCompare: Asset) => {
 
   if (!asset) return false;
 
-  if (asset.assetId.assetName === "") {
-    return asset.quantity >= adaToLovelace(assetToCompare.amount ?? 0);
-  } else {
-    return asset.quantity >= (assetToCompare.amount ?? 0);
-  }
+  return (
+    asset.quantity >=
+    intToDecimal(assetToCompare.amount ?? 0, assetToCompare.decimals)
+  );
 };
 
 interface ISwapRequest {
@@ -56,24 +56,22 @@ export const getSwapContract = ({
   providerAddress,
 }: ISwapRequest) => {
   const parsedValueOffered = decimalToInt(
-    BigInt(valueOffered),
+    Number(valueOffered),
     selectedOffered.decimals,
   ) as bigint;
   const parsedValueDesired = decimalToInt(
-    BigInt(valueDesired),
+    Number(valueDesired),
     selectedDesired.decimals,
   ) as bigint;
 
   const tokenOffered: TokenSwap = {
     currency_symbol: selectedOffered.policyId,
-    token_name:
-      selectedOffered.assetName === ADA ? "" : selectedOffered.assetName,
+    token_name: selectedOffered.assetName,
   };
 
   const tokenDesired: TokenSwap = {
     currency_symbol: selectedDesired.policyId,
-    token_name:
-      selectedDesired.assetName === ADA ? "" : selectedDesired.assetName,
+    token_name: selectedDesired.assetName,
   };
 
   const swapSchema: Scheme = {
