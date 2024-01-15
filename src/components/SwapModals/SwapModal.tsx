@@ -1,4 +1,3 @@
-import { mkEnvironment } from "@marlowe.io/language-core-v1";
 import { contractId, type Token } from "@marlowe.io/runtime-core";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -114,11 +113,11 @@ export const SwapModal = ({
 
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           const nextStepInterval = setInterval(async () => {
-            const nextStep =
-              await runtimeLifecycle.contracts.getApplicableInputs(
-                contractId(id),
-                mkEnvironment(new Date())(new Date()),
-              );
+            const nextStep = await client.getNextStepsForContract({
+              contractId: contractId(id),
+              validityStart: BigInt(Date.now()),
+              validityEnd: BigInt(Date.now()),
+            });
 
             if (nextStep.applicable_inputs.notify._tag === "Some") {
               clearInterval(nextStepInterval);

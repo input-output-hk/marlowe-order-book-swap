@@ -10,4 +10,3 @@ export * from "./sort";
 export * from "./string";
 export * from "./time";
 export * from "./tokens";
-export * from "./typeChecker";

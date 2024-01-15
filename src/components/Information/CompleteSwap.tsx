@@ -19,16 +19,20 @@ export const CompleteSwap = () => {
 
   return (
     <main className="flex h-full w-full flex-col items-center text-center">
-      <div className="m-auto mt-3 flex w-2/3 flex-col items-center justify-center gap-5 align-middle lg:w-1/3">
+      <div className="m-auto mt-3 flex w-2/3 flex-col items-center justify-center gap-5 align-middle lg:w-2/3">
         <Image src={CompleteIcon as string} height={ICON_SIZES.XXXL} alt="" />
         <div className="text-3xl font-extrabold">
           Nice, you&apos;ve completed a swap! 🎉
         </div>
+        <div className="text-xl font-extrabold text-m-purple">
+          In a few moments you will be able to withdraw your tokens.
+        </div>
+
         <div>
           You can now view the transaction on the Marlowe Scanner using the
           button below,
         </div>
-        <div className="flex w-4/5 flex-col gap-7">
+        <div className="flex w-1/2 flex-col gap-7">
           <a
             target="_blank"
             // TODO: Change when networks are changed

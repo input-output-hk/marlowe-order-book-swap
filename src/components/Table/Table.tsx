@@ -70,6 +70,7 @@ export const Table = ({
         id: row.id,
         offeredToken: row.offered.tokenName,
         offeredAmount: String(row.offered.amount),
+        offeredDecimals: String(row.offered.decimals),
         offeredPolicyId: row.offered.policyId,
         desiredToken: row.desired.tokenName,
         desiredAmount: String(row.desired.amount),
