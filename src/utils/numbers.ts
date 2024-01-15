@@ -17,13 +17,10 @@ export const humanReadable = (num: number, digits: number) => {
       return num >= item.value;
     });
 
-  if (!item) {
-    return num.toPrecision(2);
-  }
+  if (!item) return num;
 
-  return item
-    ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
-    : "0";
+  const value = (num / item.value).toFixed(digits).replace(rx, "$1");
+  return value + item.symbol;
 };
 
 export const decimalToInt = (decimal: number | bigint, decimals: number) => {
