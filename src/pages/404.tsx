@@ -40,7 +40,7 @@ export default function FourZeroFour() {
           </div>
 
           <div className="w-1/2 md:w-full lg:w-4/5">
-            <Link href={{ pathname: PAGES.LISTING, query: { page: 1 } }}>
+            <Link href={{ pathname: PAGES.HOME, query: { page: 1 } }}>
               <Button>Go to Home</Button>
             </Link>
           </div>

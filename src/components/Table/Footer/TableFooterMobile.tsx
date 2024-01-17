@@ -13,7 +13,7 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
       <div className="flex">
         <Link
           href={{
-            pathname: PAGES.LISTING,
+            pathname: PAGES.HOME,
             query: { page: 1 },
           }}
         >
@@ -30,7 +30,7 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
         </Link>
         <Link
           href={{
-            pathname: PAGES.LISTING,
+            pathname: PAGES.HOME,
             query: { page: page! - 1 },
           }}
         >
@@ -54,7 +54,7 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
           return (
             <Link
               href={{
-                pathname: PAGES.LISTING,
+                pathname: PAGES.HOME,
                 query: { page: pageNumber },
               }}
               key={pageNumber}
@@ -77,7 +77,7 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
       <div className="flex">
         <Link
           href={{
-            pathname: PAGES.LISTING,
+            pathname: PAGES.HOME,
             query: { page: page! + 1 },
           }}
         >
@@ -96,7 +96,7 @@ export const TableFooterMobile = ({ pagination }: ITableFooter) => {
         </Link>
         <Link
           href={{
-            pathname: PAGES.LISTING,
+            pathname: PAGES.HOME,
             query: { page: pagination.totalPages },
           }}
         >

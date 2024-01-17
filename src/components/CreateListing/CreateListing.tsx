@@ -294,7 +294,7 @@ export const CreateListing = () => {
             </b>
           )}
           <div className="flex justify-end gap-6">
-            <Link href={PAGES.LISTING}>
+            <Link href={PAGES.HOME}>
               <Button
                 size={SIZE.SMALL}
                 color={COLORS.BLACK}

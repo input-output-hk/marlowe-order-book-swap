@@ -62,7 +62,7 @@ export const CompleteSwap = () => {
               </div>
             </Button>
           </a>
-          <Link href={PAGES.LISTING}>
+          <Link href={PAGES.HOME}>
             <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
               <div className="flex items-center justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">
                 <div className="hidden sm:block">

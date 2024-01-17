@@ -76,11 +76,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           client,
         }}
       >
-        <Header
-          links={headerLinks}
-          title={HEADER_TITLE}
-          homeLink={PAGES.LISTING}
-        >
+        <Header links={headerLinks} title={HEADER_TITLE} homeLink={PAGES.HOME}>
           <WalletWidget />
         </Header>
         <Component {...pageProps} />
