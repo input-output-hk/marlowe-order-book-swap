@@ -67,7 +67,12 @@ export const RetractModal = ({
   };
 
   return (
-    <Modal open={open} closeModal={closeModal} title="Retract Swap Offer">
+    <Modal
+      open={open}
+      closeModal={closeModal}
+      title="Retract Swap Offer"
+      loading={loading}
+    >
       <main className="flex w-full flex-col items-center text-m-disabled">
         <div className="flex w-full flex-col items-center justify-center gap-5 align-middle">
           <div className="flex w-full flex-col content-start items-start gap-2">
