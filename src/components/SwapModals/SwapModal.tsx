@@ -135,7 +135,12 @@ export const SwapModal = ({
   };
 
   return (
-    <Modal open={open} closeModal={closeModal} title="Swap Offer">
+    <Modal
+      open={open}
+      closeModal={closeModal}
+      title="Swap Offer"
+      loading={loading}
+    >
       {!balance ? (
         <div className="flex flex-grow items-center justify-center py-8">
           <Loading sizeDesktop={ICON_SIZES.XXL} sizeMobile={ICON_SIZES.L} />
