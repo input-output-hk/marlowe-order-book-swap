@@ -68,7 +68,7 @@ export const Footer = ({ footerLinks, socialMediaLinks }: FooterProps) => {
         </div>
       </div>
       <div className="text-center">
-        &copy; 2023 Input Output Global, Inc. All Rights Reserved.
+        &copy; 2024 Input Output Global, Inc. All Rights Reserved.
       </div>
     </footer>
   );
