@@ -11,7 +11,6 @@ import type {
   DataRowProps,
   IStateData,
 } from "~/components/Table/table.interface";
-import { intToDecimal } from "~/utils";
 import { COLORS, decimalToInt, isADA } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
@@ -34,7 +33,7 @@ export const isEnoughBalance = (balance: Token[], assetToCompare: Asset) => {
 
   return (
     asset.quantity >=
-    intToDecimal(assetToCompare.amount ?? 0, assetToCompare.decimals)
+    decimalToInt(assetToCompare.amount ?? 0, assetToCompare.decimals)
   );
 };
 

@@ -207,12 +207,14 @@ export const Deposit = () => {
           )}
           {!showError &&
             (loading ? (
-              <div className="flex w-full items-center gap-4">
+              <div className="flex w-full items-center justify-center gap-4">
                 <Loading
                   sizeDesktop={ICON_SIZES.XS}
                   sizeMobile={ICON_SIZES.XS}
                 />
-                <b>Don&apos;t leave the page. Waiting confirmation...</b>
+                <b className="w-1/2 md:w-auto">
+                  Don&apos;t leave the page. Waiting confirmation...
+                </b>
               </div>
             ) : (
               <b>
