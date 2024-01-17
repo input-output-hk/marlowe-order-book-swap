@@ -2,7 +2,7 @@ import { contractId } from "@marlowe.io/runtime-core";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { COLORS, ICON_SIZES, getAddress } from "~/utils";
+import { COLORS, ICON_SIZES, getAddress, waitTxConfirmation } from "~/utils";
 import { Button, SIZE } from "../Button/Button";
 import { DropDown } from "../DropDown/DropDown";
 import { Input } from "../Input/Input";
@@ -21,13 +21,18 @@ export const RetractModal = ({
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [retractFinished, setRetractFinished] = useState<boolean>(false);
   const router = useRouter();
-  const { runtimeLifecycle } = useContext(TSSDKContext);
+  const { runtimeLifecycle, client } = useContext(TSSDKContext);
 
   useEffect(() => {
     if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
+    if (retractFinished) {
+      setLoading(false);
+      void router.reload();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runtimeLifecycle]);
+  }, [runtimeLifecycle, retractFinished]);
 
   const closeModal = () => {
     setOpen(false);
@@ -39,20 +44,21 @@ export const RetractModal = ({
       setError(null);
       try {
         setLoading(true);
-        await runtimeLifecycle.contracts.applyInputs(contractId(id), {
-          inputs: [
-            {
-              for_choice_id: {
-                choice_name: "retract",
-                choice_owner: { address: myAddress },
+        const txId = await runtimeLifecycle.contracts.applyInputs(
+          contractId(id),
+          {
+            inputs: [
+              {
+                for_choice_id: {
+                  choice_name: "retract",
+                  choice_owner: { address: myAddress },
+                },
+                input_that_chooses_num: BigInt(0),
               },
-              input_that_chooses_num: BigInt(0),
-            },
-          ],
-        });
-
-        setLoading(false);
-        void router.reload();
+            ],
+          },
+        );
+        waitTxConfirmation(contractId(id), txId, client, setRetractFinished);
       } catch (err) {
         console.log(err);
         setError("There was an error on the transaction.");
@@ -117,7 +123,7 @@ export const RetractModal = ({
             <div className="flex w-full items-center gap-4">
               <Loading sizeDesktop={ICON_SIZES.XS} sizeMobile={ICON_SIZES.XS} />
               <b className="text-base text-m-purple">
-                Don&apos;t leave the page. Waiting confirmation...
+                Please, don&apos;t leave the page. Waiting confirmation...
               </b>
             </div>
           )}
