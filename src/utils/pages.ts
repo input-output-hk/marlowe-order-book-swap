@@ -2,21 +2,20 @@ import DiscordLogo from "public/discord.svg";
 import GithubLogo from "public/github.svg";
 import XLogo from "public/x-logo.svg";
 import YoutubeLogo from "public/youtube.svg";
-import { type IPagination } from "~/pages/listing";
+import { type IPagination } from "~/pages";
 
 export const PAGES = {
   ABOUT: "/about",
-  COMPLETE: "/listing/complete",
+  COMPLETE: "/complete",
   CREATE: "/create",
   DEPOSIT: "/create/deposit",
   HOME: "/",
-  LISTING: "/listing",
   WITHDRAW: "/withdraw",
 } as const;
 export type PagesValue = (typeof PAGES)[keyof typeof PAGES];
 
 export const headerLinks = [
-  { displayText: "Listing", href: PAGES.LISTING },
+  { displayText: "Listing", href: PAGES.HOME },
   { displayText: "Create", href: PAGES.CREATE },
   { displayText: "Withdraw", href: PAGES.WITHDRAW },
   { displayText: "About", href: PAGES.ABOUT },

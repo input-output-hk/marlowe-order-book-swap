@@ -84,10 +84,6 @@ export const WalletWidget = () => {
     );
   }
 
-  if (router.pathname === PAGES.HOME) {
-    return null;
-  }
-
   return (
     <div className="relative flex h-8 items-center">
       {address ? (

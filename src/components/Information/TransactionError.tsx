@@ -20,7 +20,7 @@ export const TransactionError = () => {
             <li>Marlowe Runtime may have failed.</li>
           </ul>
         </div>
-        <Link href={PAGES.LISTING}>
+        <Link href={PAGES.HOME}>
           <div className="w-full lg:w-4/5">
             <Button size={SIZE.REGULAR} color={COLORS.BLACK}>
               <div className="flex justify-center gap-3 whitespace-normal break-words text-sm sm:text-base">

@@ -65,7 +65,7 @@ export const Deposit = () => {
 
   useEffect(() => {
     if (runtimeLifecycle) void getAddress(runtimeLifecycle, setMyAddress);
-    if (finished) void router.push(PAGES.LISTING);
+    if (finished) void router.push(PAGES.HOME);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const getIcons = async () => {
       const offeredMetadata = await lookupTokenMetadata(

@@ -57,7 +57,7 @@ export const WithdrawPage = () => {
           .filter((contract) => isEmpty(contract.error))
           .flatMap((contract) => contract.payoutId!);
         await runtimeLifecycle?.payouts.withdraw(withdrawList);
-        void router.push(PAGES.LISTING);
+        void router.push(PAGES.HOME);
       } catch (e) {
         console.log(e);
         setErrorWithdrawal(true);

@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { IPagination } from "~/pages/listing";
+import type { IPagination } from "~/pages";
 import type { COLORS, ISort, ITableData } from "~/utils";
 
 export interface TableProps {

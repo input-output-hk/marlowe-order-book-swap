@@ -1,6 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { Table } from "~/components/Table/Table";
-import type { IPagination } from "~/pages/listing";
+import { type IPagination } from "~/pages";
 import {
   ICON_SIZES,
   SortOrder,

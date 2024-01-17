@@ -10,7 +10,7 @@ import type { Dispatch, SetStateAction } from "react";
 import type { IStateData } from "~/components/Table/table.interface";
 import type { IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
 import { env } from "~/env.mjs";
-import type { IPagination } from "~/pages/listing";
+import type { IPagination } from "~/pages";
 import {
   contractDetailsSchema,
   contractHeaderSchema,

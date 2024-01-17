@@ -49,7 +49,7 @@ export const WalletSelect = () => {
         }),
       );
 
-      void router.push({ pathname: PAGES.LISTING, query: { page: 1 } });
+      void router.push({ pathname: PAGES.HOME, query: { page: 1 } });
     }
   };
 
