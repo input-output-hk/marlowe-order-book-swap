@@ -49,6 +49,7 @@ To get the DApp up and running on your local machine, follow these steps:
       Navigate to the root directory of your project and open the `.env.example` file in your preferred text editor.
 
    2. **Set the Marlowe runtime URL**
+      **Your Marlowe Runtime instance must be v0.0.6 or higher.**
       Locate the line `NEXT_PUBLIC_RUNTIME_URL="<Your-Runtime-URL>"`. Replace `<Your-Runtime-URL>` with your Marlowe runtime URL.
 
    3. **Set your dApp ID**
