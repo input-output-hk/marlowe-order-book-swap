@@ -377,7 +377,16 @@ export const getPayouts = async (
       return client.getContractById(contract.contractId);
     });
     const contractsList = await Promise.all(contractsListPromise);
-    const contractsPromises = contractsList.map((contract) =>
+
+    const validContracts = contractsList
+      .map((contract) => {
+        const parsedContract = contractDetailsSchema.safeParse(contract);
+
+        return parsedContract.success ? parsedContract.data : null;
+      })
+      .filter((x) => x !== null) as unknown as ContractDetails[];
+
+    const contractsPromises = validContracts.map((contract) =>
       getInitialContract(contract),
     );
     const contracts = await Promise.all(contractsPromises);
