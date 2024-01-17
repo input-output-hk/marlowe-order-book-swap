@@ -28,8 +28,8 @@ export const CompleteSwap = () => {
           In a few moments you will be able to&nbsp;
           <Link href={PAGES.WITHDRAW} className="underline">
             withdraw
-          </Link>{" "}
-          your tokens.
+          </Link>
+          &nbsp; your tokens.
         </div>
 
         <div>
