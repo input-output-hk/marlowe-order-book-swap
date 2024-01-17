@@ -105,7 +105,12 @@ export const RetractModal = ({
             fee.
           </div>
           <div className="flex w-full flex-col justify-end gap-5 pt-5 text-sm sm:flex-row">
-            <Button size={SIZE.SMALL} color={COLORS.BLACK} onClick={closeModal}>
+            <Button
+              size={SIZE.SMALL}
+              color={COLORS.BLACK}
+              onClick={closeModal}
+              disabled={loading}
+            >
               Cancel
             </Button>
             <Button
@@ -113,7 +118,7 @@ export const RetractModal = ({
               size={SIZE.SMALL}
               filled
               onClick={handleRetract}
-              disabled={!myAddress}
+              disabled={!myAddress || loading}
             >
               Retract Swap
             </Button>
