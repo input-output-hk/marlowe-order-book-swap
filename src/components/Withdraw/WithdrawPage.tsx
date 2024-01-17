@@ -61,6 +61,8 @@ export const WithdrawPage = () => {
       } catch (e) {
         console.log(e);
         setErrorWithdrawal(true);
+      } finally {
+        setLoadingWithdrawal(false);
       }
     }
   };
