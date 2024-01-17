@@ -25,7 +25,11 @@ export const CompleteSwap = () => {
           Nice, you&apos;ve completed a swap! 🎉
         </div>
         <div className="text-xl font-extrabold text-m-purple">
-          In a few moments you will be able to withdraw your tokens.
+          In a few moments you will be able to&nbsp;
+          <Link href={PAGES.WITHDRAW} className="underline">
+            withdraw
+          </Link>
+          &nbsp; your tokens.
         </div>
 
         <div>
