@@ -85,6 +85,10 @@ export const TokensModal = ({
 
   const searchToken = async () => {
     try {
+      setError("");
+      if (isEmpty(policyId) || isEmpty(assetName))
+        throw new Error("Token not found");
+
       const token = await lookupTokenMetadata(
         policyId,
         textToHexa(assetName),
