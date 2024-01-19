@@ -76,7 +76,7 @@ export const TokenElement = ({
                 src={InfoIcon as string}
                 alt="i"
                 height={ICON_SIZES.L}
-                className="cursor-pointer"
+                className="cursor-help"
               />
             </abbr>
           )}

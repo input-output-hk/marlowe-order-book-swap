@@ -9,7 +9,7 @@ import {
   type SetStateAction,
 } from "react";
 import { TSSDKContext } from "~/contexts/tssdk.context";
-import { ICON_SIZES, parseTokenName, textToHexa } from "~/utils";
+import { ICON_SIZES, isEmpty, parseTokenName, textToHexa } from "~/utils";
 import { lookupTokenMetadata } from "~/utils/lookupTokenMetadata";
 import { type Asset } from "~/utils/tokens";
 import { Input } from "../Input/Input";
@@ -97,7 +97,7 @@ export const TokenInputs = ({
             }
           }),
         );
-        setOwnTokens(tokens);
+        setOwnTokens(tokens.filter((token) => !isEmpty(token.tokenName)));
       }
       setLoading(false);
     };
