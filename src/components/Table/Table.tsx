@@ -2,14 +2,21 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import SearchNoneIcon from "public/search-none.svg";
-import { useState } from "react";
-import { ICON_SIZES, PAGES, type ITableData } from "~/utils";
+import { useContext, useEffect, useState } from "react";
+import { TSSDKContext } from "~/contexts/tssdk.context";
+import {
+  ICON_SIZES,
+  PAGES,
+  getTxsDetails,
+  type ITableData,
+  type IWalletInStorage,
+} from "~/utils";
 import { type Asset } from "~/utils/tokens";
 import { RetractModal } from "../SwapModals/RetractModal";
 import { SwapModal } from "../SwapModals/SwapModal";
 import { TableFooterDesktop } from "./Footer/TableFooterDesktop";
 import { TableHead } from "./TableHead";
-import type { TablePropsWithSort } from "./table.interface";
+import type { IStateData, TablePropsWithSort } from "./table.interface";
 
 const TableBodyMobile = dynamic(
   () => import("./Body/TableBodyMobile").then((mod) => mod.TableBodyMobile),
@@ -47,7 +54,26 @@ export const Table = ({
     decimals: 0,
     policyId: "",
   });
+  const [states, setStates] = useState<IStateData[] | undefined>(undefined);
   const router = useRouter();
+  const { client } = useContext(TSSDKContext);
+
+  useEffect(() => {
+    if (client) {
+      const walletInfo = window.localStorage.getItem("walletInfo");
+      const address = walletInfo
+        ? (JSON.parse(walletInfo) as IWalletInStorage).address
+        : "";
+
+      void getTxsDetails(
+        { handleOpenAccept, handleOpenRetract, handleGoToDeposit, data },
+        client,
+        setStates,
+        address,
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client]);
 
   const handleOpenRetract = (row: ITableData) => () => {
     setOffered(row.offered);
@@ -102,6 +128,7 @@ export const Table = ({
         <TableHead sort={sort} setSort={setSort} />
         <TableBodyDesktop
           data={data}
+          states={states}
           handleOpenRetract={handleOpenRetract}
           handleOpenAccept={handleOpenAccept}
           handleGoToDeposit={handleGoToDeposit}
@@ -110,6 +137,7 @@ export const Table = ({
       <TableFooterDesktop pagination={pagination} />
       <TableBodyMobile
         data={data}
+        states={states}
         handleOpenRetract={handleOpenRetract}
         handleOpenAccept={handleOpenAccept}
         handleGoToDeposit={handleGoToDeposit}

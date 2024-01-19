@@ -1,49 +1,15 @@
 import Image from "next/image";
 import SwapIcon from "public/swap.svg";
-import { useContext, useEffect, useState } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
-import { TSSDKContext } from "~/contexts/tssdk.context";
 import {
   ICON_SIZES,
   getExpiration,
-  getTransactionDetails,
   humanReadable,
-  loadingState,
   truncateString,
-  type IWalletInStorage,
 } from "~/utils";
-import { type DataRowProps, type IStateData } from "../table.interface";
+import { type DataRowProps } from "../table.interface";
 
-export const DataRowMobile = ({
-  row,
-  address,
-  handleOpenAccept,
-  handleOpenRetract,
-  handleGoToDeposit,
-}: DataRowProps) => {
-  const [state, setState] = useState<IStateData>(loadingState);
-  const { client } = useContext(TSSDKContext);
-
-  useEffect(() => {
-    if (client) {
-      const walletInfo = window.localStorage.getItem("walletInfo");
-      const addressLocalStorage = walletInfo
-        ? (JSON.parse(walletInfo) as IWalletInStorage).address
-        : "";
-
-      void getTransactionDetails(
-        client,
-        row,
-        addressLocalStorage,
-        handleOpenRetract,
-        handleOpenAccept,
-        handleGoToDeposit,
-        setState,
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client]);
-
+export const DataRowMobile = ({ row, address, state }: DataRowProps) => {
   const hasStarted =
     new Date(row.start).toISOString() < new Date().toISOString();
   const expiration = getExpiration(row.expiry);

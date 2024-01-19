@@ -1,4 +1,8 @@
-import { datetoTimeout } from "@marlowe.io/language-core-v1";
+import {
+  datetoTimeout,
+  type Input,
+  type MarloweState,
+} from "@marlowe.io/language-core-v1";
 import { contractId, type ContractId } from "@marlowe.io/runtime-core";
 import type { RuntimeLifecycle } from "@marlowe.io/runtime-lifecycle/api";
 import type { RestClient } from "@marlowe.io/runtime-rest-client";
@@ -7,7 +11,10 @@ import Image from "next/image";
 import { itemRanged } from "node_modules/@marlowe.io/runtime-rest-client/dist/esm/pagination";
 import CardanoIcon from "public/cardano.svg";
 import type { Dispatch, SetStateAction } from "react";
-import type { IStateData } from "~/components/Table/table.interface";
+import type {
+  IStateData,
+  TableProps,
+} from "~/components/Table/table.interface";
 import type { IMoreContractDetails } from "~/components/Withdraw/WithdrawPage";
 import { env } from "~/env.mjs";
 import type { IPagination } from "~/pages";
@@ -422,64 +429,161 @@ export const getPayouts = async (
   setAddressExists(!!walletInfo);
 };
 
-export const getTransactionDetails = async (
+export const getTxsDetails = async (
+  componentInfo: TableProps,
   client: RestClient,
-  row: ITableData,
+  setStates: Dispatch<SetStateAction<IStateData[] | undefined>>,
   address: string | undefined,
-  handleOpenRetract: (row: ITableData) => () => void,
-  handleOpenAccept: (row: ITableData) => () => void,
-  handleGoToDeposit: (row: ITableData) => () => void,
-  setState: Dispatch<SetStateAction<IStateData>>,
 ) => {
-  const transactions = await client.getTransactionsForContract(
-    contractId(row.id),
-  );
-  const txIds = transactions.transactions.map((tx) => tx.transactionId);
-  const txsPromises = txIds.map((txId) =>
-    client.getContractTransactionById(contractId(row.id), txId),
-  );
+  const { handleOpenRetract, handleOpenAccept, handleGoToDeposit, data } =
+    componentInfo;
 
-  const txDetails = await Promise.all(txsPromises);
-  const inputs = txDetails.flatMap((tx) => tx.inputs);
+  const contractsTransactionsPromise = data.map((row) => {
+    return client.getTransactionsForContract(contractId(row.id));
+  });
+  const contractsTransactions = await Promise.all(contractsTransactionsPromise);
 
-  const deadline = datetoTimeout(new Date(row.expiry));
-  // Some data in scheme is not used, we can leave it empty. We just use deadline.
-  const scheme: Scheme = {
-    offer: {
-      deadline,
-      seller: { address: "" },
-      asset: {
-        amount: BigInt(0),
-        token: { currency_symbol: "", token_name: "" },
-      },
-    },
-    ask: {
-      deadline,
-      buyer: { role_token: "" },
-      asset: {
-        amount: BigInt(0),
-        token: { currency_symbol: "", token_name: "" },
-      },
-    },
-    swapConfirmation: {
-      deadline,
-    },
-  };
+  const preStatePromise: Promise<{
+    contractId: string;
+    txInputs: Input[];
+    scheme: Scheme;
+    state: MarloweState;
+  }>[] = data.map(async (row) => {
+    const thisTransactions =
+      contractsTransactions.find((cTxs) =>
+        cTxs.transactions.find((tx) => tx.contractId === row.id),
+      ) ?? null;
 
-  try {
-    const contractState = getState(scheme, inputs, row.state);
-    parseState(
-      {
-        row,
-        address,
-        handleOpenRetract,
-        handleOpenAccept,
-        handleGoToDeposit,
-        setState,
+    let inputs: Input[] = [];
+    if (thisTransactions) {
+      const txsIds = thisTransactions?.transactions.map(
+        (tx) => tx.transactionId,
+      );
+      const txsPromises = txsIds?.map((txId) =>
+        client.getContractTransactionById(contractId(row.id), txId),
+      );
+      const txDetails = await Promise.all(txsPromises);
+      inputs = txDetails.flatMap((tx) => tx.inputs);
+    }
+
+    const deadline = datetoTimeout(new Date(row.expiry));
+    // Some data in scheme is not used, we can leave it empty. We just use deadline.
+    const scheme: Scheme = {
+      offer: {
+        deadline,
+        seller: { address: "" },
+        asset: {
+          amount: BigInt(0),
+          token: { currency_symbol: "", token_name: "" },
+        },
       },
-      contractState,
-    );
-  } catch (err) {
-    console.log(err);
-  }
+      ask: {
+        deadline,
+        buyer: { role_token: "" },
+        asset: {
+          amount: BigInt(0),
+          token: { currency_symbol: "", token_name: "" },
+        },
+      },
+      swapConfirmation: {
+        deadline,
+      },
+    };
+
+    return { contractId: row.id, txInputs: inputs, scheme, state: row.state };
+  });
+
+  const preStates = await Promise.all(preStatePromise);
+
+  const states = preStates.map((preState) => {
+    return {
+      contractId: preState.contractId,
+      state: getState(preState.scheme, preState.txInputs, preState.state),
+    };
+  });
+
+  const parsedStates = states
+    .map((state) => {
+      try {
+        const row = data.find((row) => row.id === state.contractId);
+        if (!row) throw new Error("Row not found");
+        const asd = parseState({
+          row,
+          address,
+          handleGoToDeposit,
+          handleOpenAccept,
+          handleOpenRetract,
+          state,
+        });
+        return asd;
+      } catch (err) {
+        console.log(err);
+        return null;
+      }
+    })
+    .filter((x) => x !== null) as IStateData[];
+
+  setStates(parsedStates);
 };
+
+// export const getTransactionDetails = async (
+//   client: RestClient,
+//   row: ITableData,
+//   address: string | undefined,
+//   handleOpenRetract: (row: ITableData) => () => void,
+//   handleOpenAccept: (row: ITableData) => () => void,
+//   handleGoToDeposit: (row: ITableData) => () => void,
+//   setState: Dispatch<SetStateAction<IStateData>>,
+// ) => {
+//   const transactions = await client.getTransactionsForContract(
+//     contractId(row.id),
+//   );
+//   const txIds = transactions.transactions.map((tx) => tx.transactionId);
+//   const txsPromises = txIds.map((txId) =>
+//     client.getContractTransactionById(contractId(row.id), txId),
+//   );
+
+//   const txDetails = await Promise.all(txsPromises);
+//   const inputs = txDetails.flatMap((tx) => tx.inputs);
+
+//   const deadline = datetoTimeout(new Date(row.expiry));
+//   // Some data in scheme is not used, we can leave it empty. We just use deadline.
+//   const scheme: Scheme = {
+//     offer: {
+//       deadline,
+//       seller: { address: "" },
+//       asset: {
+//         amount: BigInt(0),
+//         token: { currency_symbol: "", token_name: "" },
+//       },
+//     },
+//     ask: {
+//       deadline,
+//       buyer: { role_token: "" },
+//       asset: {
+//         amount: BigInt(0),
+//         token: { currency_symbol: "", token_name: "" },
+//       },
+//     },
+//     swapConfirmation: {
+//       deadline,
+//     },
+//   };
+
+//   try {
+//     const contractState = getState(scheme, inputs, row.state);
+//     parseState(
+//       {
+//         row,
+//         address,
+//         handleOpenRetract,
+//         handleOpenAccept,
+//         handleGoToDeposit,
+//         setState,
+//       },
+//       contractState,
+//     );
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };

@@ -7,6 +7,7 @@ export interface TableProps {
   handleOpenRetract: (row: ITableData) => () => void;
   handleOpenAccept: (row: ITableData) => () => void;
   handleGoToDeposit: (row: ITableData) => () => void;
+  states?: Array<IStateData>;
   pagination?: IPagination;
   setPagination?: Dispatch<SetStateAction<IPagination>>;
 }
@@ -27,12 +28,11 @@ export interface ITableFooter {
 export interface DataRowProps {
   row: ITableData;
   address: string | undefined;
-  handleOpenRetract: (row: ITableData) => () => void;
-  handleOpenAccept: (row: ITableData) => () => void;
-  handleGoToDeposit: (row: ITableData) => () => void;
+  state: IStateData;
 }
 
 export interface IStateData {
+  contractId: string;
   disabled: boolean;
   text: string;
   action: <T extends never[]>(...args: T) => void;

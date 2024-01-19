@@ -1,46 +1,8 @@
-import { useContext, useEffect, useState } from "react";
 import { Button, SIZE } from "~/components/Button/Button";
-import { TSSDKContext } from "~/contexts/tssdk.context";
-import {
-  dateTimeOptions,
-  getTransactionDetails,
-  humanReadable,
-  loadingState,
-  truncateString,
-  type IWalletInStorage,
-} from "~/utils";
-import { type DataRowProps, type IStateData } from "../table.interface";
+import { dateTimeOptions, humanReadable, truncateString } from "~/utils";
+import { type DataRowProps } from "../table.interface";
 
-export const DataRowDesktop = ({
-  row,
-  address,
-  handleOpenAccept,
-  handleOpenRetract,
-  handleGoToDeposit,
-}: DataRowProps) => {
-  const [state, setState] = useState<IStateData>(loadingState);
-  const { client } = useContext(TSSDKContext);
-
-  useEffect(() => {
-    if (client) {
-      const walletInfo = window.localStorage.getItem("walletInfo");
-      const addressLocalStorage = walletInfo
-        ? (JSON.parse(walletInfo) as IWalletInStorage).address
-        : "";
-
-      void getTransactionDetails(
-        client,
-        row,
-        addressLocalStorage,
-        handleOpenRetract,
-        handleOpenAccept,
-        handleGoToDeposit,
-        setState,
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client]);
-
+export const DataRowDesktop = ({ row, address, state }: DataRowProps) => {
   const hasStarted =
     new Date(row.start).toISOString() < new Date().toISOString();
 

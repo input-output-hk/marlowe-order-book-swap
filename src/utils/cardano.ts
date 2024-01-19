@@ -7,11 +7,7 @@ import {
 import { type ContractId, type Token } from "@marlowe.io/runtime-core";
 import { type RestClient } from "@marlowe.io/runtime-rest-client";
 import { type Dispatch, type SetStateAction } from "react";
-import type {
-  DataRowProps,
-  IStateData,
-} from "~/components/Table/table.interface";
-import { COLORS, decimalToInt, isADA } from ".";
+import { COLORS, decimalToInt, isADA, type ITableData } from ".";
 import { mkContract, type Scheme, type State } from "./atomicSwap";
 import { tokensData, type Asset, type TOKENS } from "./tokens";
 
@@ -110,32 +106,35 @@ export const waitTxConfirmation = (
   }, 5000);
 };
 
-export const loadingState = {
+interface IParseState {
+  row: ITableData;
+  address: string | undefined;
+  state: { contractId: string; state: State };
+  handleOpenRetract: (row: ITableData) => () => void;
+  handleOpenAccept: (row: ITableData) => () => void;
+  handleGoToDeposit: (row: ITableData) => () => void;
+}
+
+export const loadingState = (id: string) => ({
+  contractId: id,
   disabled: true,
   text: "Loading...",
   action: () => null,
-};
-export const parseState = (
-  componentInfo: DataRowProps & {
-    setState: Dispatch<SetStateAction<IStateData>>;
-  },
-  state: State | undefined,
-) => {
-  const {
-    row,
-    address,
-    handleOpenAccept,
-    handleOpenRetract,
-    handleGoToDeposit,
-    setState,
-  } = componentInfo;
+});
+export const parseState = ({
+  address,
+  row,
+  state,
+  handleOpenRetract,
+  handleOpenAccept,
+  handleGoToDeposit,
+}: IParseState) => {
   const nullFn = () => null;
 
-  if (!state) return setState(loadingState);
-
-  switch (state.typeName) {
+  switch (state.state.typeName) {
     case "WaitingForAnswer": {
-      return setState({
+      return {
+        contractId: row.id,
         disabled: false,
         text: row.createdBy === address ? "Retract Offer" : "Accept Offer",
         action:
@@ -143,39 +142,43 @@ export const parseState = (
             ? handleOpenRetract(row)
             : handleOpenAccept(row),
         color: row.createdBy === address ? COLORS.RED : COLORS.PURPLE,
-      });
+      };
     }
     case "NoSellerOfferInTime": {
-      return setState({
+      return {
+        contractId: row.id,
         disabled: true,
         text: "Offer Ended",
         action: nullFn,
-      });
+      };
     }
     case "WaitingSellerOffer": {
-      return setState({
+      return {
+        contractId: row.id,
         disabled: row.createdBy !== address,
         text: row.createdBy === address ? "Deposit" : "Not Started",
         action: handleGoToDeposit(row),
         color: row.createdBy === address ? COLORS.GREEN : COLORS.DISABLED,
-      });
+      };
     }
     case "WaitingForSwapConfirmation": {
-      return setState({
+      return {
+        contractId: row.id,
         disabled: true,
         text: "Finishing...",
         action: nullFn,
-      });
+      };
     }
     case "Closed": {
-      return setState({
+      return {
+        contractId: row.id,
         disabled: true,
         text: "Offer Ended",
         action: nullFn,
-      });
+      };
     }
     default: {
-      return setState(loadingState);
+      return loadingState(row.id);
     }
   }
 };

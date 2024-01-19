@@ -7,10 +7,8 @@ import { DataRowMobile } from "./DataRowMobile";
 
 export const TableBodyMobile = ({
   data,
-  handleOpenAccept,
-  handleOpenRetract,
-  handleGoToDeposit,
   pagination,
+  states,
   setPagination,
 }: TableProps) => {
   const [myAddress, setMyAddress] = useState<string | undefined>(undefined);
@@ -25,13 +23,12 @@ export const TableBodyMobile = ({
     <>
       <div className="flex flex-col gap-2 rounded-lg bg-m-light-purple p-4 md:hidden">
         {data.map((row) => {
+          const state = states!.find((state) => state.contractId === row.id)!;
           return (
             <DataRowMobile
               key={row.id}
               row={row}
-              handleOpenAccept={handleOpenAccept}
-              handleOpenRetract={handleOpenRetract}
-              handleGoToDeposit={handleGoToDeposit}
+              state={state}
               address={myAddress}
             />
           );
