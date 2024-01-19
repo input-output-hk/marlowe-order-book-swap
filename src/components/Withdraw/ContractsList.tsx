@@ -60,19 +60,19 @@ export const ContractsList = ({
                     </div>
                   </div>
                   <div className="flex flex-col lg:flex-row">
-                    <b>Withdraw amount for provider:&nbsp;</b>
+                    <b>Amount exchanged:&nbsp;</b>
                     {isEmpty(payout.error)
-                      ? Number(payout.amount.provider) +
+                      ? Number(payout.swapper.amount) +
                         " " +
-                        payout.token.provider
+                        payout.swapper.token
                       : payout.error}
                   </div>
                   <div className="flex flex-col lg:flex-row">
-                    <b>Withdraw amount for swapper:&nbsp;</b>
+                    <b>Withdraw amount:&nbsp;</b>
                     {isEmpty(payout.error)
-                      ? Number(payout.amount.swapper) +
+                      ? Number(payout.provider.amount) +
                         " " +
-                        payout.token.swapper
+                        payout.provider.token
                       : payout.error}
                   </div>
                 </div>

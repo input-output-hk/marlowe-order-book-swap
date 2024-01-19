@@ -42,17 +42,18 @@ export const TokensModal = ({
 
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState(assets);
-  const [switchEnabled, setSwitchEnabled] = useState(false);
+  const [switchEnabled, setSwitchEnabled] = useState(true);
 
   useEffect(() => {
-    setOptions(
-      assets?.filter(
-        (option) =>
-          option.assetName.toLowerCase().includes(query.toLocaleLowerCase()) ||
-          option.policyId?.toLowerCase().includes(query.toLocaleLowerCase()),
-      ),
+    let newOptions = assets?.filter(
+      (option) =>
+        option.assetName.toLowerCase().includes(query.toLocaleLowerCase()) ||
+        option.policyId?.toLowerCase().includes(query.toLocaleLowerCase()),
     );
-  }, [query, assets]);
+    if (switchEnabled)
+      newOptions = newOptions?.filter((token) => token.decimals > 0);
+    setOptions(newOptions);
+  }, [query, assets, switchEnabled]);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);

@@ -315,8 +315,8 @@ const getInitialContract = async (contract: ContractDetails) => {
   const parsedPayout = initialContractSchema.safeParse(
     contract.initialContract,
   );
-  let swapperAmount = BigInt(0);
-  let providerAmount = BigInt(0);
+  let swapperAmount = 0;
+  let providerAmount = 0;
   let error = "";
   let providerToken = "";
   let swapperToken = "";
@@ -341,13 +341,13 @@ const getInitialContract = async (contract: ContractDetails) => {
       parsedPayout.data.when[0].then.when[0].case.of_token.token_name,
     );
     providerAmount = intToDecimal(
-      parsedPayout.data.when[0].case.deposits,
+      Number(parsedPayout.data.when[0].case.deposits),
       tokenOfferedInfo.decimals!,
-    ) as bigint;
+    ) as number;
     swapperAmount = intToDecimal(
-      parsedPayout.data.when[0].then.when[0].case.deposits,
+      Number(parsedPayout.data.when[0].then.when[0].case.deposits),
       tokenDesiredInfo.decimals!,
-    ) as bigint;
+    ) as number;
   } else {
     error = "Error obtaining amount";
   }
@@ -357,8 +357,14 @@ const getInitialContract = async (contract: ContractDetails) => {
     adding: false,
     payoutId: null,
     error: error,
-    amount: { swapper: swapperAmount, provider: providerAmount },
-    token: { swapper: swapperToken, provider: providerToken },
+    provider: {
+      amount: providerAmount,
+      token: providerToken,
+    },
+    swapper: {
+      amount: swapperAmount,
+      token: swapperToken,
+    },
   };
 };
 
