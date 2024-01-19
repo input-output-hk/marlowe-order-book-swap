@@ -157,8 +157,8 @@ export const Deposit = () => {
       </div>
       <div className="flex flex-col items-center gap-4 p-5">
         <div className="flex flex-col items-center justify-center gap-5 md:flex-row md:items-start">
-          <div className="flex gap-3 text-xl font-semibold">
-            {offeredIcon}
+          <div className="flex items-center gap-3 text-xl font-semibold">
+            <div className="h-auto w-auto">{offeredIcon}</div>
             {offeredAmount}&nbsp;&nbsp;{offeredToken}
           </div>
           <Image
@@ -167,8 +167,8 @@ export const Deposit = () => {
             height={ICON_SIZES.L}
             className="md:rotate-90"
           />
-          <div className="flex gap-3 text-xl font-semibold">
-            {desiredIcon}
+          <div className="flex items-center gap-3 text-xl font-semibold">
+            <div className="h-auto w-auto">{desiredIcon}</div>
             {desiredAmount}&nbsp;&nbsp;{desiredToken}
           </div>
         </div>

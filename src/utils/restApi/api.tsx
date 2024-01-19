@@ -77,16 +77,18 @@ const getOffered = async (data: OfferedType) => {
           tokenName: tokenInfo.ticker ?? tokenInfo.name,
           amount,
           icon: (
-            <Image
-              src={
-                tokenInfo.logo
-                  ? "data:image/png;base64," + tokenInfo.logo
-                  : (CardanoIcon as string)
-              }
-              alt=""
-              height={ICON_SIZES.S}
-              width={ICON_SIZES.S}
-            />
+            <div className="h-auto w-auto">
+              <Image
+                src={
+                  tokenInfo.logo
+                    ? "data:image/png;base64," + tokenInfo.logo
+                    : (CardanoIcon as string)
+                }
+                alt=""
+                height={ICON_SIZES.S}
+                width={ICON_SIZES.S}
+              />
+            </div>
           ),
           decimals: tokenInfo.decimals,
           policyId: data.of_token.currency_symbol,
@@ -100,7 +102,14 @@ const getOffered = async (data: OfferedType) => {
         tokenName: parseTokenName(data.of_token.token_name),
         amount: BigInt(0),
         icon: (
-          <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
+          <div className="h-auto w-auto">
+            <Image
+              src={CardanoIcon as string}
+              alt="ADA"
+              height={ICON_SIZES.S}
+              width={ICON_SIZES.S}
+            />
+          </div>
         ),
 
         decimals: -1,
@@ -153,16 +162,18 @@ const getDesired = async (data: DesiredType) => {
           tokenName,
           amount,
           icon: (
-            <Image
-              src={
-                tokenInfo.logo
-                  ? "data:image/png;base64," + tokenInfo.logo
-                  : (CardanoIcon as string)
-              }
-              alt=""
-              height={ICON_SIZES.S}
-              width={ICON_SIZES.S}
-            />
+            <div className="h-auto w-auto">
+              <Image
+                src={
+                  tokenInfo.logo
+                    ? "data:image/png;base64," + tokenInfo.logo
+                    : (CardanoIcon as string)
+                }
+                alt=""
+                height={ICON_SIZES.S}
+                width={ICON_SIZES.S}
+              />
+            </div>
           ),
 
           decimals: tokenInfo.decimals!,
@@ -177,7 +188,14 @@ const getDesired = async (data: DesiredType) => {
         tokenName: parseTokenName(data.when[0].case.of_token.token_name),
         amount: BigInt(0),
         icon: (
-          <Image src={CardanoIcon as string} alt="ADA" height={ICON_SIZES.S} />
+          <div className="h-auto w-auto">
+            <Image
+              src={CardanoIcon as string}
+              alt="ADA"
+              height={ICON_SIZES.S}
+              width={ICON_SIZES.S}
+            />
+          </div>
         ),
         decimals: -1,
         policyId: data.when[0].case.of_token.currency_symbol,
