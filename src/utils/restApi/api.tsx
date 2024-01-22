@@ -431,42 +431,42 @@ export const getTransactionDetails = async (
   handleGoToDeposit: (row: ITableData) => () => void,
   setState: Dispatch<SetStateAction<IStateData>>,
 ) => {
-  const transactions = await client.getTransactionsForContract(
-    contractId(row.id),
-  );
-  const txIds = transactions.transactions.map((tx) => tx.transactionId);
-  const txsPromises = txIds.map((txId) =>
-    client.getContractTransactionById(contractId(row.id), txId),
-  );
-
-  const txDetails = await Promise.all(txsPromises);
-  const inputs = txDetails.flatMap((tx) => tx.inputs);
-
-  const deadline = datetoTimeout(new Date(row.expiry));
-  // Some data in scheme is not used, we can leave it empty. We just use deadline.
-  const scheme: Scheme = {
-    offer: {
-      deadline,
-      seller: { address: "" },
-      asset: {
-        amount: BigInt(0),
-        token: { currency_symbol: "", token_name: "" },
-      },
-    },
-    ask: {
-      deadline,
-      buyer: { role_token: "" },
-      asset: {
-        amount: BigInt(0),
-        token: { currency_symbol: "", token_name: "" },
-      },
-    },
-    swapConfirmation: {
-      deadline,
-    },
-  };
-
   try {
+    const transactions = await client.getTransactionsForContract(
+      contractId(row.id),
+    );
+    const txIds = transactions.transactions.map((tx) => tx.transactionId);
+    const txsPromises = txIds.map((txId) =>
+      client.getContractTransactionById(contractId(row.id), txId),
+    );
+
+    const txDetails = await Promise.all(txsPromises);
+    const inputs = txDetails.flatMap((tx) => tx.inputs);
+
+    const deadline = datetoTimeout(new Date(row.expiry));
+    // Some data in scheme is not used, we can leave it empty. We just use deadline.
+    const scheme: Scheme = {
+      offer: {
+        deadline,
+        seller: { address: "" },
+        asset: {
+          amount: BigInt(0),
+          token: { currency_symbol: "", token_name: "" },
+        },
+      },
+      ask: {
+        deadline,
+        buyer: { role_token: "" },
+        asset: {
+          amount: BigInt(0),
+          token: { currency_symbol: "", token_name: "" },
+        },
+      },
+      swapConfirmation: {
+        deadline,
+      },
+    };
+
     const contractState = getState(scheme, inputs, row.state);
     parseState(
       {

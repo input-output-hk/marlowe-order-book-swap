@@ -44,6 +44,10 @@ export const DataRowDesktop = ({
   const hasStarted =
     new Date(row.start).toISOString() < new Date().toISOString();
 
+  if (state.text === "Retract Offer") {
+    console.log(state, hasStarted, address);
+  }
+
   return (
     <div key={row.id} className="table-row">
       <div className="table-cell w-1/4">
@@ -79,7 +83,11 @@ export const DataRowDesktop = ({
             <Button
               size={SIZE.SMALL}
               onClick={state.action}
-              disabled={!address || state.disabled || !hasStarted}
+              disabled={
+                !address ||
+                state.disabled ||
+                (!hasStarted && address !== row.createdBy)
+              }
               color={state.color}
             >
               {state.text}
